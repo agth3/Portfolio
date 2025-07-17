@@ -340,18 +340,6 @@ color: #0f0c0c;
   z-index: 1000;
 }
 
-.floating-image::after {
-  content: "";
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: red;
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
-  z-index: 10;
-}
-
 
 /*--------- PAGE BIO ---------*/
 
