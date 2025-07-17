@@ -10,12 +10,13 @@ document.addEventListener("DOMContentLoaded", () => {
     'asset/img/Posterwall.png',
   ];
 
-  const minImages = 4;
+  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+  const minImages = isMobile ? 3 : 4;
   const baseSpeed = 0.7;
-  const fixedSpeeds = [0.5, 1.5, 2.5, 3.5];
-  const speedPool = [...fixedSpeeds]; // Vitesse disponibles
-  const imageSpeeds = new Map(); // index → vitesse attribuée
-  const visibleImages = new Set(); // index des images visibles
+  const fixedSpeeds = [1.5, 2.25, 3, 3.75];
+  const speedPool = [...fixedSpeeds];
+  const imageSpeeds = new Map();
+  const visibleImages = new Set();
 
   const driftIntensity = 2;
 
@@ -23,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let screenHeight = window.innerHeight;
   let centerX = screenWidth / 2;
   let centerY = screenHeight / 2;
+  let animationFrameId = null;
 
   let usedEdges = [];
   let edgePositions = { 0: [], 1: [], 2: [], 3: [] };
@@ -58,21 +60,18 @@ document.addEventListener("DOMContentLoaded", () => {
         y = -100;
         edgePositions[0].push(x);
         break;
-
       case 1:
         x = screenWidth + 100;
         do { y = Math.random() * screenHeight; }
         while (edgePositions[1].some(pos => Math.abs(pos - y) < margin));
         edgePositions[1].push(y);
         break;
-
       case 2:
         do { x = Math.random() * screenWidth; }
         while (edgePositions[2].some(pos => Math.abs(pos - x) < margin));
         y = screenHeight + 100;
         edgePositions[2].push(x);
         break;
-
       case 3:
         x = -100;
         do { y = Math.random() * screenHeight; }
@@ -99,18 +98,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (forcedIndex !== null) {
       index = forcedIndex;
     } else {
-      const availableIndexes = imageUrls
-        .map((_, i) => i)
-        .filter(i => !visibleImages.has(i));
-
+      const availableIndexes = imageUrls.map((_, i) => i).filter(i => !visibleImages.has(i));
       if (availableIndexes.length === 0 || speedPool.length === 0) return null;
-
       index = availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
     }
 
     if (speedPool.length === 0) return null;
 
-    const speedMultiplier = speedPool.shift(); // retirer une vitesse disponible
+    const speedMultiplier = speedPool.shift();
     imageSpeeds.set(index, speedMultiplier);
     visibleImages.add(index);
 
@@ -127,19 +122,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const individualSpeed = baseSpeed * speedMultiplier;
 
     img.floatingData = {
-      angle,
-      startX: x,
-      startY: y,
-      edge,
-      speed: individualSpeed,
-      hasChangedDirection: false,
-      angleChangeTimer: 0,
-      targetAngle: angle,
-      transitionProgress: 1,
-      isDragging: false,
-      dragOffsetX: 0,
-      dragOffsetY: 0,
-      index
+      angle, startX: x, startY: y, edge,
+      speed: individualSpeed, hasChangedDirection: false,
+      angleChangeTimer: 0, targetAngle: angle,
+      transitionProgress: 1, isDragging: false,
+      dragOffsetX: 0, dragOffsetY: 0, index
     };
 
     img.addEventListener('mouseenter', () => img.dataset.paused = 'true');
@@ -148,58 +135,50 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     img.style.cursor = 'grab';
-
-    img.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      startDrag(img, e.clientX, e.clientY);
-    });
-
-    img.addEventListener('touchstart', (e) => {
-      const touch = e.touches[0];
-      startDrag(img, touch.clientX, touch.clientY);
+    img.addEventListener('mousedown', e => startDrag(img, e.clientX, e.clientY));
+    img.addEventListener('touchstart', e => {
+      const t = e.touches[0];
+      startDrag(img, t.clientX, t.clientY);
     });
 
     function startDrag(img, clientX, clientY) {
-      const data = img.floatingData;
-      data.isDragging = true;
+      const d = img.floatingData;
+      d.isDragging = true;
       img.dataset.paused = 'true';
 
       const rect = img.getBoundingClientRect();
-      data.dragOffsetX = clientX - rect.left;
-      data.dragOffsetY = clientY - rect.top;
+      d.dragOffsetX = clientX - rect.left;
+      d.dragOffsetY = clientY - rect.top;
 
       img.style.opacity = '0.7';
       img.style.transform = 'scale(1.05)';
       img.style.zIndex = '1000';
       img.style.cursor = 'grabbing';
 
-      function onMove(e) {
+      const onMove = e => {
         const moveX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
         const moveY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
-        img.style.left = `${moveX - data.dragOffsetX}px`;
-        img.style.top = `${moveY - data.dragOffsetY}px`;
-      }
+        img.style.left = `${moveX - d.dragOffsetX}px`;
+        img.style.top = `${moveY - d.dragOffsetY}px`;
+      };
 
-      function onEnd() {
-        data.isDragging = false;
+      const onEnd = () => {
+        d.isDragging = false;
         img.dataset.paused = 'false';
-
         img.style.opacity = '1';
         img.style.transform = 'scale(1)';
         img.style.zIndex = 'auto';
         img.style.cursor = 'grab';
-
         img.dataset.mode = 'random';
-        data.hasChangedDirection = true;
-        data.targetAngle = Math.random() * 360;
-        data.transitionProgress = 0;
-        data.angleChangeTimer = 0;
-
+        d.hasChangedDirection = true;
+        d.targetAngle = Math.random() * 360;
+        d.transitionProgress = 0;
+        d.angleChangeTimer = 0;
         document.removeEventListener('mousemove', onMove);
         document.removeEventListener('mouseup', onEnd);
         document.removeEventListener('touchmove', onMove);
         document.removeEventListener('touchend', onEnd);
-      }
+      };
 
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup', onEnd);
@@ -216,18 +195,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function hasMovedQuarterScreen(img) {
-    const data = img.floatingData;
-    const currentX = parseFloat(img.style.left);
-    const currentY = parseFloat(img.style.top);
-
-    const quarterWidth = screenWidth / 4;
-    const quarterHeight = screenHeight / 4;
-
-    switch (data.edge) {
-      case 0: return (currentY - data.startY) > quarterHeight;
-      case 1: return (data.startX - currentX) > quarterWidth;
-      case 2: return (data.startY - currentY) > quarterHeight;
-      case 3: return (currentX - data.startX) > quarterWidth;
+    const d = img.floatingData;
+    const x = parseFloat(img.style.left);
+    const y = parseFloat(img.style.top);
+    const qW = screenWidth / 4;
+    const qH = screenHeight / 4;
+    switch (d.edge) {
+      case 0: return (y - d.startY) > qH;
+      case 1: return (d.startX - x) > qW;
+      case 2: return (d.startY - y) > qH;
+      case 3: return (x - d.startX) > qW;
     }
     return false;
   }
@@ -241,72 +218,70 @@ document.addEventListener("DOMContentLoaded", () => {
 
       let x = parseFloat(img.style.left);
       let y = parseFloat(img.style.top);
-      const data = img.floatingData;
+      const d = img.floatingData;
 
-      if (img.dataset.mode === 'towardsCenter' && !data.hasChangedDirection) {
-        if (hasMovedQuarterScreen(img)) {
-          img.dataset.mode = 'random';
-          data.hasChangedDirection = true;
-          data.targetAngle = data.angle + (Math.random() - 0.5) * 60;
-          data.transitionProgress = 0;
-          data.angleChangeTimer = 0;
-        }
+      if (img.dataset.mode === 'towardsCenter' && !d.hasChangedDirection && hasMovedQuarterScreen(img)) {
+        img.dataset.mode = 'random';
+        d.hasChangedDirection = true;
+        d.targetAngle = d.angle + (Math.random() - 0.5) * 60;
+        d.transitionProgress = 0;
+        d.angleChangeTimer = 0;
       }
 
       if (img.dataset.mode === 'random') {
-        data.angleChangeTimer++;
-
-        if (data.transitionProgress < 1) {
-          data.transitionProgress += 0.02;
-          if (data.transitionProgress > 1) data.transitionProgress = 1;
-          const angleDiff = data.targetAngle - data.angle;
-          data.angle += angleDiff * 0.02;
+        d.angleChangeTimer++;
+        if (d.transitionProgress < 1) {
+          d.transitionProgress += 0.02;
+          if (d.transitionProgress > 1) d.transitionProgress = 1;
+          d.angle += (d.targetAngle - d.angle) * 0.02;
         }
-
-        if (data.angleChangeTimer > 180 + Math.random() * 120) {
-          data.targetAngle = data.angle + (Math.random() - 0.5) * 45;
-          data.transitionProgress = 0;
-          data.angleChangeTimer = 0;
+        if (d.angleChangeTimer > 180 + Math.random() * 120) {
+          d.targetAngle = d.angle + (Math.random() - 0.5) * 45;
+          d.transitionProgress = 0;
+          d.angleChangeTimer = 0;
         }
-
-        data.angle += (Math.random() - 0.5) * driftIntensity;
+        d.angle += (Math.random() - 0.5) * driftIntensity;
       }
 
-      const dx = Math.cos(data.angle * Math.PI / 180) * data.speed;
-      const dy = Math.sin(data.angle * Math.PI / 180) * data.speed;
-
+      const dx = Math.cos(d.angle * Math.PI / 180) * d.speed;
+      const dy = Math.sin(d.angle * Math.PI / 180) * d.speed;
       x += dx;
       y += dy;
-
       img.style.left = `${x}px`;
       img.style.top = `${y}px`;
 
-      if (isOutOfBounds(x, y)) {
-        imagesToRemove.push(img);
-      }
+      if (isOutOfBounds(x, y)) imagesToRemove.push(img);
     });
 
     imagesToRemove.forEach(img => {
-      const index = img.floatingData.index;
-
-      visibleImages.delete(index);
-
-      const oldSpeed = imageSpeeds.get(index);
+      const idx = img.floatingData.index;
+      visibleImages.delete(idx);
+      const oldSpeed = imageSpeeds.get(idx);
       if (oldSpeed !== undefined) {
         speedPool.push(oldSpeed);
-        imageSpeeds.delete(index);
+        imageSpeeds.delete(idx);
       }
-
-      container.removeChild(img);
+      if (img.parentNode) container.removeChild(img);
     });
 
     while (document.getElementsByClassName('floating-image').length < minImages) {
       createFloatingImage();
     }
 
-    requestAnimationFrame(updatePositions);
+    animationFrameId = requestAnimationFrame(updatePositions);
   }
 
   initFloatingImages();
-  requestAnimationFrame(updatePositions);
+  animationFrameId = requestAnimationFrame(updatePositions);
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+    } else if (document.visibilityState === 'visible' && !animationFrameId) {
+      animationFrameId = requestAnimationFrame(updatePositions);
+    }
+  });
 });

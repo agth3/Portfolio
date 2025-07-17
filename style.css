@@ -328,8 +328,8 @@ color: #0f0c0c;
 
 .floating-image {
   position: absolute;
-  max-width: 15vw;
-  max-height: 25vh;
+  max-width: 20vw;
+  max-height: 30vh;
   transition: transform 0.2s linear;
   pointer-events: auto;
   z-index: 10;
