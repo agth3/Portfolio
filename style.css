@@ -170,7 +170,7 @@ body {
     margin: 0;
     padding: 0;
     
-    /* overflow: hidden; */
+    overflow: hidden;
     /* font-family: Arial, Helvetica, sans-serif; */
 }
 
@@ -308,6 +308,48 @@ display: flex;
 .a-menu{
 text-decoration: none;
 color: #0f0c0c;
+}
+
+
+/*--------- IMAGES FLOTTANTES ---------*/
+
+
+
+#image-container {
+  position: fixed; /* fixe la div par-dessus tout */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none; /* important pour ne pas bloquer les clics en-dessous */
+  /* z-index: 9; */
+}
+
+
+.floating-image {
+  position: absolute;
+  max-width: 15vw;
+  max-height: 25vh;
+  transition: transform 0.2s linear;
+  pointer-events: auto;
+  z-index: 10;
+}
+
+.floating-image:hover {
+  transform: scale(1.1);
+  z-index: 1000;
+}
+
+.floating-image::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: red;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  z-index: 10;
 }
 
 
