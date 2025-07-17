@@ -1,13 +1,43 @@
 document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById('image-container');
-  const imageUrls = [
-    'asset/img/20231005_154014.png',
-    'asset/img/affiches_2e_2.png',
-    'asset/img/DSC_0004.png',
-    'asset/img/Insta_Post-Feed.png',
-    'asset/img/my_artwork-45.png',
-    'asset/img/my_artwork-71.png',
-    'asset/img/Posterwall.png',
+  
+  // Configuration des images avec lazy-loading
+  const imageConfig = [
+    {
+      lowRes: 'asset/img/low/20231005_154014.png',
+      highRes: 'asset/img/high/20231005_154014.jpg',
+      link: 'projets.html'
+    },
+    {
+      lowRes: 'asset/img/low/affiches_2e_2.png',
+      highRes: 'asset/img/high/affiches_2e_2.jpg',
+      link: 'projets.html'
+    },
+    {
+      lowRes: 'asset/img/low/DSC_0004.png',
+      highRes: 'asset/img/high/DSC_0004.jpg',
+      link: 'projets.html'
+    },
+    {
+      lowRes: 'asset/img/low/Insta_Post-Feed.png',
+      highRes: 'asset/img/high/Insta_Post-Feed.png',
+      link: 'projets.html'
+    },
+    {
+      lowRes: 'asset/img/low/my_artwork-45.png',
+      highRes: 'asset/img/high/my_artwork-45.png',
+      link: 'projets.html'
+    },
+    {
+      lowRes: 'asset/img/low/my_artwork-71.png',
+      highRes: 'asset/img/high/my_artwork-71.png',
+      link: 'projets.html'
+    },
+    {
+      lowRes: 'asset/img/low/Posterwall.png',
+      highRes: 'asset/img/high/Posterwall.jpg',
+      link: 'projets.html'
+    }
   ];
 
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
@@ -17,6 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const speedPool = [...fixedSpeeds];
   const imageSpeeds = new Map();
   const visibleImages = new Set();
+  const preloadedImages = new Map(); // Cache des images HD préchargées
 
   const driftIntensity = 2;
 
@@ -37,6 +68,41 @@ document.addEventListener("DOMContentLoaded", () => {
     centerX = screenWidth / 2;
     centerY = screenHeight / 2;
   });
+
+  // Fonction de préchargement lazy des images HD
+  function preloadHighResImage(index) {
+    if (preloadedImages.has(index)) return Promise.resolve(preloadedImages.get(index));
+    
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        preloadedImages.set(index, img.src);
+        resolve(img.src);
+      };
+      img.onerror = reject;
+      img.src = imageConfig[index].highRes;
+    });
+  }
+
+  //CHATGPT MADE ME ADD THIS FUNCTION
+  function cleanupImage(img) {
+  if (img.floatingData.clickTimer) {
+    clearTimeout(img.floatingData.clickTimer);
+  }
+  if (img.floatingData.lowResTimer) {
+    clearTimeout(img.floatingData.lowResTimer);
+  }
+  preloadedImages.delete(img.floatingData.index);
+}
+
+function cleanupImageCache() {
+  const maxCacheSize = 10;
+  if (preloadedImages.size > maxCacheSize) {
+    const entries = Array.from(preloadedImages.entries());
+    const toDelete = entries.slice(0, entries.length - maxCacheSize);
+    toDelete.forEach(([key]) => preloadedImages.delete(key));
+  }
+}
 
   function getRandomEdgePosition() {
     let edge, x, y;
@@ -100,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (forcedIndex !== null) {
       index = forcedIndex;
     } else {
-      const availableIndexes = imageUrls.map((_, i) => i).filter(i => !visibleImages.has(i));
+      const availableIndexes = imageConfig.map((_, i) => i).filter(i => !visibleImages.has(i));
       if (availableIndexes.length === 0 || speedPool.length === 0) return null;
       index = availableIndexes[Math.floor(Math.random() * availableIndexes.length)];
     }
@@ -112,10 +178,11 @@ document.addEventListener("DOMContentLoaded", () => {
     visibleImages.add(index);
 
     const img = document.createElement('img');
-    img.src = imageUrls[index];
+    img.src = imageConfig[index].lowRes; // Chargement initial avec image basse résolution
     img.classList.add('floating-image');
     img.dataset.paused = 'false';
     img.dataset.mode = 'towardsCenter';
+    img.loading = 'lazy'; // Lazy loading natif
 
     const { x, y, angle, edge } = getRandomEdgePosition();
     img.style.left = `${x}px`;
@@ -128,15 +195,66 @@ document.addEventListener("DOMContentLoaded", () => {
       speed: individualSpeed, hasChangedDirection: false,
       angleChangeTimer: 0, targetAngle: angle,
       transitionProgress: 1, isDragging: false,
-      index
+      index, originalSrc: imageConfig[index].lowRes,
+      isHighRes: false, clickCount: 0, clickTimer: null,
+      lowResTimer: null // Ajouté
     };
 
-    img.addEventListener('mouseenter', () => img.dataset.paused = 'true');
-    img.addEventListener('mouseleave', () => {
-      if (!img.floatingData.isDragging) img.dataset.paused = 'false';
+    // // Gestion du hover pour switch vers HD
+    // Gestion du hover pour switch vers HD avec délai anti-flickering
+img.addEventListener('mouseenter', () => {
+  img.dataset.paused = 'true';
+
+  if (img.floatingData.lowResTimer) {
+    clearTimeout(img.floatingData.lowResTimer);
+    img.floatingData.lowResTimer = null;
+  }
+
+  if (!img.floatingData.isHighRes) {
+    preloadHighResImage(index).then(highResSrc => {
+      if (img.matches(':hover') && !img.floatingData.lowResTimer) {
+        img.src = highResSrc;
+        img.floatingData.isHighRes = true;
+      }
+    }).catch(console.error);
+  }
+});
+
+img.addEventListener('mouseleave', () => {
+  if (!img.floatingData.isDragging && img.floatingData.isHighRes) {
+    img.dataset.paused = 'false';
+
+    img.floatingData.lowResTimer = setTimeout(() => {
+      if (!img.matches(':hover')) {
+        img.src = img.floatingData.originalSrc;
+        img.floatingData.isHighRes = false;
+      }
+      img.floatingData.lowResTimer = null;
+    }, 100);
+  }
+});
+
+
+    // Gestion du clic/double-clic
+    img.addEventListener('click', (e) => {
+      if (img.floatingData.isDragging) return;
+      
+      img.floatingData.clickCount++;
+      
+      if (img.floatingData.clickCount === 1) {
+        img.floatingData.clickTimer = setTimeout(() => {
+          img.floatingData.clickCount = 0;
+          // Simple clic - ne rien faire ou action légère
+        }, 300);
+      } else if (img.floatingData.clickCount === 2) {
+        clearTimeout(img.floatingData.clickTimer);
+        img.floatingData.clickCount = 0;
+        // Double-clic - navigation
+        window.location.href = imageConfig[index].link;
+      }
     });
 
-    // Nouveau système de drag & drop
+    // Système de drag & drop
     img.style.cursor = 'grab';
     
     let newX = 0, newY = 0, startX = 0, startY = 0;
@@ -198,8 +316,10 @@ document.addEventListener("DOMContentLoaded", () => {
       document.removeEventListener('mouseup', mouseUp);
     }
 
+    console.log('Floating image created', index);
     container.appendChild(img);
     return img;
+    
   }
 
   function isOutOfBounds(x, y) {
@@ -296,18 +416,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Optimisation : traitement par batch des suppressions
-    if (imagesToRemove.length > 0) {
-      imagesToRemove.forEach(img => {
-        const idx = img.floatingData.index;
-        visibleImages.delete(idx);
-        const oldSpeed = imageSpeeds.get(idx);
-        if (oldSpeed !== undefined) {
-          speedPool.push(oldSpeed);
-          imageSpeeds.delete(idx);
-        }
-        if (img.parentNode) container.removeChild(img);
-      });
+if (imagesToRemove.length > 0) {
+  imagesToRemove.forEach(img => {
+    const idx = img.floatingData.index;
+
+    cleanupImage(img); // <-- Ajout important
+
+    visibleImages.delete(idx);
+    const oldSpeed = imageSpeeds.get(idx);
+    if (oldSpeed !== undefined) {
+      speedPool.push(oldSpeed);
+      imageSpeeds.delete(idx);
     }
+    if (img.parentNode) container.removeChild(img);
+  });
+}
 
     // Optimisation : création d'images moins fréquente
     const currentImageCount = document.getElementsByClassName('floating-image').length;
@@ -316,6 +439,11 @@ document.addEventListener("DOMContentLoaded", () => {
       createFloatingImage();
     }
 
+
+    // if (++cleanupCounter % 300 === 0) { //cleanup n'est pas défini ce qui pose problème
+    // cleanupImageCache();
+// }
+    console.log('update frame');
     animationFrameId = requestAnimationFrame(updatePositions);
   }
 
@@ -324,10 +452,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (document.visibilityState === 'hidden') {
       isAnimationPaused = true;
       // Optionnel : pause complète de l'animation
-      // if (animationFrameId) {
-      //   cancelAnimationFrame(animationFrameId);
-      //   animationFrameId = null;
-      // }
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
     } else if (document.visibilityState === 'visible') {
       isAnimationPaused = false;
       lastTimestamp = performance.now(); // Reset du timestamp

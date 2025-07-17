@@ -27,9 +27,107 @@
             <div class="cadre bord-droit"></div>
             <div class="cadre bord-gauche"></div>
 
-            <div class="center-grid"></div>
+            <!-- <div class="center-grid"></div> -->
+             <a class="case-mosaique case1" href="projets.html"><img class="img-mosaique" src="asset/img/low/my_artwork-45.png" data-lowres="asset/img/low/my_artwork-45.png" data-highres="asset/img/high/my_artwork-45.png" loading="lazy" alt=""></a>
+             <a class="case-mosaique case2" href="projets.html"><img class="img-mosaique" src="asset/img/low/my_artwork-45.png" data-lowres="asset/img/low/my_artwork-45.png" data-highres="asset/img/high/my_artwork-45.png" loading="lazy" alt=""></a>
+             <a class="case-mosaique case3" href="projets.html"><img class="img-mosaique" src="asset/img/low/my_artwork-45.png" data-lowres="asset/img/low/my_artwork-45.png" data-highres="asset/img/high/my_artwork-45.png" loading="lazy" alt=""></a>
+             <a class="case-mosaique case4" href="projets.html"><img class="img-mosaique" src="asset/img/low/my_artwork-45.png" data-lowres="asset/img/low/my_artwork-45.png" data-highres="asset/img/high/my_artwork-45.png" loading="lazy" alt=""></a>
+             <a class="case-mosaique case5" href="projets.html"><img class="img-mosaique" src="asset/img/low/my_artwork-45.png" data-lowres="asset/img/low/my_artwork-45.png" data-highres="asset/img/high/my_artwork-45.png" loading="lazy" alt=""></a>
+             <a class="case-mosaique case6" href="projets.html"><img class="img-mosaique" src="asset/img/low/my_artwork-45.png" data-lowres="asset/img/low/my_artwork-45.png" data-highres="asset/img/high/my_artwork-45.png" loading="lazy" alt=""></a>
+             <a class="case-mosaique case7" href="projets.html"><img class="img-mosaique" src="asset/img/low/my_artwork-45.png" data-lowres="asset/img/low/my_artwork-45.png" data-highres="asset/img/high/my_artwork-45.png" loading="lazy" alt=""></a>
+             <a class="case-mosaique case8" href="projets.html"><img class="img-mosaique" src="asset/img/low/my_artwork-45.png" data-lowres="asset/img/low/my_artwork-45.png" data-highres="asset/img/high/my_artwork-45.png" loading="lazy" alt=""></a>
+             <a class="case-mosaique case9" href="projets.html"><img class="img-mosaique" src="asset/img/low/my_artwork-45.png" data-lowres="asset/img/low/my_artwork-45.png" data-highres="asset/img/high/my_artwork-45.png" loading="lazy" alt=""></a>
+            <a class="case-mosaique case10" href="projets.html"><img class="img-mosaique" src="asset/img/low/my_artwork-45.png" data-lowres="asset/img/low/my_artwork-45.png" data-highres="asset/img/high/my_artwork-45.png" loading="lazy" alt=""></a>
+            <a class="case-mosaique case11" href="projets.html"><img class="img-mosaique" src="asset/img/low/my_artwork-45.png" data-lowres="asset/img/low/my_artwork-45.png" data-highres="asset/img/high/my_artwork-45.png" loading="lazy" alt=""></a>
+            <a class="case-mosaique case12" href="projets.html"><img class="img-mosaique" src="asset/img/low/my_artwork-45.png" data-lowres="asset/img/low/my_artwork-45.png" data-highres="asset/img/high/my_artwork-45.png" loading="lazy" alt=""></a>
+            <a class="case-mosaique case13" href="projets.html"><img class="img-mosaique" src="asset/img/low/my_artwork-45.png" data-lowres="asset/img/low/my_artwork-45.png" data-highres="asset/img/high/my_artwork-45.png" loading="lazy" alt=""></a>
+            <a class="case-mosaique case14" href="projets.html"><img class="img-mosaique" src="asset/img/low/my_artwork-45.png" data-lowres="asset/img/low/my_artwork-45.png" data-highres="asset/img/high/my_artwork-45.png" loading="lazy" alt=""></a>
+            <a class="case-mosaique case15" href="projets.html"><img class="img-mosaique" src="asset/img/low/my_artwork-45.png" data-lowres="asset/img/low/my_artwork-45.png" data-highres="asset/img/high/my_artwork-45.png" loading="lazy" alt=""></a>
         </div>
 
     </body>
+
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const images = document.querySelectorAll('.img-mosaique');
+  const preloadCache = new Map();
+
+  images.forEach(img => {
+    const lowSrc = img.dataset.lowres;
+    const highSrc = img.dataset.highres;
+
+    let hoverTimer = null;
+    let lowResTimer = null;
+
+    // Ajout d’un objet "state" comme floatingData
+    img.switchState = {
+      isHighRes: false,
+    };
+
+    img.addEventListener('mouseenter', () => {
+      console.log('[ENTER]', img.src);
+
+      // Annule un éventuel retour programmé
+      if (lowResTimer) {
+        clearTimeout(lowResTimer);
+        lowResTimer = null;
+      }
+
+      // Anti-flickering
+      hoverTimer = setTimeout(() => {
+        if (!img.matches(':hover')) {
+          console.log('[ABORT SWITCH] Hover perdu pendant le délai');
+          return;
+        }
+
+        if (!img.switchState.isHighRes) {
+          if (!preloadCache.has(highSrc)) {
+            const tmp = new Image();
+            tmp.onload = () => {
+              preloadCache.set(highSrc, true);
+              img.src = highSrc;
+              img.switchState.isHighRes = true;
+              console.log('[SWITCH HD]', highSrc);
+            };
+            tmp.src = highSrc;
+          } else {
+            img.src = highSrc;
+            img.switchState.isHighRes = true;
+            console.log('[SWITCH HD CACHED]', highSrc);
+          }
+        }
+      }, 150);
+    });
+
+    img.addEventListener('mouseleave', () => {
+      console.log('[LEAVE]', img.src);
+
+      // Annule passage en HD si hover trop court
+      if (hoverTimer) {
+        clearTimeout(hoverTimer);
+        hoverTimer = null;
+      }
+
+      // Si image déjà en HD, on programme retour
+      if (img.switchState.isHighRes) {
+        lowResTimer = setTimeout(() => {
+          if (!img.matches(':hover')) {
+            img.src = lowSrc;
+            img.switchState.isHighRes = false;
+            console.log('[REVERT LOWRES]', lowSrc);
+          } else {
+            console.log('[REVERT ABORTED] Encore survolé');
+          }
+        }, 100);
+      }
+      console.log('[SRC]', { low: lowSrc, high: highSrc });
+    });
+  });
+});
+</script>
+
+
+
+
 
 </html>
