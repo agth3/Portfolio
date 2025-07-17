@@ -25,6 +25,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let centerX = screenWidth / 2;
   let centerY = screenHeight / 2;
   let animationFrameId = null;
+  let isAnimationPaused = false;
+  let lastTimestamp = 0;
 
   let usedEdges = [];
   let edgePositions = { 0: [], 1: [], 2: [], 3: [] };
@@ -126,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
       speed: individualSpeed, hasChangedDirection: false,
       angleChangeTimer: 0, targetAngle: angle,
       transitionProgress: 1, isDragging: false,
-      dragOffsetX: 0, dragOffsetY: 0, index
+      index
     };
 
     img.addEventListener('mouseenter', () => img.dataset.paused = 'true');
@@ -134,56 +136,66 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!img.floatingData.isDragging) img.dataset.paused = 'false';
     });
 
+    // Nouveau système de drag & drop
     img.style.cursor = 'grab';
-    img.addEventListener('mousedown', e => startDrag(img, e.clientX, e.clientY));
+    
+    let newX = 0, newY = 0, startX = 0, startY = 0;
+    let isDragging = false;
+    
+    img.addEventListener('mousedown', mouseDown);
     img.addEventListener('touchstart', e => {
       const t = e.touches[0];
-      startDrag(img, t.clientX, t.clientY);
+      mouseDown({ clientX: t.clientX, clientY: t.clientY });
     });
 
-    function startDrag(img, clientX, clientY) {
+    function mouseDown(e) {
+      e.preventDefault();
+      isDragging = true;
       const d = img.floatingData;
       d.isDragging = true;
       img.dataset.paused = 'true';
-
-      const rect = img.getBoundingClientRect();
-      d.dragOffsetX = clientX - rect.left;
-      d.dragOffsetY = clientY - rect.top;
-
-      img.style.opacity = '0.7';
-      img.style.transform = 'scale(1.05)';
-      img.style.zIndex = '1000';
+      
+      startX = e.clientX;
+      startY = e.clientY;
+      
       img.style.cursor = 'grabbing';
+      img.style.zIndex = '1000';
+      
+      document.addEventListener('mousemove', mouseMove);
+      document.addEventListener('mouseup', mouseUp);
+    }
 
-      const onMove = e => {
-        const moveX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
-        const moveY = e.type.startsWith('touch') ? e.touches[0].clientY : e.clientY;
-        img.style.left = `${moveX - d.dragOffsetX}px`;
-        img.style.top = `${moveY - d.dragOffsetY}px`;
-      };
+    function mouseMove(e) {
+      if (!isDragging) return;
+      e.preventDefault();
+      
+      newX = startX - e.clientX;
+      newY = startY - e.clientY;
+      
+      startX = e.clientX;
+      startY = e.clientY;
+      
+      img.style.left = (img.offsetLeft - newX) + 'px';
+      img.style.top = (img.offsetTop - newY) + 'px';
+    }
 
-      const onEnd = () => {
-        d.isDragging = false;
-        img.dataset.paused = 'false';
-        img.style.opacity = '1';
-        img.style.transform = 'scale(1)';
-        img.style.zIndex = 'auto';
-        img.style.cursor = 'grab';
-        img.dataset.mode = 'random';
-        d.hasChangedDirection = true;
-        d.targetAngle = Math.random() * 360;
-        d.transitionProgress = 0;
-        d.angleChangeTimer = 0;
-        document.removeEventListener('mousemove', onMove);
-        document.removeEventListener('mouseup', onEnd);
-        document.removeEventListener('touchmove', onMove);
-        document.removeEventListener('touchend', onEnd);
-      };
-
-      document.addEventListener('mousemove', onMove);
-      document.addEventListener('mouseup', onEnd);
-      document.addEventListener('touchmove', onMove);
-      document.addEventListener('touchend', onEnd);
+    function mouseUp(e) {
+      if (!isDragging) return;
+      
+      isDragging = false;
+      const d = img.floatingData;
+      d.isDragging = false;
+      img.dataset.paused = 'false';
+      img.style.cursor = 'grab';
+      img.style.zIndex = 'auto';
+      img.dataset.mode = 'random';
+      d.hasChangedDirection = true;
+      d.targetAngle = Math.random() * 360;
+      d.transitionProgress = 0;
+      d.angleChangeTimer = 0;
+      
+      document.removeEventListener('mousemove', mouseMove);
+      document.removeEventListener('mouseup', mouseUp);
     }
 
     container.appendChild(img);
@@ -209,7 +221,19 @@ document.addEventListener("DOMContentLoaded", () => {
     return false;
   }
 
-  function updatePositions() {
+  function updatePositions(timestamp) {
+    // Optimisation : réduction à 30fps pour économiser les ressources
+    if (timestamp - lastTimestamp < 33) { // 33ms = ~30fps
+      animationFrameId = requestAnimationFrame(updatePositions);
+      return;
+    }
+    lastTimestamp = timestamp;
+
+    if (isAnimationPaused) {
+      animationFrameId = requestAnimationFrame(updatePositions);
+      return;
+    }
+
     const images = Array.from(document.getElementsByClassName('floating-image'));
     const imagesToRemove = [];
 
@@ -220,6 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let y = parseFloat(img.style.top);
       const d = img.floatingData;
 
+      // Optimisation : calcul de trajectoire moins fréquent
       if (img.dataset.mode === 'towardsCenter' && !d.hasChangedDirection && hasMovedQuarterScreen(img)) {
         img.dataset.mode = 'random';
         d.hasChangedDirection = true;
@@ -230,58 +255,116 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (img.dataset.mode === 'random') {
         d.angleChangeTimer++;
+        
+        // Optimisation : transition d'angle plus rapide (moins de calculs)
         if (d.transitionProgress < 1) {
-          d.transitionProgress += 0.02;
+          d.transitionProgress += 0.05; // Accéléré de 0.02 à 0.05
           if (d.transitionProgress > 1) d.transitionProgress = 1;
-          d.angle += (d.targetAngle - d.angle) * 0.02;
+          d.angle += (d.targetAngle - d.angle) * 0.05; // Accéléré de 0.02 à 0.05
         }
-        if (d.angleChangeTimer > 180 + Math.random() * 120) {
+        
+        // Optimisation : changement d'angle moins fréquent
+        if (d.angleChangeTimer > 300 + Math.random() * 180) { // Augmenté de 180+120 à 300+180
           d.targetAngle = d.angle + (Math.random() - 0.5) * 45;
           d.transitionProgress = 0;
           d.angleChangeTimer = 0;
         }
-        d.angle += (Math.random() - 0.5) * driftIntensity;
+        
+        // Optimisation : drift réduit et moins fréquent
+        if (d.angleChangeTimer % 3 === 0) { // Drift appliqué seulement 1 fois sur 3
+          d.angle += (Math.random() - 0.5) * (driftIntensity * 0.5); // Intensité réduite de moitié
+        }
       }
 
-      const dx = Math.cos(d.angle * Math.PI / 180) * d.speed;
-      const dy = Math.sin(d.angle * Math.PI / 180) * d.speed;
+      // Optimisation : calcul trigonométrique en cache
+      const radians = d.angle * Math.PI / 180;
+      const dx = Math.cos(radians) * d.speed;
+      const dy = Math.sin(radians) * d.speed;
+      
       x += dx;
       y += dy;
-      img.style.left = `${x}px`;
-      img.style.top = `${y}px`;
+      
+      // Optimisation : mise à jour DOM moins fréquente pour les petits mouvements
+      const deltaX = Math.abs(dx);
+      const deltaY = Math.abs(dy);
+      if (deltaX > 0.5 || deltaY > 0.5) { // Seuil de mise à jour
+        img.style.left = `${x}px`;
+        img.style.top = `${y}px`;
+      }
 
       if (isOutOfBounds(x, y)) imagesToRemove.push(img);
     });
 
-    imagesToRemove.forEach(img => {
-      const idx = img.floatingData.index;
-      visibleImages.delete(idx);
-      const oldSpeed = imageSpeeds.get(idx);
-      if (oldSpeed !== undefined) {
-        speedPool.push(oldSpeed);
-        imageSpeeds.delete(idx);
-      }
-      if (img.parentNode) container.removeChild(img);
-    });
+    // Optimisation : traitement par batch des suppressions
+    if (imagesToRemove.length > 0) {
+      imagesToRemove.forEach(img => {
+        const idx = img.floatingData.index;
+        visibleImages.delete(idx);
+        const oldSpeed = imageSpeeds.get(idx);
+        if (oldSpeed !== undefined) {
+          speedPool.push(oldSpeed);
+          imageSpeeds.delete(idx);
+        }
+        if (img.parentNode) container.removeChild(img);
+      });
+    }
 
-    while (document.getElementsByClassName('floating-image').length < minImages) {
+    // Optimisation : création d'images moins fréquente
+    const currentImageCount = document.getElementsByClassName('floating-image').length;
+    if (currentImageCount < minImages) {
+      // Créer une seule image à la fois
       createFloatingImage();
     }
 
     animationFrameId = requestAnimationFrame(updatePositions);
   }
 
+  // Gestion optimisée de la visibilité de l'onglet
+  function handleVisibilityChange() {
+    if (document.visibilityState === 'hidden') {
+      isAnimationPaused = true;
+      // Optionnel : pause complète de l'animation
+      // if (animationFrameId) {
+      //   cancelAnimationFrame(animationFrameId);
+      //   animationFrameId = null;
+      // }
+    } else if (document.visibilityState === 'visible') {
+      isAnimationPaused = false;
+      lastTimestamp = performance.now(); // Reset du timestamp
+      if (!animationFrameId) {
+        animationFrameId = requestAnimationFrame(updatePositions);
+      }
+    }
+  }
+
+  // Gestion du focus/blur de la fenêtre comme backup
+  function handleWindowFocus() {
+    isAnimationPaused = false;
+    lastTimestamp = performance.now();
+    if (!animationFrameId) {
+      animationFrameId = requestAnimationFrame(updatePositions);
+    }
+  }
+
+  function handleWindowBlur() {
+    isAnimationPaused = true;
+  }
+
   initFloatingImages();
   animationFrameId = requestAnimationFrame(updatePositions);
 
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') {
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-        animationFrameId = null;
-      }
-    } else if (document.visibilityState === 'visible' && !animationFrameId) {
-      animationFrameId = requestAnimationFrame(updatePositions);
+  // Event listeners pour la gestion de la visibilité
+  document.addEventListener('visibilitychange', handleVisibilityChange);
+  window.addEventListener('focus', handleWindowFocus);
+  window.addEventListener('blur', handleWindowBlur);
+
+  // Cleanup au déchargement de la page
+  window.addEventListener('beforeunload', () => {
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
     }
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
+    window.removeEventListener('focus', handleWindowFocus);
+    window.removeEventListener('blur', handleWindowBlur);
   });
 });
