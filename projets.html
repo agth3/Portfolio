@@ -43,9 +43,22 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <span class="outil-projets">Outils mobilisés : VS Code - p5.js, Figma, Indesign, Illustrator</span>
                     <span class="contexte-projets">Projet réalisé lors d’un semestre erasmus à Politecnico di Milano</br>
 avec Luca SCHARRENBACH</span>
-            </div>
-                <div class="section-slide"><div class="couleur-fond"></div></div>
-                <div class="zone-img-principale"><img class="img-principale" src="asset/img/b012cb3a39566f49cc75c40e6f8e9107.jpg"></div>
+                </div>
+                <div class="section-slide">
+                  <div class="carrousel-container">
+                    <div class="scroll-capture"></div> <!-- zone invisible pour capter le scroll -->
+                    <div class="carrousel-track">
+                      <div class="carrousel-slide"><img src="asset/img/low/20231005_154014.png" alt="Image 1"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/Posterwall.png" alt="Image 2"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/Insta_Post-Feed.png" alt="Image 3"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/20231005_154014.png" alt="Image 1"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/Posterwall.png" alt="Image 2"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/Insta_Post-Feed.png" alt="Image 3"></div>
+                    </div>
+                    <div class="focus-frame"></div>
+                    <div class="scroll-indicator"></div>
+                  </div>
+                </div>
             </section>
 
             <section class="grid-projets" id="projet-OffKey-2">
@@ -58,9 +71,44 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <span class="outil-projets">Outils mobilisés : VS Code - p5.js, Figma, Indesign, Illustrator</span>
                     <span class="contexte-projets">Projet réalisé lors d’un semestre erasmus à Politecnico di Milano</br>
 avec Luca SCHARRENBACH</span>
-            </div>
-                <div class="section-slide"><div class="couleur-fond"></div></div>
-                <div class="zone-img-principale"><img class="img-principale" src="asset/img/b012cb3a39566f49cc75c40e6f8e9107.jpg"></div>
+                </div>
+                <div class="section-slide">
+                  <div class="carrousel-container">
+                    <div class="scroll-capture"></div>
+                    <div class="carrousel-track">
+                      <div class="carrousel-slide"><img src="asset/img/low/20231005_154014.png" alt="Image 1"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/Posterwall.png" alt="Image 2"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/Insta_Post-Feed.png" alt="Image 3"></div>
+                    </div>
+                    <div class="focus-frame"></div>
+                    <div class="scroll-indicator"></div>
+                  </div>
+                </div>
+            </section>
+
+            <section class="grid-projets" id="projet-OffKey-3">
+                <div class="zone-texte-projets" id="projet-OffKey-3">
+                    <h2 class="titre-projets" id="titre-OffKey-3">OffKey</h2>
+                    <span class="date-projets">2024</span>
+                    <span class="description-projets">Identité visuelle générative d’un festival fictif de musique techno basée sur des visuels génératifs programmés en p5.js</br>
+Esthétique glauque, organique et rythmique incarnée par le mille-pattes</br>
+Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produits dérivés...)</span>
+                    <span class="outil-projets">Outils mobilisés : VS Code - p5.js, Figma, Indesign, Illustrator</span>
+                    <span class="contexte-projets">Projet réalisé lors d’un semestre erasmus à Politecnico di Milano</br>
+avec Luca SCHARRENBACH</span>
+                </div>
+                <div class="section-slide">
+                  <div class="carrousel-container">
+                    <div class="scroll-capture"></div>
+                    <div class="carrousel-track">
+                      <div class="carrousel-slide"><img src="asset/img/low/20231005_154014.png" alt="Image 1"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/Posterwall.png" alt="Image 2"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/Insta_Post-Feed.png" alt="Image 3"></div>
+                    </div>
+                    <div class="focus-frame"></div>
+                    <div class="scroll-indicator"></div>
+                  </div>
+                </div>
             </section>
         </div>
 
@@ -129,7 +177,8 @@ avec Luca SCHARRENBACH</span>
   // Associe chaque ID de section à une couleur
   const sectionColors = {
     "projet-OffKey": "#e74c3c",    // Rouge
-    "projet-OffKey-2": "#3498db",  // Bleu
+    "projet-OffKey-2": "#3498db",   // Bleu
+    "projet-OffKey-3": "#67d92a",  // Vert
     // Ajoute d'autres IDs ici
   };
 
@@ -156,6 +205,135 @@ avec Luca SCHARRENBACH</span>
 
   // Observe chaque section
   sections.forEach(section => observer.observe(section));
+
+
+//    CARROUSEL INFINI DES IMG
+
+  class VerticalCarousel {
+    constructor(trackElement) {
+      this.track = trackElement;
+      this.slides = Array.from(trackElement.querySelectorAll('.carrousel-slide'));
+      this.slideHeight = window.innerHeight - 2 * this.getVh(16.667); // correspond à .img-principale height
+      this.originalSlideCount = this.slides.length / 2; // On suppose qu'on a doublé les images
+      this.currentIndex = 1; // Start sur la 1ère "vraie" image
+      this.isScrolling = false;
+      this.scrollThreshold = 50;
+      this.scrollAccumulator = 0;
+
+      this.init();
+      this.bindEvents();
+    }
+
+    getVh(vh) {
+      return window.innerHeight * (vh / 100);
+    }
+
+    init() {
+      this.track.style.transform = `translateY(-${this.slideHeight}px)`;
+      this.updateScrollIndicator();
+    }
+
+    bindEvents() {
+      const scrollZone = this.track.closest('.carrousel-container').querySelector('.scroll-capture');
+
+      let startY = 0;
+      let scrollY = 0;
+
+      // Souris
+      scrollZone.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        console.log('🎯 Scroll détecté', e.deltaY);
+        if (this.isScrolling) return;
+
+        this.scrollAccumulator += e.deltaY;
+
+        if (Math.abs(this.scrollAccumulator) >= this.scrollThreshold) {
+          const direction = this.scrollAccumulator > 0 ? 1 : -1;
+          this.scrollToSlide(direction);
+          this.scrollAccumulator = 0;
+        }
+      }, { passive: false });
+
+      // Mobile
+      scrollZone.addEventListener('touchstart', (e) => {
+        startY = e.touches[0].clientY;
+        scrollY = 0;
+      }, { passive: true });
+
+      scrollZone.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        scrollY = e.touches[0].clientY - startY;
+      }, { passive: false });
+
+      scrollZone.addEventListener('touchend', () => {
+        if (Math.abs(scrollY) > this.scrollThreshold) {
+          const direction = scrollY > 0 ? -1 : 1;
+          this.scrollToSlide(direction);
+        }
+      }, { passive: true });
+    }
+
+    scrollToSlide(direction) {
+      if (this.isScrolling) return;
+
+      this.isScrolling = true;
+      this.currentIndex += direction;
+      this.track.style.transition = 'transform 0.6s ease';
+      this.track.style.transform = `translateY(-${this.currentIndex * this.slideHeight}px)`;
+
+      setTimeout(() => {
+        if (this.currentIndex >= this.slides.length - 1) {
+          // retour au début
+          this.currentIndex = 1;
+          this.track.style.transition = 'none';
+          this.track.style.transform = `translateY(-${this.currentIndex * this.slideHeight}px)`;
+          setTimeout(() => {
+            this.track.style.transition = 'transform 0.6s ease';
+          }, 50);
+        } else if (this.currentIndex <= 0) {
+          // retour à la fin
+          this.currentIndex = this.slides.length - 2;
+          this.track.style.transition = 'none';
+          this.track.style.transform = `translateY(-${this.currentIndex * this.slideHeight}px)`;
+          setTimeout(() => {
+            this.track.style.transition = 'transform 0.6s ease';
+          }, 50);
+        }
+
+        this.updateScrollIndicator();
+        this.isScrolling = false;
+      }, 600);
+    }
+
+    updateScrollIndicator() {
+      const indicator = this.track.closest('.carrousel-container').querySelector('.scroll-indicator');
+      if (!indicator) return;
+
+      let realIndex = this.currentIndex - 1;
+      if (realIndex < 0) realIndex = this.originalSlideCount - 1;
+      if (realIndex >= this.originalSlideCount) realIndex = 0;
+
+      const progress = (realIndex / (this.originalSlideCount - 1)) * (100 - 20); // 20 = height of ::after
+      indicator.style.setProperty('--scroll-progress', `${progress}px`);
+    }
+  }
+
+  // Lancer tous les carrousels au DOM prêt
+  document.addEventListener('DOMContentLoaded', () => {
+    const tracks = document.querySelectorAll('.carrousel-track');
+    tracks.forEach(track => {
+      new VerticalCarousel(track);
+    });
+
+    // Injecte style pour .scroll-indicator::after
+    const style = document.createElement('style');
+    style.textContent = `
+      .scroll-indicator::after {
+        top: var(--scroll-progress, 0px);
+      }
+    `;
+    document.head.appendChild(style);
+  });
 
 </script>
 
