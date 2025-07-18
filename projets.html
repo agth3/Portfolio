@@ -11,8 +11,8 @@
     </head>
 
     <body>
-        <div class="container container-projets">
-            <div class="cadre bord-haut"></div>
+        <div class="container-menu-projets">
+            <!-- <div class="cadre bord-haut"></div> -->
             <!-- <div class="bloc-accueil"> -->
                     <a class="a-menu logo-menu" href="index.html"></a>
                     <div class="elements-menu-haut" id="nom-menu"><a class="a-menu" href="index.html">Agathe Cotton</a></div>
@@ -22,13 +22,18 @@
                     <div class="elements-menu-bas highlight-projet" id="tel-menu">06 89 32 68 76</div>
                     <div class="elements-menu-bas" id="mail-menu">agathe.cotton@gmail.com</div>
                     <div class="elements-menu-bas" id="insta-menu"><a class="a-menu highlight-projet" href="https://www.instagram.com/happy_factoryy/?hl=fr" target="_blank">@happy_factoryy</a></div>
-                <!-- </div> -->
-            <div class="cadre bord-bas"></div>
+
+                    <button class="fleches-sections-projets" id="fleche-gauche-projets">ᐸ</button>
+                    <button class="fleches-sections-projets" id="fleche-droite-projets">ᐳ</button>
+        </div>
+            <!-- </div> -->
+            <!-- <div class="cadre bord-bas"></div>
             <div class="cadre bord-droit"></div>
-            <div class="cadre bord-gauche"></div>
+            <div class="cadre bord-gauche"></div> -->
 
             <!-- <div class="center-grid"></div> -->
-            
+        <div class="container-projets" id="container-projets">                
+            <section class="grid-projets" id="projet-OffKey">
                 <div class="zone-texte-projets" id="projet-OffKey">
                     <h2 class="titre-projets" id="titre-OffKey">OffKey</h2>
                     <span class="date-projets">2024</span>
@@ -39,13 +44,120 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <span class="contexte-projets">Projet réalisé lors d’un semestre erasmus à Politecnico di Milano</br>
 avec Luca SCHARRENBACH</span>
             </div>
-            <!-- <section id="projet-OffKey"> -->
                 <div class="section-slide"><div class="couleur-fond"></div></div>
                 <div class="zone-img-principale"><img class="img-principale" src="asset/img/b012cb3a39566f49cc75c40e6f8e9107.jpg"></div>
-            <!-- </section> -->
+            </section>
 
+            <section class="grid-projets" id="projet-OffKey-2">
+                <div class="zone-texte-projets" id="projet-OffKey-2">
+                    <h2 class="titre-projets" id="titre-OffKey-2">OffKey</h2>
+                    <span class="date-projets">2024</span>
+                    <span class="description-projets">Identité visuelle générative d’un festival fictif de musique techno basée sur des visuels génératifs programmés en p5.js</br>
+Esthétique glauque, organique et rythmique incarnée par le mille-pattes</br>
+Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produits dérivés...)</span>
+                    <span class="outil-projets">Outils mobilisés : VS Code - p5.js, Figma, Indesign, Illustrator</span>
+                    <span class="contexte-projets">Projet réalisé lors d’un semestre erasmus à Politecnico di Milano</br>
+avec Luca SCHARRENBACH</span>
+            </div>
+                <div class="section-slide"><div class="couleur-fond"></div></div>
+                <div class="zone-img-principale"><img class="img-principale" src="asset/img/b012cb3a39566f49cc75c40e6f8e9107.jpg"></div>
+            </section>
         </div>
 
     </body>
+
+<script>
+
+  //    GESTION DES SLIDES AVEC FLECHES
+
+  const container = document.getElementById("container-projets");
+  const btnLeft = document.getElementById("fleche-gauche-projets");
+  const btnRight = document.getElementById("fleche-droite-projets");
+  const sections = document.querySelectorAll(".grid-projets");
+
+  const sectionWidth = window.innerWidth;
+  let currentIndex = 0;
+
+  function updateButtons() {
+    btnLeft.disabled = currentIndex === 0;
+    btnRight.disabled = currentIndex === sections.length - 1;
+  }
+
+  function scrollToIndex(index) {
+    const scrollX = index * sectionWidth;
+    container.scrollTo({ left: scrollX, behavior: "smooth" });
+    currentIndex = index;
+    updateButtons();
+  }
+
+  btnLeft.addEventListener("click", () => {
+    if (currentIndex > 0) {
+      scrollToIndex(currentIndex - 1);
+    }
+  });
+
+  btnRight.addEventListener("click", () => {
+    if (currentIndex < sections.length - 1) {
+      scrollToIndex(currentIndex + 1);
+    }
+  });
+
+  // Auto-calcule la section visible au scroll manuel
+  container.addEventListener("scroll", () => {
+    const newIndex = Math.round(container.scrollLeft / sectionWidth);
+    if (newIndex !== currentIndex) {
+      currentIndex = newIndex;
+      updateButtons();
+    }
+  });
+
+  window.addEventListener("resize", () => {
+  scrollToIndex(currentIndex); // recentre sur la bonne section
+});
+  // Initialisation
+  updateButtons();
+
+
+
+
+//    ADAPTATION DES TEINTES DE HIGHLIGHT PAR SECTION AFFICHEE
+
+
+
+  // const sections = document.querySelectorAll(".grid-projets"); déjà déclarée plus haut
+
+  // Associe chaque ID de section à une couleur
+  const sectionColors = {
+    "projet-OffKey": "#e74c3c",    // Rouge
+    "projet-OffKey-2": "#3498db",  // Bleu
+    // Ajoute d'autres IDs ici
+  };
+
+  // Fonction appelée à chaque changement de visibilité
+  function handleIntersection(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const sectionId = entry.target.id;
+        const color = sectionColors[sectionId];
+
+        if (color) {
+          document.documentElement.style.setProperty('--highlight-color', color);
+        }
+      }
+    });
+  }
+
+  // Crée l'observer
+  const observer = new IntersectionObserver(handleIntersection, {
+    root: document.querySelector('#container-projets'), // horizontal scrolling container
+    rootMargin: '0px',
+    threshold: 0.6, // 60% visible dans le viewport horizontal
+  });
+
+  // Observe chaque section
+  sections.forEach(section => observer.observe(section));
+
+</script>
+
 
 </html>

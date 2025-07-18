@@ -177,12 +177,14 @@ body {
     margin: 0;
     padding: 0;
     overflow: hidden;
+    /* overflow-x: hidden; */
     /* font-family: Arial, Helvetica, sans-serif; */
 }
 
 html {
   font-family: 'Switzer-Regular', 'Helvetica Neue', Arial, sans-serif;
   font-size: 1.5vh; /*taille de base, le reste des fontsize à déf en rem pour se baser sur la taille de celle-ci, ex : 1.5x, 0.7x etc...*/
+  /* overflow-x: hidden; */
 }
 
 
@@ -201,10 +203,6 @@ html {
 
 /* .container-mosaique {
   background-color: aquamarine;
-} */
-
-/* .container-projets {
-  background-color: #faadde;
 } */
 
 .cadre{
@@ -477,11 +475,74 @@ color: #0f0c0c;
   color: var(--highlight-color);
 }
 
-#projet-OffKey{
+/* #projet-OffKey{
     --highlight-color: #e01e1e;
-  }
+  } */
 
 /* Chaque projet aura une couleur différente pour le highlight. Ici il faut détecter quelle section est affichée à l'écran pour aller chercher la bonne teinte à définir pour le highligh. Il faut un observer comme dans mon mémoire qui observe la section en cours et trouve sa teinte associé, partie à faire en js*/
+
+
+/*--- MENU FIXE ---*/
+
+.container-menu-projets { /*grid de menu de la page projet*/
+  display: grid;
+  position: absolute; /* pas fixed pour ne pas empêcher les cliques en dessous */
+  width: 100vw;
+  height: 100vh;
+  z-index: 5;
+  grid-template-columns: 9.375vw repeat(5, 1fr) 9.375vw;
+  grid-template-rows: 16.667vh repeat(3, 1fr) 16.667vh;
+  /* overflow: hidden; */
+}
+
+.fleches-sections-projets{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-family: 'Switzer-Extralight', 'Helvetica Neue', Arial, sans-serif;
+  font-size:4rem;
+  border: none;
+  background-color: transparent;
+}
+
+.fleches-sections-projets:disabled {
+  opacity: 0;
+  cursor: default;
+}
+
+#fleche-gauche-projets{
+  grid-column: 1/2;
+  grid-row: 3/4;
+}
+
+#fleche-droite-projets{
+  grid-column: 7/8;
+  grid-row: 3/4;
+}
+
+/*--- SECTIONS SCROLLABLES ---*/
+
+.container-projets{
+  display: flex;
+  flex-wrap: nowrap;        /* aligne les éléments horizontalement */
+  overflow-x: auto;         /* active le scroll horizontal */
+  overflow-y: hidden;       /* empêche le scroll vertical (si voulu) */
+  scroll-snap-type: x mandatory; /* optionnel : scroll fluide par section */
+  scroll-behavior: smooth;
+    /* position: relative; */
+
+}
+
+.grid-projets{ /*grid des diff sections de projet*/
+    display: grid;
+  flex: 0 0 100vw;           /* largeur fixe égale à la fenêtre */
+  height: 100vh;
+  width:100vw;
+  grid-template-columns: 9.375vw repeat(5, 1fr) 9.375vw;
+  grid-template-rows: 16.667vh repeat(3, 1fr) 16.667vh;
+  background-color: #f1f2f1;
+  scroll-snap-align: start;  /* optionnel : aligne proprement au scroll */
+}
 
 .zone-texte-projets{
   display: flex;
