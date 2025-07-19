@@ -241,11 +241,9 @@ avec Luca SCHARRENBACH</span>
     }
 
     init() {
-      // Position initiale : première image parfaitement centrée dans focus-frame
       this.currentIndex = 0;
       const focusFrameOffset = this.getVh(16.667);
-      const initialPosition = 0; // Pas de décalage pour la première image
-      this.track.style.transform = `translateY(${focusFrameOffset}px)`; // Décale le track vers le bas
+      this.track.style.transform = `translateY(${focusFrameOffset}px)`;
       this.updateScrollIndicator();
     }
 
@@ -263,10 +261,12 @@ avec Luca SCHARRENBACH</span>
         this.currentIndex = this.originalSlideCount - 1;
       }
       
-      // Position corrigée : on déplace le track pour que l'image courante soit dans focus-frame
+      // Position corrigée avec espacement entre les images
       const focusFrameOffset = this.getVh(16.667);
-      const targetPosition = focusFrameOffset - (this.currentIndex * this.slideHeight);
-      
+      const gap = this.getVh(4.63); // l'espacement entre images
+      const slideWithGap = this.slideHeight + gap;
+      const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
+
       this.track.style.transition = 'transform 0.6s ease';
       this.track.style.transform = `translateY(${targetPosition}px)`;
 

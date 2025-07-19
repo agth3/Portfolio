@@ -646,6 +646,7 @@ color: #0f0c0c;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  margin-bottom: 4.63vh; /* espacement entre les images */
 }
 
 .carrousel-slide img {
