@@ -48,12 +48,14 @@ avec Luca SCHARRENBACH</span>
                   <div class="carrousel-container">
                     <div class="scroll-capture"></div> <!-- zone invisible pour capter le scroll -->
                     <div class="carrousel-track">
+                      <div class="carrousel-slide"><img src="asset/img/low/Insta_Post-Feed.png" alt="Clone Image 6"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/20231005_154014.png" alt="Image 1"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/Posterwall.png" alt="Image 2"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/Insta_Post-Feed.png" alt="Image 3"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low/20231005_154014.png" alt="Image 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low/Posterwall.png" alt="Image 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low/Insta_Post-Feed.png" alt="Image 3"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/20231005_154014.png" alt="Image 4"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/Posterwall.png" alt="Image 5"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/Insta_Post-Feed.png" alt="Image 6"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/20231005_154014.png" alt="Clone Image 1"></div>
                     </div>
                     <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
@@ -226,13 +228,14 @@ avec Luca SCHARRENBACH</span>
       this.track = trackElement;
       this.slides = Array.from(trackElement.querySelectorAll('.carrousel-slide'));
       this.slideHeight = window.innerHeight - 2 * this.getVh(16.667);
-      this.originalSlideCount = this.slides.length; // 6 images uniques
-      this.currentIndex = 0; // Index dans les vraies images (0 à originalSlideCount-1)
+      this.originalSlideCount = this.slides.length - 2; // -2 pour exclure les clones
+      this.totalSlides = this.slides.length;
+      this.currentIndex = 2; // Commencer sur la première vraie image (après le clone)
       this.isScrolling = false;
       this.scrollThreshold = 50;
       this.scrollAccumulator = 0;
 
-      this.init();
+      this.initWithRealFirstImage();
       this.bindEvents();
     }
 
@@ -240,30 +243,26 @@ avec Luca SCHARRENBACH</span>
       return window.innerHeight * (vh / 100);
     }
 
-    init() {
-      this.currentIndex = 0;
+    initWithRealFirstImage() {
+      this.currentIndex = 1; // Vraie première image
       const focusFrameOffset = this.getVh(16.667);
-      this.track.style.transform = `translateY(${focusFrameOffset}px)`;
+      const gap = this.getVh(4.63);
+      const slideWithGap = this.slideHeight + gap;
+      
+      const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
+      this.track.style.transform = `translateY(${targetPosition}px)`;
       this.updateScrollIndicator();
     }
 
-    scrollToSlide(direction) {
+  scrollToSlide(direction) {
       if (this.isScrolling) return;
 
       this.isScrolling = true;
-      
-      // Boucle infinie simple
       this.currentIndex += direction;
-      
-      if (this.currentIndex >= this.originalSlideCount) {
-        this.currentIndex = 0;
-      } else if (this.currentIndex < 0) {
-        this.currentIndex = this.originalSlideCount - 1;
-      }
       
       // Position corrigée avec espacement entre les images
       const focusFrameOffset = this.getVh(16.667);
-      const gap = this.getVh(4.63); // l'espacement entre images
+      const gap = this.getVh(4.63);
       const slideWithGap = this.slideHeight + gap;
       const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
 
@@ -271,16 +270,42 @@ avec Luca SCHARRENBACH</span>
       this.track.style.transform = `translateY(${targetPosition}px)`;
 
       setTimeout(() => {
+        // Gestion des clones pour boucle infinie
+        if (this.currentIndex <= 0) {
+          // On est sur le clone du début → aller à la vraie dernière image
+          this.currentIndex = this.originalSlideCount;
+          this.repositionWithoutTransition();
+        } else if (this.currentIndex >= this.totalSlides - 1) {
+          // On est sur le clone de fin → aller à la vraie première image
+          this.currentIndex = 1;
+          this.repositionWithoutTransition();
+        }
+        
         this.updateScrollIndicator();
         this.isScrolling = false;
       }, 600);
+    }
+
+    repositionWithoutTransition() {
+      const focusFrameOffset = this.getVh(16.667);
+      const gap = this.getVh(4.63);
+      const slideWithGap = this.slideHeight + gap;
+      const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
+      
+      this.track.style.transition = 'none';
+      this.track.style.transform = `translateY(${targetPosition}px)`;
+      
+      // Force le reflow pour appliquer immédiatement
+      this.track.offsetHeight;
     }
 
     updateScrollIndicator() {
       const indicator = this.track.closest('.carrousel-container').querySelector('.scroll-indicator');
       if (!indicator) return;
 
-      const progress = (this.currentIndex / (this.originalSlideCount - 1)) * (100 - 20);
+      // Utiliser currentIndex - 1 pour exclure le clone du début
+      const realIndex = this.currentIndex - 1;
+      const progress = (realIndex / (this.originalSlideCount - 1)) * (100 - 20);
       indicator.style.setProperty('--scroll-progress', `${progress}px`);
     }
 
