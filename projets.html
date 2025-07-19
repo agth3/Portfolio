@@ -55,7 +55,9 @@ avec Luca SCHARRENBACH</span>
                       <div class="carrousel-slide"><img src="asset/img/low/Posterwall.png" alt="Image 2"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/Insta_Post-Feed.png" alt="Image 3"></div>
                     </div>
+                    <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
+                    <div class="next-frame"></div>
                     <div class="scroll-indicator"></div>
                   </div>
                 </div>
@@ -79,8 +81,13 @@ avec Luca SCHARRENBACH</span>
                       <div class="carrousel-slide"><img src="asset/img/low/20231005_154014.png" alt="Image 1"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/Posterwall.png" alt="Image 2"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/Insta_Post-Feed.png" alt="Image 3"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/20231005_154014.png" alt="Image 1"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/Posterwall.png" alt="Image 2"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/Insta_Post-Feed.png" alt="Image 3"></div>
                     </div>
+                    <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
+                    <div class="next-frame"></div>
                     <div class="scroll-indicator"></div>
                   </div>
                 </div>
@@ -104,8 +111,13 @@ avec Luca SCHARRENBACH</span>
                       <div class="carrousel-slide"><img src="asset/img/low/20231005_154014.png" alt="Image 1"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/Posterwall.png" alt="Image 2"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/Insta_Post-Feed.png" alt="Image 3"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/20231005_154014.png" alt="Image 1"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/Posterwall.png" alt="Image 2"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/Insta_Post-Feed.png" alt="Image 3"></div>
                     </div>
+                    <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
+                    <div class="next-frame"></div>
                     <div class="scroll-indicator"></div>
                   </div>
                 </div>
@@ -213,9 +225,9 @@ avec Luca SCHARRENBACH</span>
     constructor(trackElement) {
       this.track = trackElement;
       this.slides = Array.from(trackElement.querySelectorAll('.carrousel-slide'));
-      this.slideHeight = window.innerHeight - 2 * this.getVh(16.667); // correspond à .img-principale height
-      this.originalSlideCount = this.slides.length / 2; // On suppose qu'on a doublé les images
-      this.currentIndex = 1; // Start sur la 1ère "vraie" image
+      this.slideHeight = window.innerHeight - 2 * this.getVh(16.667);
+      this.originalSlideCount = this.slides.length; // 6 images uniques
+      this.currentIndex = 0; // Index dans les vraies images (0 à originalSlideCount-1)
       this.isScrolling = false;
       this.scrollThreshold = 50;
       this.scrollAccumulator = 0;
@@ -229,9 +241,50 @@ avec Luca SCHARRENBACH</span>
     }
 
     init() {
-      this.track.style.transform = `translateY(-${this.slideHeight}px)`;
+      // Position initiale : première image parfaitement centrée dans focus-frame
+      this.currentIndex = 0;
+      const focusFrameOffset = this.getVh(16.667);
+      const initialPosition = 0; // Pas de décalage pour la première image
+      this.track.style.transform = `translateY(${focusFrameOffset}px)`; // Décale le track vers le bas
       this.updateScrollIndicator();
     }
+
+    scrollToSlide(direction) {
+      if (this.isScrolling) return;
+
+      this.isScrolling = true;
+      
+      // Boucle infinie simple
+      this.currentIndex += direction;
+      
+      if (this.currentIndex >= this.originalSlideCount) {
+        this.currentIndex = 0;
+      } else if (this.currentIndex < 0) {
+        this.currentIndex = this.originalSlideCount - 1;
+      }
+      
+      // Position corrigée : on déplace le track pour que l'image courante soit dans focus-frame
+      const focusFrameOffset = this.getVh(16.667);
+      const targetPosition = focusFrameOffset - (this.currentIndex * this.slideHeight);
+      
+      this.track.style.transition = 'transform 0.6s ease';
+      this.track.style.transform = `translateY(${targetPosition}px)`;
+
+      setTimeout(() => {
+        this.updateScrollIndicator();
+        this.isScrolling = false;
+      }, 600);
+    }
+
+    updateScrollIndicator() {
+      const indicator = this.track.closest('.carrousel-container').querySelector('.scroll-indicator');
+      if (!indicator) return;
+
+      const progress = (this.currentIndex / (this.originalSlideCount - 1)) * (100 - 20);
+      indicator.style.setProperty('--scroll-progress', `${progress}px`);
+    }
+
+    
 
     bindEvents() {
       const scrollZone = this.track.closest('.carrousel-container').querySelector('.scroll-capture');
@@ -271,50 +324,6 @@ avec Luca SCHARRENBACH</span>
           this.scrollToSlide(direction);
         }
       }, { passive: true });
-    }
-
-    scrollToSlide(direction) {
-      if (this.isScrolling) return;
-
-      this.isScrolling = true;
-      this.currentIndex += direction;
-      this.track.style.transition = 'transform 0.6s ease';
-      this.track.style.transform = `translateY(-${this.currentIndex * this.slideHeight}px)`;
-
-      setTimeout(() => {
-        if (this.currentIndex >= this.slides.length - 1) {
-          // retour au début
-          this.currentIndex = 1;
-          this.track.style.transition = 'none';
-          this.track.style.transform = `translateY(-${this.currentIndex * this.slideHeight}px)`;
-          setTimeout(() => {
-            this.track.style.transition = 'transform 0.6s ease';
-          }, 50);
-        } else if (this.currentIndex <= 0) {
-          // retour à la fin
-          this.currentIndex = this.slides.length - 2;
-          this.track.style.transition = 'none';
-          this.track.style.transform = `translateY(-${this.currentIndex * this.slideHeight}px)`;
-          setTimeout(() => {
-            this.track.style.transition = 'transform 0.6s ease';
-          }, 50);
-        }
-
-        this.updateScrollIndicator();
-        this.isScrolling = false;
-      }, 600);
-    }
-
-    updateScrollIndicator() {
-      const indicator = this.track.closest('.carrousel-container').querySelector('.scroll-indicator');
-      if (!indicator) return;
-
-      let realIndex = this.currentIndex - 1;
-      if (realIndex < 0) realIndex = this.originalSlideCount - 1;
-      if (realIndex >= this.originalSlideCount) realIndex = 0;
-
-      const progress = (realIndex / (this.originalSlideCount - 1)) * (100 - 20); // 20 = height of ::after
-      indicator.style.setProperty('--scroll-progress', `${progress}px`);
     }
   }
 

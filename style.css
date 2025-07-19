@@ -641,7 +641,7 @@ color: #0f0c0c;
 /* Chaque slide (image) */
 .carrousel-slide {
   width: 100%;
-  height: calc(100% - 2 * 16.667vh); /* = hauteur de img-principale */
+  height: calc(100vh - 2 * 16.667vh); /* même taille que focus-frame */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -658,13 +658,35 @@ color: #0f0c0c;
 /* Cadre visuel qui correspond à .img-principale */
 .focus-frame {
   position: absolute;
-  top: 16.667vh;
+  top: 16.667vh; /* position normale au centre */
   left: 0;
   width: 100%;
-  height: calc(100% - 2 * 16.667vh); /* même taille que .img-principale */
-  border: 3px solid var(--highlight-color);
+  height: calc(100vh - 2 * 16.667vh);
+  /* border: 3px solid var(--highlight-color); */
   pointer-events: none;
   z-index: 5;
+}
+
+.previous-frame {
+  position: absolute;
+  top: calc(16.667vh - (100vh - 2 * 16.667vh) - 4.63vh); /* focus-frame - hauteur frame - gap */
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 2 * 16.667vh);
+  /* border: 2px solid rgba(255, 255, 255, 0.3); */
+  pointer-events: none;
+  z-index: 4;
+}
+
+.next-frame {
+  position: absolute;
+  top: calc(16.667vh + (100vh - 2 * 16.667vh) + 4.63vh); /* focus-frame + hauteur frame + gap */
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 2 * 16.667vh);
+  /* border: 2px solid rgba(255, 255, 255, 0.3); */
+  pointer-events: none;
+  z-index: 4;
 }
 
 /* Barre de scroll sur le côté */
