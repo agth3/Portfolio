@@ -387,59 +387,80 @@ avec Luca SCHARRENBACH</span>
     
 
     bindEvents() {
-      const scrollZone = this.track.closest('.carrousel-container').querySelector('.scroll-capture');
+  const scrollZone = this.track.closest('.carrousel-container').querySelector('.scroll-capture');
 
-      let startY = 0;
-      let scrollY = 0;
+  let startY = 0;
+  let scrollY = 0;
 
-      // Souris - Comptage d'événements (crans de souris)
-      let wheelTimeout = null;
-      let wheelCount = 0;
+  // Variables pour détecter le type d'input
+  let wheelTimeout = null;
+  let wheelCount = 0;
+  let totalDelta = 0;
+  let isTrackpad = false;
 
-      scrollZone.addEventListener('wheel', (e) => {
-        e.preventDefault();
-        
-        wheelCount++;
-        const direction = e.deltaY > 0 ? 1 : -1;
-        
-        if (wheelTimeout) {
-          clearTimeout(wheelTimeout);
-        }
-        
-        wheelTimeout = setTimeout(() => {
-          if (this.isScrolling) return;
-          
-          // 1 événement = 1 image, 2-3 événements = 2 images, 4+ = 3 images
-          let distance;
-          if (wheelCount === 1) distance = 1;
-          else if (wheelCount <= 3) distance = 2;
-          else distance = 3;
-          
-          this.scrollToSlide(direction, distance);
-          wheelCount = 0;
-        }, 80);
-      }, { passive: false });
-
-      // Mobile
-      scrollZone.addEventListener('touchstart', (e) => {
-        startY = e.touches[0].clientY;
-        scrollY = 0;
-      }, { passive: true });
-
-      scrollZone.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        scrollY = e.touches[0].clientY - startY;
-      }, { passive: false });
-
-      scrollZone.addEventListener('touchend', () => {
-        if (Math.abs(scrollY) > this.scrollThreshold) {
-          const direction = scrollY > 0 ? -1 : 1;
-          // Pour le mobile, on garde une distance fixe ou on peut utiliser l'amplitude
-          const distance = Math.abs(scrollY) > 200 ? 2 : 1;
-          this.scrollToSlide(direction, distance);
-        }
-      }, { passive: true });
+  scrollZone.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    
+    wheelCount++;
+    totalDelta += Math.abs(e.deltaY);
+    const direction = e.deltaY > 0 ? 1 : -1;
+    
+    // Détection trackpad vs souris basée sur la valeur deltaY
+    if (Math.abs(e.deltaY) < 50) {
+      isTrackpad = true;
+    } else if (Math.abs(e.deltaY) > 100) {
+      isTrackpad = false;
     }
+    
+    if (wheelTimeout) {
+      clearTimeout(wheelTimeout);
+    }
+    
+    wheelTimeout = setTimeout(() => {
+      if (this.isScrolling) return;
+      
+      let distance;
+      
+      if (isTrackpad) {
+  // Pour trackpad : calcul plus progressif
+  if (totalDelta < 300) distance = 1;
+  else if (totalDelta < 800) distance = 1;   // Toujours 1 pour les petits scrolls
+  else if (totalDelta < 1800) distance = 2;
+  else distance = 3;
+} else {
+  // Pour souris : inchangé
+  if (wheelCount === 1) distance = 1;
+  else if (wheelCount <= 3) distance = 2;
+  else distance = 3;
+}
+      
+      console.log(`${isTrackpad ? 'Trackpad' : 'Souris'} - Événements: ${wheelCount}, Delta total: ${totalDelta}, Distance: ${distance}`);
+      
+      this.scrollToSlide(direction, distance);
+      wheelCount = 0;
+      totalDelta = 0;
+    }, isTrackpad ? 150 : 80); // Timeout plus long pour trackpad
+  }, { passive: false });
+
+  // Mobile (inchangé)
+  scrollZone.addEventListener('touchstart', (e) => {
+    startY = e.touches[0].clientY;
+    scrollY = 0;
+  }, { passive: true });
+
+  scrollZone.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    scrollY = e.touches[0].clientY - startY;
+  }, { passive: false });
+
+  scrollZone.addEventListener('touchend', () => {
+    if (Math.abs(scrollY) > this.scrollThreshold) {
+      const direction = scrollY > 0 ? -1 : 1;
+      const distance = Math.abs(scrollY) > 200 ? 2 : 1;
+      this.scrollToSlide(direction, distance);
+    }
+  }, { passive: true });
+}
   }
 
   // Lancer tous les carrousels au DOM prêt
