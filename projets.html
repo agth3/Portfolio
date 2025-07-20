@@ -241,14 +241,33 @@ avec Luca SCHARRENBACH</span>
       this.totalSlides = this.slides.length;
       this.currentIndex = 2;
       this.isScrolling = false;
-      this.scrollThreshold = 50;
+      this.scrollThreshold = 30; // Seuil plus bas pour détecter plus tôt
       this.scrollAccumulator = 0;
+      this.maxScrollDistance = 3; // Nombre max d'images à faire défiler d'un coup
       this.preloadedImages = new Map();
 
       this.initWithRealFirstImage();
       this.bindEvents();
       this.updateImageQuality();
     }
+
+    // calculateScrollDistance(deltaValue) {
+    //   const absValue = Math.abs(deltaValue);
+      
+    //   console.log('Delta reçu:', deltaValue, 'Valeur absolue:', absValue);
+      
+    //   // Seuils pour valeurs accumulées sur 50ms
+    //   if (absValue < 100) {
+    //     console.log('→ Distance: 1');
+    //     return 1;
+    //   }
+    //   if (absValue < 300) {
+    //     console.log('→ Distance: 2');
+    //     return 2;
+    //   }
+    //   console.log('→ Distance: 3');
+    //   return 3;
+    // }
 
     preloadHighResImage(highResSrc) { // Prend directement l'URL high-res
       if (this.preloadedImages.has(highResSrc)) return Promise.resolve(highResSrc);
@@ -309,11 +328,11 @@ avec Luca SCHARRENBACH</span>
       this.updateImageQuality();
     }
 
-  scrollToSlide(direction) {
+    scrollToSlide(direction, distance = 1) {
       if (this.isScrolling) return;
 
       this.isScrolling = true;
-      this.currentIndex += direction;
+      this.currentIndex += direction * distance;
       
       // Position corrigée avec espacement entre les images
       const focusFrameOffset = this.getVh(16.667);
@@ -373,19 +392,32 @@ avec Luca SCHARRENBACH</span>
       let startY = 0;
       let scrollY = 0;
 
-      // Souris
+      // Souris - Comptage d'événements (crans de souris)
+      let wheelTimeout = null;
+      let wheelCount = 0;
+
       scrollZone.addEventListener('wheel', (e) => {
         e.preventDefault();
-        console.log('🎯 Scroll détecté', e.deltaY);
-        if (this.isScrolling) return;
-
-        this.scrollAccumulator += e.deltaY;
-
-        if (Math.abs(this.scrollAccumulator) >= this.scrollThreshold) {
-          const direction = this.scrollAccumulator > 0 ? 1 : -1;
-          this.scrollToSlide(direction);
-          this.scrollAccumulator = 0;
+        
+        wheelCount++;
+        const direction = e.deltaY > 0 ? 1 : -1;
+        
+        if (wheelTimeout) {
+          clearTimeout(wheelTimeout);
         }
+        
+        wheelTimeout = setTimeout(() => {
+          if (this.isScrolling) return;
+          
+          // 1 événement = 1 image, 2-3 événements = 2 images, 4+ = 3 images
+          let distance;
+          if (wheelCount === 1) distance = 1;
+          else if (wheelCount <= 3) distance = 2;
+          else distance = 3;
+          
+          this.scrollToSlide(direction, distance);
+          wheelCount = 0;
+        }, 80);
       }, { passive: false });
 
       // Mobile
@@ -402,7 +434,9 @@ avec Luca SCHARRENBACH</span>
       scrollZone.addEventListener('touchend', () => {
         if (Math.abs(scrollY) > this.scrollThreshold) {
           const direction = scrollY > 0 ? -1 : 1;
-          this.scrollToSlide(direction);
+          // Pour le mobile, on garde une distance fixe ou on peut utiliser l'amplitude
+          const distance = Math.abs(scrollY) > 200 ? 2 : 1;
+          this.scrollToSlide(direction, distance);
         }
       }, { passive: true });
     }
