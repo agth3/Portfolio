@@ -510,6 +510,12 @@ color: #0f0c0c;
   cursor: default;
 }
 
+.fleches-sections-projets:active {
+  color:var(--highlight-color);
+  border: none;
+  background-color: transparent;
+}
+
 #fleche-gauche-projets{
   grid-column: 1/2;
   grid-row: 3/4;
@@ -572,14 +578,14 @@ color: #0f0c0c;
 }
 
 .description-projets{
-  font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Switzer-Regular', 'Helvetica Neue', Arial, sans-serif;
   font-size:1.1rem;
   margin-bottom: 0.5rem;
 }
 
 .outil-projets{
-  font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
-  font-size:1.1rem;
+  font-family: 'Switzer-Regular', 'Helvetica Neue', Arial, sans-serif;
+  font-size:0.95rem;
   margin-bottom: 1.5rem;
 }
 
@@ -588,6 +594,33 @@ color: #0f0c0c;
   font-size:1.1rem;
 }
 
+.collab-projets{
+  font-size:0.95rem;
+}
+
+.sous-titre-projets{
+  font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
+  font-size:1.1rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.sous-description-projets{
+  font-family: 'Switzer-Regular', 'Helvetica Neue', Arial, sans-serif;
+  font-size:0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.liens-externes{
+  font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
+  font-size:1.1rem;
+  text-decoration: underline;
+  color: var(--highlight-color);
+}
+
+.italique{
+    font-family: 'Switzer-ExtralightItalic', 'Helvetica Neue', Arial, sans-serif;
+}
 
 /*--------- SECTION SLIDES IMG --------*/
 

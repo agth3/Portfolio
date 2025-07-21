@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     {
       lowRes: 'asset/img/low/DSC_0004.png',
-      highRes: 'asset/img/high/DSC_0004.jpg',
+      highRes: 'asset/img/high/DSC_0004.JPG',
       link: 'projets.html'
     },
     {
