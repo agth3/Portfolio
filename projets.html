@@ -586,8 +586,14 @@ window.addEventListener("resize", () => {
   const newIsMobile = window.innerWidth <= 1024;
   if (newIsMobile !== isMobile) {
     location.reload(); // Recharge si changement de format
+  } else {
+    // Valider et ajuster les dimensions
+    document.querySelectorAll('.carrousel-track').forEach(track => {
+      const carousel = track.carousel; // Vous devrez stocker la référence
+      if (carousel) carousel.validateDimensions();
+    });
   }
-  scrollToIndex(currentIndex); // recentre sur la bonne section
+  scrollToIndex(currentIndex);
 });
 
 // Initialisation
@@ -648,6 +654,13 @@ class VerticalCarousel {
     this.slides = Array.from(trackElement.querySelectorAll('.carrousel-slide'));
     this.isMobile = window.innerWidth <= 1024;
     
+    // Vérification de la structure
+    console.log(`Carousel init: total slides=${this.slides.length}, isMobile=${this.isMobile}`);
+    
+    // Seuils adaptatifs selon le device
+    this.scrollThreshold = this.isMobile ? 20 : 30; // Plus sensible sur mobile
+    this.maxScrollDistance = this.isMobile ? 4 : 3; // Plus de distance possible sur mobile
+
     // Adaptation mobile/desktop
     if (this.isMobile) {
       this.slideWidth = window.innerWidth - 2 * (window.innerWidth * 0.095); // Mobile: largeur - marges
@@ -657,8 +670,11 @@ class VerticalCarousel {
       this.slideWidth = null; // Non utilisé en desktop
     }
     
-    this.originalSlideCount = this.slides.length - 2;
-    this.totalSlides = this.slides.length;
+    this.originalSlideCount = this.slides.length - 2; // Les 2 clones
+  this.totalSlides = this.slides.length;
+  
+  console.log(`Slides count: original=${this.originalSlideCount}, total=${this.totalSlides}`);
+ 
     this.currentIndex = 2;
     this.isScrolling = false;
     this.scrollThreshold = 30;
@@ -670,6 +686,17 @@ class VerticalCarousel {
     this.bindEvents();
     this.updateImageQuality();
   }
+
+  validateDimensions() {
+  if (this.isMobile) {
+    // Recalculer slideWidth si nécessaire
+    const calculatedWidth = window.innerWidth - 2 * (window.innerWidth * 0.095);
+    if (Math.abs(this.slideWidth - calculatedWidth) > 5) {
+      this.slideWidth = calculatedWidth;
+      this.initWithRealFirstImage(); // Repositionner
+    }
+  }
+}
 
   preloadHighResImage(highResSrc) {
     if (this.preloadedImages.has(highResSrc)) return Promise.resolve(highResSrc);
@@ -714,6 +741,26 @@ class VerticalCarousel {
     });
   }
 
+
+
+  preloadAdjacentImages() {
+  // Précharger UNIQUEMENT la high-res de l'image suivante probable
+  const nextIndex = this.currentIndex + 1;
+  
+  if (nextIndex >= 0 && nextIndex < this.slides.length) {
+    const slide = this.slides[nextIndex];
+    const img = slide.querySelector('img');
+    if (img) {
+      const lowResSrc = img.src;
+      const highResSrc = getHighResVersion(lowResSrc);
+      if (highResSrc !== lowResSrc && !this.preloadedImages.has(highResSrc)) {
+        // Précharger discrètement SANS changer le src
+        this.preloadHighResImage(highResSrc).catch(() => {});
+      }
+    }
+  }
+}
+
   getVh(vh) {
     return window.innerHeight * (vh / 100);
   }
@@ -722,81 +769,14 @@ class VerticalCarousel {
   this.currentIndex = 1; // Vraie première image
   
   if (this.isMobile) {
-  // Mobile : positionnement horizontal
-const focusFrameLeft = window.innerWidth * 0.095;
-const gap = window.innerWidth * 0.04;
-const slideWithGap = this.slideWidth + gap;
-  const targetPosition = focusFrameLeft - (this.currentIndex * slideWithGap);
-  
-  this.track.style.transform = `translateX(${targetPosition}px)`;
-} else {
-  // Desktop : positionnement vertical
-  const focusFrameOffset = this.getVh(16.667);
-  const gap = this.getVh(4.63);
-  const slideWithGap = this.isMobile ? 
-  (this.slideWidth + gap) : 
-  (this.slideHeight + gap);
-  const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
-  
-  this.track.style.transform = `translateY(${targetPosition}px)`;
-}
-  
-  this.updateScrollIndicator();
-  this.updateImageQuality();
-}
-
-  scrollToSlide(direction, distance = 1) {
-    if (this.isScrolling) return;
-
-    this.isScrolling = true;
-    this.currentIndex += direction * distance;
-    
-    const focusFrameOffset = this.isMobile ? 
-      window.innerWidth * 0.095 : // Mobile: marge gauche
-      this.getVh(16.667); // Desktop: marge haut
-
-    const gap = this.isMobile ? 
-      window.innerWidth * 0.04 : // Mobile: 4vw
-      this.getVh(4.63); // Desktop: 4.63vh
-
-    const slideWithGap = this.slideHeight + gap;
-    const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
-
-    this.track.style.transition = this.isMobile ? 
-      'transform 0.6s ease' : 
-      'transform 0.6s ease';
-    
-    this.track.style.transform = this.isMobile ?
-      `translateX(${targetPosition}px)` :
-      `translateY(${targetPosition}px)`;
-
-    setTimeout(() => {
-      // Gestion des clones pour boucle infinie
-      if (this.currentIndex <= 0) {
-        // On est sur le clone du début → aller à la vraie dernière image
-        this.currentIndex = this.originalSlideCount;
-        this.repositionWithoutTransition();
-      } else if (this.currentIndex >= this.totalSlides - 1) {
-        // On est sur le clone de fin → aller à la vraie première image
-        this.currentIndex = 1;
-        this.repositionWithoutTransition();
-      }
-      
-      this.updateScrollIndicator();
-      this.updateImageQuality();
-      this.isScrolling = false;
-    }, 600);
-  }
-
-  repositionWithoutTransition() {
-  if (this.isMobile) {
     // Mobile : positionnement horizontal
     const focusFrameLeft = window.innerWidth * 0.095;
     const gap = window.innerWidth * 0.04;
-    const slideWithGap = this.slideHeight + gap;
+    const slideWithGap = this.slideWidth + gap;
+    // Position initiale : on veut que la slide 1 soit dans focus-frame
+    // Donc le track doit être à focusFrameLeft - (1 * slideWithGap)
     const targetPosition = focusFrameLeft - (this.currentIndex * slideWithGap);
     
-    this.track.style.transition = 'none';
     this.track.style.transform = `translateX(${targetPosition}px)`;
   } else {
     // Desktop : positionnement vertical
@@ -805,12 +785,128 @@ const slideWithGap = this.slideWidth + gap;
     const slideWithGap = this.slideHeight + gap;
     const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
     
-    this.track.style.transition = 'none';
+    this.track.style.transform = `translateY(${targetPosition}px)`;
+  }
+  
+  this.updateScrollIndicator();
+  this.updateImageQuality();
+  
+  // Ajouter cette ligne
+  setTimeout(() => this.preloadAdjacentImages(), 100);
+}
+
+isValidMove(direction, distance = 1) {
+  const nextIndex = this.currentIndex + (direction * distance);
+  // Permettre tous les mouvements dans la plage des indices (y compris les clones)
+  const isValid = nextIndex >= 0 && nextIndex < this.totalSlides;
+  console.log(`Validating move: current=${this.currentIndex}, direction=${direction}, distance=${distance}, next=${nextIndex}, valid=${isValid}`);
+  return isValid;
+}
+
+handleInfiniteLoop() {
+  let needsReposition = false;
+  
+  if (this.currentIndex <= 0) {
+    // On est sur le clone du début (index 0) → aller à la vraie dernière image
+    this.currentIndex = this.originalSlideCount; // Pas -1 car on compte à partir de 1
+    needsReposition = true;
+    console.log(`Jump to real last: ${this.currentIndex}`);
+  } else if (this.currentIndex >= this.totalSlides - 1) {
+    // On est sur le clone de fin → aller à la vraie première image
+    this.currentIndex = 1;
+    needsReposition = true;
+    console.log(`Jump to real first: ${this.currentIndex}`);
+  }
+  
+  if (needsReposition) {
+    // Attendre un frame avant de repositionner pour éviter les conflits
+    requestAnimationFrame(() => {
+      this.repositionWithoutTransition();
+    });
+  }
+}
+
+  scrollToSlide(direction, distance = 1) {
+  console.log(`Mobile scroll: direction=${direction}, distance=${distance}, currentIndex=${this.currentIndex}`);
+  
+  if (this.isScrolling) {
+    return;
+  }
+  
+  // Validation du mouvement
+  if (!this.isValidMove(direction * distance)) return;
+
+  this.isScrolling = true;
+  this.currentIndex += direction * distance;
+  
+  const focusFrameOffset = this.isMobile ? 
+    window.innerWidth * 0.095 : 
+    this.getVh(16.667);
+
+  const gap = this.isMobile ? 
+    window.innerWidth * 0.04 : 
+    this.getVh(4.63);
+
+  const slideWithGap = this.isMobile ? 
+    (this.slideWidth + gap) : 
+    (this.slideHeight + gap);
+    
+  const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
+
+  this.track.style.transition = 'transform 0.6s ease';
+  
+  this.track.style.transform = this.isMobile ?
+    `translateX(${targetPosition}px)` :
+    `translateY(${targetPosition}px)`;
+
+  setTimeout(() => {
+  this.updateScrollIndicator();
+  
+  // Gérer la boucle infinie AVANT de mettre à jour les images
+  this.handleInfiniteLoop();
+  
+  // Puis mettre à jour les qualités d'image avec les bons indices
+  this.updateImageQuality();
+  
+  // Précharger la prochaine image probable
+  this.preloadAdjacentImages();
+  
+  this.isScrolling = false;
+}, 620);
+}
+
+  repositionWithoutTransition() {
+  const focusFrameOffset = this.isMobile ? 
+    window.innerWidth * 0.095 : 
+    this.getVh(16.667);
+
+  const gap = this.isMobile ? 
+    window.innerWidth * 0.04 : 
+    this.getVh(4.63);
+
+  const slideWithGap = this.isMobile ? 
+    (this.slideWidth + gap) : 
+    (this.slideHeight + gap);
+    
+  const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
+  
+  console.log(`Reposition without transition: index=${this.currentIndex}, position=${targetPosition}`);
+  
+  this.track.style.transition = 'none';
+  
+  if (this.isMobile) {
+    this.track.style.transform = `translateX(${targetPosition}px)`;
+  } else {
     this.track.style.transform = `translateY(${targetPosition}px)`;
   }
   
   // Force le reflow pour appliquer immédiatement
   this.track.offsetHeight;
+  
+  // Réactiver les transitions après un délai
+  setTimeout(() => {
+    this.track.style.transition = 'transform 0.6s ease';
+  }, 50);
 }
 
   updateScrollIndicator() {
@@ -836,72 +932,127 @@ const slideWithGap = this.slideWidth + gap;
     let isTrackpad = false;
 
     scrollZone.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      
-      wheelCount++;
-      const deltaValue = this.isMobile ? 
-  (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) : 
-  e.deltaY;
-      totalDelta += Math.abs(deltaValue);
-      const direction = deltaValue > 0 ? 1 : -1;
-      
-      // Détection trackpad vs souris basée sur la valeur delta
-      if (Math.abs(deltaValue) < 50) {
-        isTrackpad = true;
-      } else if (Math.abs(deltaValue) > 100) {
-        isTrackpad = false;
-      }
-      
-      if (wheelTimeout) {
-        clearTimeout(wheelTimeout);
-      }
-      
-      wheelTimeout = setTimeout(() => {
-        if (this.isScrolling) return;
-        
-        let distance;
-        
-        if (isTrackpad) {
-          // Pour trackpad : calcul plus progressif
-          if (totalDelta < 300) distance = 1;
-          else if (totalDelta < 800) distance = 1;   // Toujours 1 pour les petits scrolls
-          else if (totalDelta < 1800) distance = 2;
-          else distance = 3;
-        } else {
-          // Pour souris : inchangé
-          if (wheelCount === 1) distance = 1;
-          else if (wheelCount <= 3) distance = 2;
-          else distance = 3;
-        }
-        
-        this.scrollToSlide(direction, distance);
-        wheelCount = 0;
-        totalDelta = 0;
-      }, isTrackpad ? 150 : 80); // Timeout plus long pour trackpad
-    }, { passive: false });
+  e.preventDefault();
+  
+  wheelCount++;
+  
+  // Correction de la détection de direction pour mobile
+  let deltaValue;
+  if (this.isMobile) {
+    // En mobile, on veut détecter le scroll horizontal (trackpad) ou vertical (doigt simulé)
+    deltaValue = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+  } else {
+    deltaValue = e.deltaY;
+  }
+  
+  totalDelta += Math.abs(deltaValue);
+  const direction = deltaValue > 0 ? 1 : -1;
+  
+  // Détection trackpad vs souris
+  if (Math.abs(deltaValue) < 50) {
+    isTrackpad = true;
+  } else if (Math.abs(deltaValue) > 100) {
+    isTrackpad = false;
+  }
+  
+  if (wheelTimeout) {
+    clearTimeout(wheelTimeout);
+  }
+  
+  wheelTimeout = setTimeout(() => {
+  if (this.isScrolling) return;
+  
+  let distance = 1; // Par défaut
+  
+  if (this.isMobile) {
+    // Logique d'intensité pour mobile
+    if (isTrackpad) {
+      // Trackpad sur mobile (rare mais possible)
+      if (totalDelta < 200) distance = 1;
+      else if (totalDelta < 600) distance = 2;
+      else distance = 3;
+    } else {
+      // Scroll simulé sur mobile (plus courant)
+      if (totalDelta < 150) distance = 1;
+      else if (totalDelta < 400) distance = 2;
+      else distance = 3;
+    }
+  } else {
+    // Logique desktop inchangée
+    if (isTrackpad) {
+      if (totalDelta < 300) distance = 1;
+      else if (totalDelta < 800) distance = 1;
+      else if (totalDelta < 1800) distance = 2;
+      else distance = 3;
+    } else {
+      if (wheelCount === 1) distance = 1;
+      else if (wheelCount <= 3) distance = 2;
+      else distance = 3;
+    }
+  }
+  
+  this.scrollToSlide(direction, distance);
+  wheelCount = 0;
+  totalDelta = 0;
+}, this.isMobile ? 80 : (isTrackpad ? 150 : 80)); // Timeout plus rapide sur mobile
+}, { passive: false });
 
-    // Mobile touch events
-    scrollZone.addEventListener('touchstart', (e) => {
-      startPos = this.isMobile ? 
-        e.touches[0].clientX : // Mobile: position X
-        e.touches[0].clientY;  // Desktop: position Y
-      scrollPos = 0;
-    }, { passive: true });
+    // Variables pour touch
+let touchStartTime = 0;
+let touchVelocity = 0;
 
-    scrollZone.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-      scrollPos = this.isMobile ? 
-        e.touches[0].clientX - startPos : // Mobile: deltaX
-        e.touches[0].clientY - startPos;  // Desktop: deltaY
-    }, { passive: false });
+// Mobile touch events avec gestion d'intensité
+scrollZone.addEventListener('touchstart', (e) => {
+  startPos = this.isMobile ? 
+    e.touches[0].clientX : 
+    e.touches[0].clientY;
+  scrollPos = 0;
+  touchStartTime = Date.now();
+}, { passive: true });
 
-    scrollZone.addEventListener('touchend', () => {
-      if (Math.abs(scrollPos) > this.scrollThreshold) {
-        const direction = scrollPos > 0 ? -1 : 1;
-        const distance = Math.abs(scrollPos) > 200 ? 2 : 1;
-        this.scrollToSlide(direction, distance);
+scrollZone.addEventListener('touchmove', (e) => {
+  e.preventDefault();
+  const currentPos = this.isMobile ? 
+    e.touches[0].clientX : 
+    e.touches[0].clientY;
+  scrollPos = currentPos - startPos;
+}, { passive: false });
+
+scrollZone.addEventListener('touchend', () => {
+  if (Math.abs(scrollPos) > this.scrollThreshold) {
+    const direction = scrollPos > 0 ? -1 : 1;
+    const touchDuration = Date.now() - touchStartTime;
+    touchVelocity = Math.abs(scrollPos) / touchDuration;
+    
+    // Calcul de distance basé sur la vélocité et la distance
+    let distance = 1;
+    
+    if (this.isMobile) {
+      // Logique spécifique mobile
+      const swipeDistance = Math.abs(scrollPos);
+      
+      if (touchVelocity > 1.5) {
+        // Swipe rapide
+        if (swipeDistance > 200) distance = 3;
+        else if (swipeDistance > 100) distance = 2;
+        else distance = 1;
+      } else if (touchVelocity > 0.8) {
+        // Swipe moyen
+        if (swipeDistance > 150) distance = 2;
+        else distance = 1;
+      } else {
+        // Swipe lent
+        if (swipeDistance > 300) distance = 2;
+        else distance = 1;
       }
-    }, { passive: true });
+    } else {
+      // Logique desktop (inchangée)
+      distance = Math.abs(scrollPos) > 200 ? 2 : 1;
+    }
+    
+    this.scrollToSlide(direction, distance);
+  }
+}, { passive: true });
   }
 }
 
@@ -909,7 +1060,8 @@ const slideWithGap = this.slideWidth + gap;
 document.addEventListener('DOMContentLoaded', () => {
   const tracks = document.querySelectorAll('.carrousel-track');
   tracks.forEach(track => {
-    new VerticalCarousel(track);
+    const carousel = new VerticalCarousel(track);
+    track.carousel = carousel; // Stocker la référence
   });
 
   // Injecte style pour .scroll-indicator::after

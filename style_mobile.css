@@ -486,7 +486,13 @@ noir-éclairci : #adadac
   flex-shrink: 0;
   margin-right: 4vw; /* Espacement horizontal au lieu de vertical */
   margin-bottom: 0;
+  margin-left: 0;
   }
+
+  /* Premier slide sans marge gauche */
+.carrousel-slide:first-child {
+  margin-left: 0;
+}
 
   .carrousel-slide img {
     width: 100%;
