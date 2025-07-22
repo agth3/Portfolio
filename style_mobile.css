@@ -471,20 +471,21 @@ noir-éclairci : #adadac
     top: 0;
     left: 0;
     display: flex;
-    flex-direction: column;
-    width: 100%;
+    flex-direction: row; /* Mobile: horizontal */
+    height: 100%;
     transition: transform 0.6s ease;
   }
 
   /* Chaque slide (image) */
   .carrousel-slide {
-    width: 100%;
-    height: calc(100vh - 2 * 16.667vh); /* même taille que focus-frame */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-bottom: 4.63vh; /* espacement entre les images */
+    width: calc(100vw - 2 * 9.5vw); /* Largeur = largeur de focus-frame */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 4vw; /* Espacement horizontal au lieu de vertical */
+  margin-bottom: 0;
   }
 
   .carrousel-slide img {

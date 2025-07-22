@@ -472,29 +472,46 @@ const sections = document.querySelectorAll(".grid-projets");
 
 const sectionWidth = window.innerWidth;
 let currentIndex = 0;
+const isMobile = window.innerWidth <= 1024;
 
 function updateButtons() {
-  btnLeft.disabled = currentIndex === 0;
-  btnRight.disabled = currentIndex === sections.length - 1;
-  btnUp.disabled = currentIndex === 0;
-  btnDown.disabled = currentIndex === sections.length - 1;
+  if (isMobile) {
+    // Mobile : navigation verticale des sections
+    btnUp.disabled = currentIndex === 0;
+    btnDown.disabled = currentIndex === sections.length - 1;
+    btnLeft.disabled = true;
+    btnRight.disabled = true;
+  } else {
+    // Desktop : navigation horizontale des sections
+    btnLeft.disabled = currentIndex === 0;
+    btnRight.disabled = currentIndex === sections.length - 1;
+    btnUp.disabled = true;
+    btnDown.disabled = true;
+  }
 }
 
 function scrollToIndex(index) {
-  const scrollX = index * sectionWidth;
-  container.scrollTo({ left: scrollX, behavior: "smooth" });
+  if (isMobile) {
+    // Mobile : scroll vertical
+    const scrollY = index * window.innerHeight;
+    container.scrollTo({ top: scrollY, behavior: "smooth" });
+  } else {
+    // Desktop : scroll horizontal
+    const scrollX = index * sectionWidth;
+    container.scrollTo({ left: scrollX, behavior: "smooth" });
+  }
   currentIndex = index;
   updateButtons();
 }
 
 btnLeft.addEventListener("click", () => {
-  if (currentIndex > 0) {
+  if (!isMobile && currentIndex > 0) {
     scrollToIndex(currentIndex - 1);
   }
 });
 
 btnRight.addEventListener("click", () => {
-  if (currentIndex < sections.length - 1) {
+  if (!isMobile && currentIndex < sections.length - 1) {
     scrollToIndex(currentIndex + 1);
   }
 });
@@ -524,24 +541,41 @@ document.addEventListener("keydown", (event) => {
   // Ne pas intercepter les touches si un champ de saisie est actif
   if (isInputFocused) return;
   
-  if (event.key === "ArrowLeft" && currentIndex > 0) {
-  event.preventDefault();
-  scrollToIndex(currentIndex - 1);
-} else if (event.key === "ArrowRight" && currentIndex < sections.length - 1) {
-  event.preventDefault();
-  scrollToIndex(currentIndex + 1);
-} else if (event.key === "ArrowUp" && currentIndex > 0) {
-  event.preventDefault();
-  scrollToIndex(currentIndex - 1);
-} else if (event.key === "ArrowDown" && currentIndex < sections.length - 1) {
-  event.preventDefault();
-  scrollToIndex(currentIndex + 1);
-}
+  if (isMobile) {
+    // Mobile : seules les flèches haut/bas pour les sections
+    if (event.key === "ArrowUp" && currentIndex > 0) {
+      event.preventDefault();
+      scrollToIndex(currentIndex - 1);
+    } else if (event.key === "ArrowDown" && currentIndex < sections.length - 1) {
+      event.preventDefault();
+      scrollToIndex(currentIndex + 1);
+    }
+  } else {
+    // Desktop : flèches gauche/droite pour les sections
+    if (event.key === "ArrowLeft" && currentIndex > 0) {
+      event.preventDefault();
+      scrollToIndex(currentIndex - 1);
+    } else if (event.key === "ArrowRight" && currentIndex < sections.length - 1) {
+      event.preventDefault();
+      scrollToIndex(currentIndex + 1);
+    } else if (event.key === "ArrowUp" && currentIndex > 0) {
+      event.preventDefault();
+      scrollToIndex(currentIndex - 1);
+    } else if (event.key === "ArrowDown" && currentIndex < sections.length - 1) {
+      event.preventDefault();
+      scrollToIndex(currentIndex + 1);
+    }
+  }
 });
 
 // Auto-calcule la section visible au scroll manuel
 container.addEventListener("scroll", () => {
-  const newIndex = Math.round(container.scrollLeft / sectionWidth);
+  let newIndex;
+  if (isMobile) {
+    newIndex = Math.round(container.scrollTop / window.innerHeight);
+  } else {
+    newIndex = Math.round(container.scrollLeft / sectionWidth);
+  }
   if (newIndex !== currentIndex) {
     currentIndex = newIndex;
     updateButtons();
@@ -549,6 +583,10 @@ container.addEventListener("scroll", () => {
 });
 
 window.addEventListener("resize", () => {
+  const newIsMobile = window.innerWidth <= 1024;
+  if (newIsMobile !== isMobile) {
+    location.reload(); // Recharge si changement de format
+  }
   scrollToIndex(currentIndex); // recentre sur la bonne section
 });
 
@@ -560,301 +598,329 @@ updateButtons();
 
 //    ADAPTATION DES TEINTES DE HIGHLIGHT PAR SECTION AFFICHEE
 
+// Associe chaque ID de section à une couleur
+const sectionColors = {
+  "projet-OffKey": "#e74c3c",    // Rouge
+  "projet-OffKey-2": "#3498db",   // Bleu
+  "projet-OffKey-3": "#67d92a",  // Vert
+  // Ajoute d'autres IDs ici
+};
 
+// Fonction appelée à chaque changement de visibilité
+function handleIntersection(entries) {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const sectionId = entry.target.id;
+      const color = sectionColors[sectionId];
 
-  // const sections = document.querySelectorAll(".grid-projets"); déjà déclarée plus haut
-
-  // Associe chaque ID de section à une couleur
-  const sectionColors = {
-    "projet-OffKey": "#e74c3c",    // Rouge
-    "projet-OffKey-2": "#3498db",   // Bleu
-    "projet-OffKey-3": "#67d92a",  // Vert
-    // Ajoute d'autres IDs ici
-  };
-
-  // Fonction appelée à chaque changement de visibilité
-  function handleIntersection(entries) {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const sectionId = entry.target.id;
-        const color = sectionColors[sectionId];
-
-        if (color) {
-          document.documentElement.style.setProperty('--highlight-color', color);
-        }
+      if (color) {
+        document.documentElement.style.setProperty('--highlight-color', color);
       }
-    });
-  }
-
-  // Crée l'observer
-  const observer = new IntersectionObserver(handleIntersection, {
-    root: document.querySelector('#container-projets'), // horizontal scrolling container
-    rootMargin: '0px',
-    threshold: 0.6, // 60% visible dans le viewport horizontal
+    }
   });
+}
 
-  // Observe chaque section
-  sections.forEach(section => observer.observe(section));
+// Crée l'observer
+const observer = new IntersectionObserver(handleIntersection, {
+  root: document.querySelector('#container-projets'), // scrolling container
+  rootMargin: '0px',
+  threshold: 0.6, // 60% visible dans le viewport
+});
+
+// Observe chaque section
+sections.forEach(section => observer.observe(section));
 
 
 //    CARROUSEL INFINI DES IMG
-    const highResMapping = {
-      'asset/img/low/Insta_Post-Feed.png': 'asset/img/high/Insta_Post-Feed.png',
-      'asset/img/low/20231005_154014.png': 'asset/img/high/20231005_154014.jpg',
-      'asset/img/low/Posterwall.png': 'asset/img/high/Posterwall.jpg',
-    };
+const highResMapping = {
+  'asset/img/low/Insta_Post-Feed.png': 'asset/img/high/Insta_Post-Feed.png',
+  'asset/img/low/20231005_154014.png': 'asset/img/high/20231005_154014.jpg',
+  'asset/img/low/Posterwall.png': 'asset/img/high/Posterwall.jpg',
+};
 
-    function getHighResVersion(lowResSrc) {
-      return highResMapping[lowResSrc] || lowResSrc;
-    }
-
-  class VerticalCarousel {
-    constructor(trackElement) {
-      this.track = trackElement;
-      this.slides = Array.from(trackElement.querySelectorAll('.carrousel-slide'));
-      this.slideHeight = window.innerHeight - 2 * this.getVh(16.667);
-      this.originalSlideCount = this.slides.length - 2;
-      this.totalSlides = this.slides.length;
-      this.currentIndex = 2;
-      this.isScrolling = false;
-      this.scrollThreshold = 30; // Seuil plus bas pour détecter plus tôt
-      this.scrollAccumulator = 0;
-      this.maxScrollDistance = 3; // Nombre max d'images à faire défiler d'un coup
-      this.preloadedImages = new Map();
-
-      this.initWithRealFirstImage();
-      this.bindEvents();
-      this.updateImageQuality();
-    }
-
-    // calculateScrollDistance(deltaValue) {
-    //   const absValue = Math.abs(deltaValue);
-      
-    //   console.log('Delta reçu:', deltaValue, 'Valeur absolue:', absValue);
-      
-    //   // Seuils pour valeurs accumulées sur 50ms
-    //   if (absValue < 100) {
-    //     console.log('→ Distance: 1');
-    //     return 1;
-    //   }
-    //   if (absValue < 300) {
-    //     console.log('→ Distance: 2');
-    //     return 2;
-    //   }
-    //   console.log('→ Distance: 3');
-    //   return 3;
-    // }
-
-    preloadHighResImage(highResSrc) { // Prend directement l'URL high-res
-      if (this.preloadedImages.has(highResSrc)) return Promise.resolve(highResSrc);
-      
-      return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => {
-          this.preloadedImages.set(highResSrc, highResSrc);
-          resolve(highResSrc);
-        };
-        img.onerror = reject;
-        img.src = highResSrc; // Utilise directement l'URL passée en paramètre
-      });
-    }
-
-      updateImageQuality() {
-        this.slides.forEach((slide, index) => {
-          const img = slide.querySelector('img');
-          if (!img) return;
-          
-          const currentLowResSrc = img.getAttribute('src');
-          
-          if (index === this.currentIndex) {
-            // Focus frame - charger la high-res
-            const highResSrc = getHighResVersion(currentLowResSrc);
-            if (highResSrc !== currentLowResSrc) {
-              this.preloadHighResImage(highResSrc).then(() => {
-                if (index === this.currentIndex) { // Vérifier qu'on est toujours en focus
-                  img.src = highResSrc;
-                }
-              }).catch(() => {
-                img.src = currentLowResSrc; // Fallback
-              });
-            }
-          } else {
-            // Previous/next frames - utiliser low-res du mapping ou garder l'original
-            const lowResSrc = Object.keys(highResMapping).find(key => 
-              getHighResVersion(key) === currentLowResSrc
-            ) || currentLowResSrc;
-            img.src = lowResSrc;
-          }
-        });
-      }
-
-    getVh(vh) {
-      return window.innerHeight * (vh / 100);
-    }
-
-    initWithRealFirstImage() {
-      this.currentIndex = 1; // Vraie première image
-      const focusFrameOffset = this.getVh(16.667);
-      const gap = this.getVh(4.63);
-      const slideWithGap = this.slideHeight + gap;
-      
-      const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
-      this.track.style.transform = `translateY(${targetPosition}px)`;
-      this.updateScrollIndicator();
-      this.updateImageQuality();
-    }
-
-    scrollToSlide(direction, distance = 1) {
-      if (this.isScrolling) return;
-
-      this.isScrolling = true;
-      this.currentIndex += direction * distance;
-      
-      // Position corrigée avec espacement entre les images
-      const focusFrameOffset = this.getVh(16.667);
-      const gap = this.getVh(4.63);
-      const slideWithGap = this.slideHeight + gap;
-      const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
-
-      this.track.style.transition = 'transform 0.6s ease';
-      this.track.style.transform = `translateY(${targetPosition}px)`;
-
-      setTimeout(() => {
-        // Gestion des clones pour boucle infinie
-        if (this.currentIndex <= 0) {
-          // On est sur le clone du début → aller à la vraie dernière image
-          this.currentIndex = this.originalSlideCount;
-          this.repositionWithoutTransition();
-        } else if (this.currentIndex >= this.totalSlides - 1) {
-          // On est sur le clone de fin → aller à la vraie première image
-          this.currentIndex = 1;
-          this.repositionWithoutTransition();
-        }
-        
-        this.updateScrollIndicator();
-        this.updateImageQuality();
-        this.isScrolling = false;
-      }, 600);
-    }
-
-    repositionWithoutTransition() {
-      const focusFrameOffset = this.getVh(16.667);
-      const gap = this.getVh(4.63);
-      const slideWithGap = this.slideHeight + gap;
-      const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
-      
-      this.track.style.transition = 'none';
-      this.track.style.transform = `translateY(${targetPosition}px)`;
-      
-      // Force le reflow pour appliquer immédiatement
-      this.track.offsetHeight;
-    }
-
-    updateScrollIndicator() {
-      const indicator = this.track.closest('.carrousel-container').querySelector('.scroll-indicator');
-      if (!indicator) return;
-
-      // Utiliser currentIndex - 1 pour exclure le clone du début
-      const realIndex = this.currentIndex - 1;
-      const progress = (realIndex / (this.originalSlideCount - 1)) * (100 - 20);
-      indicator.style.setProperty('--scroll-progress', `${progress}px`);
-    }
-
-    
-
-    bindEvents() {
-  const scrollZone = this.track.closest('.carrousel-container').querySelector('.scroll-capture');
-
-  let startY = 0;
-  let scrollY = 0;
-
-  // Variables pour détecter le type d'input
-  let wheelTimeout = null;
-  let wheelCount = 0;
-  let totalDelta = 0;
-  let isTrackpad = false;
-
-  scrollZone.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    
-    wheelCount++;
-    totalDelta += Math.abs(e.deltaY);
-    const direction = e.deltaY > 0 ? 1 : -1;
-    
-    // Détection trackpad vs souris basée sur la valeur deltaY
-    if (Math.abs(e.deltaY) < 50) {
-      isTrackpad = true;
-    } else if (Math.abs(e.deltaY) > 100) {
-      isTrackpad = false;
-    }
-    
-    if (wheelTimeout) {
-      clearTimeout(wheelTimeout);
-    }
-    
-    wheelTimeout = setTimeout(() => {
-      if (this.isScrolling) return;
-      
-      let distance;
-      
-      if (isTrackpad) {
-  // Pour trackpad : calcul plus progressif
-  if (totalDelta < 300) distance = 1;
-  else if (totalDelta < 800) distance = 1;   // Toujours 1 pour les petits scrolls
-  else if (totalDelta < 1800) distance = 2;
-  else distance = 3;
-} else {
-  // Pour souris : inchangé
-  if (wheelCount === 1) distance = 1;
-  else if (wheelCount <= 3) distance = 2;
-  else distance = 3;
+function getHighResVersion(lowResSrc) {
+  return highResMapping[lowResSrc] || lowResSrc;
 }
-      
-      // console.log(`${isTrackpad ? 'Trackpad' : 'Souris'} - Événements: ${wheelCount}, Delta total: ${totalDelta}, Distance: ${distance}`);
-      
-      this.scrollToSlide(direction, distance);
-      wheelCount = 0;
-      totalDelta = 0;
-    }, isTrackpad ? 150 : 80); // Timeout plus long pour trackpad
-  }, { passive: false });
 
-  // Mobile (inchangé)
-  scrollZone.addEventListener('touchstart', (e) => {
-    startY = e.touches[0].clientY;
-    scrollY = 0;
-  }, { passive: true });
-
-  scrollZone.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    scrollY = e.touches[0].clientY - startY;
-  }, { passive: false });
-
-  scrollZone.addEventListener('touchend', () => {
-    if (Math.abs(scrollY) > this.scrollThreshold) {
-      const direction = scrollY > 0 ? -1 : 1;
-      const distance = Math.abs(scrollY) > 200 ? 2 : 1;
-      this.scrollToSlide(direction, distance);
+class VerticalCarousel {
+  constructor(trackElement) {
+    this.track = trackElement;
+    this.slides = Array.from(trackElement.querySelectorAll('.carrousel-slide'));
+    this.isMobile = window.innerWidth <= 1024;
+    
+    // Adaptation mobile/desktop
+    if (this.isMobile) {
+      this.slideWidth = window.innerWidth - 2 * (window.innerWidth * 0.095); // Mobile: largeur - marges
+      this.slideHeight = null; // Non utilisé en mobile
+    } else {
+      this.slideHeight = window.innerHeight - 2 * this.getVh(16.667); // Desktop: hauteur - marges
+      this.slideWidth = null; // Non utilisé en desktop
     }
-  }, { passive: true });
-}
+    
+    this.originalSlideCount = this.slides.length - 2;
+    this.totalSlides = this.slides.length;
+    this.currentIndex = 2;
+    this.isScrolling = false;
+    this.scrollThreshold = 30;
+    this.scrollAccumulator = 0;
+    this.maxScrollDistance = 3;
+    this.preloadedImages = new Map();
+
+    this.initWithRealFirstImage();
+    this.bindEvents();
+    this.updateImageQuality();
   }
 
-  // Lancer tous les carrousels au DOM prêt
-  document.addEventListener('DOMContentLoaded', () => {
-    const tracks = document.querySelectorAll('.carrousel-track');
-    tracks.forEach(track => {
-      new VerticalCarousel(track);
+  preloadHighResImage(highResSrc) {
+    if (this.preloadedImages.has(highResSrc)) return Promise.resolve(highResSrc);
+    
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        this.preloadedImages.set(highResSrc, highResSrc);
+        resolve(highResSrc);
+      };
+      img.onerror = reject;
+      img.src = highResSrc;
     });
+  }
 
-    // Injecte style pour .scroll-indicator::after
-    const style = document.createElement('style');
-    style.textContent = `
-      .scroll-indicator::after {
-        top: var(--scroll-progress, 0px);
+  updateImageQuality() {
+    this.slides.forEach((slide, index) => {
+      const img = slide.querySelector('img');
+      if (!img) return;
+      
+      const currentLowResSrc = img.getAttribute('src');
+      
+      if (index === this.currentIndex) {
+        // Focus frame - charger la high-res
+        const highResSrc = getHighResVersion(currentLowResSrc);
+        if (highResSrc !== currentLowResSrc) {
+          this.preloadHighResImage(highResSrc).then(() => {
+            if (index === this.currentIndex) { // Vérifier qu'on est toujours en focus
+              img.src = highResSrc;
+            }
+          }).catch(() => {
+            img.src = currentLowResSrc; // Fallback
+          });
+        }
+      } else {
+        // Previous/next frames - utiliser low-res du mapping ou garder l'original
+        const lowResSrc = Object.keys(highResMapping).find(key => 
+          getHighResVersion(key) === currentLowResSrc
+        ) || currentLowResSrc;
+        img.src = lowResSrc;
       }
-    `;
-    document.head.appendChild(style);
+    });
+  }
+
+  getVh(vh) {
+    return window.innerHeight * (vh / 100);
+  }
+
+  initWithRealFirstImage() {
+  this.currentIndex = 1; // Vraie première image
+  
+  if (this.isMobile) {
+  // Mobile : positionnement horizontal
+const focusFrameLeft = window.innerWidth * 0.095;
+const gap = window.innerWidth * 0.04;
+const slideWithGap = this.slideWidth + gap;
+  const targetPosition = focusFrameLeft - (this.currentIndex * slideWithGap);
+  
+  this.track.style.transform = `translateX(${targetPosition}px)`;
+} else {
+  // Desktop : positionnement vertical
+  const focusFrameOffset = this.getVh(16.667);
+  const gap = this.getVh(4.63);
+  const slideWithGap = this.isMobile ? 
+  (this.slideWidth + gap) : 
+  (this.slideHeight + gap);
+  const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
+  
+  this.track.style.transform = `translateY(${targetPosition}px)`;
+}
+  
+  this.updateScrollIndicator();
+  this.updateImageQuality();
+}
+
+  scrollToSlide(direction, distance = 1) {
+    if (this.isScrolling) return;
+
+    this.isScrolling = true;
+    this.currentIndex += direction * distance;
+    
+    const focusFrameOffset = this.isMobile ? 
+      window.innerWidth * 0.095 : // Mobile: marge gauche
+      this.getVh(16.667); // Desktop: marge haut
+
+    const gap = this.isMobile ? 
+      window.innerWidth * 0.04 : // Mobile: 4vw
+      this.getVh(4.63); // Desktop: 4.63vh
+
+    const slideWithGap = this.slideHeight + gap;
+    const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
+
+    this.track.style.transition = this.isMobile ? 
+      'transform 0.6s ease' : 
+      'transform 0.6s ease';
+    
+    this.track.style.transform = this.isMobile ?
+      `translateX(${targetPosition}px)` :
+      `translateY(${targetPosition}px)`;
+
+    setTimeout(() => {
+      // Gestion des clones pour boucle infinie
+      if (this.currentIndex <= 0) {
+        // On est sur le clone du début → aller à la vraie dernière image
+        this.currentIndex = this.originalSlideCount;
+        this.repositionWithoutTransition();
+      } else if (this.currentIndex >= this.totalSlides - 1) {
+        // On est sur le clone de fin → aller à la vraie première image
+        this.currentIndex = 1;
+        this.repositionWithoutTransition();
+      }
+      
+      this.updateScrollIndicator();
+      this.updateImageQuality();
+      this.isScrolling = false;
+    }, 600);
+  }
+
+  repositionWithoutTransition() {
+  if (this.isMobile) {
+    // Mobile : positionnement horizontal
+    const focusFrameLeft = window.innerWidth * 0.095;
+    const gap = window.innerWidth * 0.04;
+    const slideWithGap = this.slideHeight + gap;
+    const targetPosition = focusFrameLeft - (this.currentIndex * slideWithGap);
+    
+    this.track.style.transition = 'none';
+    this.track.style.transform = `translateX(${targetPosition}px)`;
+  } else {
+    // Desktop : positionnement vertical
+    const focusFrameOffset = this.getVh(16.667);
+    const gap = this.getVh(4.63);
+    const slideWithGap = this.slideHeight + gap;
+    const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
+    
+    this.track.style.transition = 'none';
+    this.track.style.transform = `translateY(${targetPosition}px)`;
+  }
+  
+  // Force le reflow pour appliquer immédiatement
+  this.track.offsetHeight;
+}
+
+  updateScrollIndicator() {
+    const indicator = this.track.closest('.carrousel-container').querySelector('.scroll-indicator');
+    if (!indicator) return;
+
+    // Utiliser currentIndex - 1 pour exclure le clone du début
+    const realIndex = this.currentIndex - 1;
+    const progress = (realIndex / (this.originalSlideCount - 1)) * (100 - 20);
+    indicator.style.setProperty('--scroll-progress', `${progress}px`);
+  }
+
+  bindEvents() {
+    const scrollZone = this.track.closest('.carrousel-container').querySelector('.scroll-capture');
+
+    let startPos = 0;
+    let scrollPos = 0;
+
+    // Variables pour détecter le type d'input
+    let wheelTimeout = null;
+    let wheelCount = 0;
+    let totalDelta = 0;
+    let isTrackpad = false;
+
+    scrollZone.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      
+      wheelCount++;
+      const deltaValue = this.isMobile ? 
+  (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) : 
+  e.deltaY;
+      totalDelta += Math.abs(deltaValue);
+      const direction = deltaValue > 0 ? 1 : -1;
+      
+      // Détection trackpad vs souris basée sur la valeur delta
+      if (Math.abs(deltaValue) < 50) {
+        isTrackpad = true;
+      } else if (Math.abs(deltaValue) > 100) {
+        isTrackpad = false;
+      }
+      
+      if (wheelTimeout) {
+        clearTimeout(wheelTimeout);
+      }
+      
+      wheelTimeout = setTimeout(() => {
+        if (this.isScrolling) return;
+        
+        let distance;
+        
+        if (isTrackpad) {
+          // Pour trackpad : calcul plus progressif
+          if (totalDelta < 300) distance = 1;
+          else if (totalDelta < 800) distance = 1;   // Toujours 1 pour les petits scrolls
+          else if (totalDelta < 1800) distance = 2;
+          else distance = 3;
+        } else {
+          // Pour souris : inchangé
+          if (wheelCount === 1) distance = 1;
+          else if (wheelCount <= 3) distance = 2;
+          else distance = 3;
+        }
+        
+        this.scrollToSlide(direction, distance);
+        wheelCount = 0;
+        totalDelta = 0;
+      }, isTrackpad ? 150 : 80); // Timeout plus long pour trackpad
+    }, { passive: false });
+
+    // Mobile touch events
+    scrollZone.addEventListener('touchstart', (e) => {
+      startPos = this.isMobile ? 
+        e.touches[0].clientX : // Mobile: position X
+        e.touches[0].clientY;  // Desktop: position Y
+      scrollPos = 0;
+    }, { passive: true });
+
+    scrollZone.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      scrollPos = this.isMobile ? 
+        e.touches[0].clientX - startPos : // Mobile: deltaX
+        e.touches[0].clientY - startPos;  // Desktop: deltaY
+    }, { passive: false });
+
+    scrollZone.addEventListener('touchend', () => {
+      if (Math.abs(scrollPos) > this.scrollThreshold) {
+        const direction = scrollPos > 0 ? -1 : 1;
+        const distance = Math.abs(scrollPos) > 200 ? 2 : 1;
+        this.scrollToSlide(direction, distance);
+      }
+    }, { passive: true });
+  }
+}
+
+// Lancer tous les carrousels au DOM prêt
+document.addEventListener('DOMContentLoaded', () => {
+  const tracks = document.querySelectorAll('.carrousel-track');
+  tracks.forEach(track => {
+    new VerticalCarousel(track);
   });
+
+  // Injecte style pour .scroll-indicator::after
+  const style = document.createElement('style');
+  style.textContent = `
+    .scroll-indicator::after {
+      top: var(--scroll-progress, 0px);
+    }
+  `;
+  document.head.appendChild(style);
+});
 
 </script>
 
