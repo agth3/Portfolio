@@ -201,10 +201,6 @@ html {
     
 }
 
-/* .container-mosaique {
-  background-color: aquamarine;
-} */
-
 .cadre{
     /* background-color: #faadde; */
     display: flex;
@@ -358,6 +354,17 @@ color: #0f0c0c;
 
 /*--------- PAGE MOSAIQUE ---------*/
 
+.center-grid-mosaique{  /*centre de la grid principale contient une autre grid agencée différemment*/
+    display:grid;
+    /* display: flex; */
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-column: 2/7;
+    grid-row: 2/5;
+    width:100%;
+    height:100%;
+  }
+
 .case-mosaique{
  width: 100%;
   height: 100%;
@@ -377,95 +384,21 @@ color: #0f0c0c;
   display: block;
 }
 
-.case1{
-  grid-column: 2/3;
-  grid-row: 2/3;
-  /* background-color: #faadde; */
-}
-
-.case2{
-  grid-column: 3/4;
-  grid-row: 2/3;
-  /* background-color: #b01e7b; */
-}
-
-.case3{
-  grid-column: 4/5;
-  grid-row: 2/3;
-  /* background-color: #4a0330; */
-}
-
-.case4{
-  grid-column: 5/6;
-  grid-row: 2/3;
-  /* background-color: #6e0d82; */
-}
-
-.case5{
-  grid-column: 6/7;
-  grid-row: 2/3;
-  /* background-color: #251153; */
-}
-
-.case6{
-  grid-column: 2/3;
-  grid-row: 3/4;
-  /* background-color: #0c0ca6; */
-}
-
-.case7{
-  grid-column: 3/4;
-  grid-row: 3/4;
-  /* background-color: #117fc9; */
-}
-
-.case8{
-  grid-column: 4/5;
-  grid-row: 3/4;
-  /* background-color: #2cdad4; */
-}
-
-.case9{
-  grid-column: 5/6;
-  grid-row: 3/4;
-  /* background-color: #65f1a6; */
-}
-
-.case10{
-  grid-column: 6/7;
-  grid-row: 3/4;
-  /* background-color: #48da09; */
-}
-
-.case11{
-  grid-column: 2/3;
-  grid-row: 4/5;
-  /* background-color: #bbc40e; */
-}
-
-.case12{
-  grid-column: 3/4;
-  grid-row: 4/5;
-  /* background-color: #cba81c; */
-}
-
-.case13{
-  grid-column: 4/5;
-  grid-row: 4/5;
-  /* background-color: #e0881d; */
-}
-
-.case14{
-  grid-column: 5/6;
-  grid-row: 4/5;
-  /* background-color: #cd6321; */
-}
-
-.case15{
-  grid-column: 6/7;
-  grid-row: 4/5;
-  /* background-color: #e62813; */
-}
+  .case1{ grid-column: 1/2; grid-row: 1/2; /* background-color: #faadde; */}
+  .case2{ grid-column: 2/3; grid-row: 1/2; /* background-color: #b01e7b; */}
+  .case3{ grid-column: 3/4; grid-row: 1/2; /* background-color: #4a0330; */}
+  .case4{ grid-column: 4/5; grid-row: 1/2; /* background-color: #6e0d82; */}
+  .case5{ grid-column: 5/6; grid-row: 1/2; /* background-color: #251153; */}
+  .case6{ grid-column: 1/2; grid-row: 2/3; /* background-color: #0c0ca6; */}
+  .case7{ grid-column: 2/3; grid-row: 2/3; /* background-color: #117fc9; */}
+  .case8{ grid-column: 3/4; grid-row: 2/3; /* background-color: #2cdad4; */}
+  .case9{ grid-column: 4/5; grid-row: 2/3; /* background-color: #65f1a6; */}
+ .case10{ grid-column: 5/6; grid-row: 2/3; /* background-color: #48da09; */}
+ .case11{ grid-column: 1/2; grid-row: 3/4; /* background-color: #bbc40e; */}
+ .case12{ grid-column: 2/3; grid-row: 3/4; /* background-color: #cba81c; */}
+ .case13{ grid-column: 3/4; grid-row: 3/4; /* background-color: #e0881d; */}
+ .case14{ grid-column: 4/5; grid-row: 3/4; /* background-color: #cd6321; */}
+ .case15{ grid-column: 5/6; grid-row: 3/4; /* background-color: #e62813; */}
 
 
 
@@ -775,6 +708,10 @@ color: #0f0c0c;
   font-weight: 400;
   color: #0f0c0c;
   margin: 0;
+}
+
+#img-bio-mobile{
+  display: none;
 }
 
 #img-bio{
