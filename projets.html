@@ -472,7 +472,19 @@ const sections = document.querySelectorAll(".grid-projets");
 
 const sectionWidth = window.innerWidth;
 let currentIndex = 0;
-const isMobile = window.innerWidth <= 1024;
+let isMobile = window.innerWidth <= 1024;
+
+// FONCTION DE DEBUG - À RETIRER PLUS TARD
+// function debugScroll() {
+//   console.log(`Current state:
+//     isMobile: ${isMobile}
+//     currentIndex: ${currentIndex}
+//     container scrollTop: ${container.scrollTop}
+//     container scrollLeft: ${container.scrollLeft}
+//     window height: ${window.innerHeight}
+//     window width: ${window.innerWidth}
+//     sections length: ${sections.length}`);
+// }
 
 function updateButtons() {
   if (isMobile) {
@@ -491,39 +503,63 @@ function updateButtons() {
 }
 
 function scrollToIndex(index) {
+  // console.log(`ScrollToIndex called: index=${index}, isMobile=${isMobile}, currentIndex=${currentIndex}`);
+  
   if (isMobile) {
     // Mobile : scroll vertical
     const scrollY = index * window.innerHeight;
-    container.scrollTo({ top: scrollY, behavior: "smooth" });
+    // console.log(`Mobile scroll to Y: ${scrollY}`);
+    container.scrollTo({ 
+      top: scrollY, 
+      behavior: "smooth" 
+    });
   } else {
     // Desktop : scroll horizontal
     const scrollX = index * sectionWidth;
-    container.scrollTo({ left: scrollX, behavior: "smooth" });
+    // console.log(`Desktop scroll to X: ${scrollX}`);
+    container.scrollTo({ 
+      left: scrollX, 
+      behavior: "smooth" 
+    });
   }
+  
   currentIndex = index;
   updateButtons();
 }
 
-btnLeft.addEventListener("click", () => {
+// Fonction utilitaire pour les événements tactiles
+function addTouchSupport(element, callback) {
+  // Support tactile
+  element.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    callback();
+  }, { passive: false });
+  
+  // Support souris (pour dev)
+  element.addEventListener('click', callback);
+}
+
+// Remplacer les addEventListener existants par :
+addTouchSupport(btnLeft, () => {
   if (!isMobile && currentIndex > 0) {
     scrollToIndex(currentIndex - 1);
   }
 });
 
-btnRight.addEventListener("click", () => {
+addTouchSupport(btnRight, () => {
   if (!isMobile && currentIndex < sections.length - 1) {
     scrollToIndex(currentIndex + 1);
   }
 });
 
-btnUp.addEventListener("click", () => {
-  if (currentIndex > 0) {
+addTouchSupport(btnUp, () => {
+  if (isMobile && currentIndex > 0) {
     scrollToIndex(currentIndex - 1);
   }
 });
 
-btnDown.addEventListener("click", () => {
-  if (currentIndex < sections.length - 1) {
+addTouchSupport(btnDown, () => {
+  if (isMobile && currentIndex < sections.length - 1) {
     scrollToIndex(currentIndex + 1);
   }
 });
@@ -573,10 +609,13 @@ container.addEventListener("scroll", () => {
   let newIndex;
   if (isMobile) {
     newIndex = Math.round(container.scrollTop / window.innerHeight);
+    // console.log(`Mobile scroll detected: scrollTop=${container.scrollTop}, newIndex=${newIndex}`);
   } else {
     newIndex = Math.round(container.scrollLeft / sectionWidth);
+    // console.log(`Desktop scroll detected: scrollLeft=${container.scrollLeft}, newIndex=${newIndex}`);
   }
-  if (newIndex !== currentIndex) {
+  
+  if (newIndex !== currentIndex && newIndex >= 0 && newIndex < sections.length) {
     currentIndex = newIndex;
     updateButtons();
   }
@@ -585,14 +624,16 @@ container.addEventListener("scroll", () => {
 window.addEventListener("resize", () => {
   const newIsMobile = window.innerWidth <= 1024;
   if (newIsMobile !== isMobile) {
-    location.reload(); // Recharge si changement de format
-  } else {
-    // Valider et ajuster les dimensions
-    document.querySelectorAll('.carrousel-track').forEach(track => {
-      const carousel = track.carousel; // Vous devrez stocker la référence
-      if (carousel) carousel.validateDimensions();
-    });
+    isMobile = newIsMobile;  // Mettre à jour la variable
+    updateButtons();  // Recalculer les boutons actifs
   }
+  
+  // Valider et ajuster les dimensions des carrousels
+  document.querySelectorAll('.carrousel-track').forEach(track => {
+    const carousel = track.carousel;
+    if (carousel) carousel.validateDimensions();
+  });
+  
   scrollToIndex(currentIndex);
 });
 
@@ -655,7 +696,7 @@ class VerticalCarousel {
     this.isMobile = window.innerWidth <= 1024;
     
     // Vérification de la structure
-    console.log(`Carousel init: total slides=${this.slides.length}, isMobile=${this.isMobile}`);
+    // console.log(`Carousel init: total slides=${this.slides.length}, isMobile=${this.isMobile}`);
     
     // Seuils adaptatifs selon le device
     this.scrollThreshold = this.isMobile ? 20 : 30; // Plus sensible sur mobile
@@ -673,7 +714,7 @@ class VerticalCarousel {
     this.originalSlideCount = this.slides.length - 2; // Les 2 clones
   this.totalSlides = this.slides.length;
   
-  console.log(`Slides count: original=${this.originalSlideCount}, total=${this.totalSlides}`);
+  // console.log(`Slides count: original=${this.originalSlideCount}, total=${this.totalSlides}`);
  
     this.currentIndex = 2;
     this.isScrolling = false;
@@ -799,7 +840,7 @@ isValidMove(direction, distance = 1) {
   const nextIndex = this.currentIndex + (direction * distance);
   // Permettre tous les mouvements dans la plage des indices (y compris les clones)
   const isValid = nextIndex >= 0 && nextIndex < this.totalSlides;
-  console.log(`Validating move: current=${this.currentIndex}, direction=${direction}, distance=${distance}, next=${nextIndex}, valid=${isValid}`);
+  // console.log(`Validating move: current=${this.currentIndex}, direction=${direction}, distance=${distance}, next=${nextIndex}, valid=${isValid}`);
   return isValid;
 }
 
@@ -810,12 +851,12 @@ handleInfiniteLoop() {
     // On est sur le clone du début (index 0) → aller à la vraie dernière image
     this.currentIndex = this.originalSlideCount; // Pas -1 car on compte à partir de 1
     needsReposition = true;
-    console.log(`Jump to real last: ${this.currentIndex}`);
+    // console.log(`Jump to real last: ${this.currentIndex}`);
   } else if (this.currentIndex >= this.totalSlides - 1) {
     // On est sur le clone de fin → aller à la vraie première image
     this.currentIndex = 1;
     needsReposition = true;
-    console.log(`Jump to real first: ${this.currentIndex}`);
+    // console.log(`Jump to real first: ${this.currentIndex}`);
   }
   
   if (needsReposition) {
@@ -827,7 +868,7 @@ handleInfiniteLoop() {
 }
 
   scrollToSlide(direction, distance = 1) {
-  console.log(`Mobile scroll: direction=${direction}, distance=${distance}, currentIndex=${this.currentIndex}`);
+  // console.log(`Mobile scroll: direction=${direction}, distance=${distance}, currentIndex=${this.currentIndex}`);
   
   if (this.isScrolling) {
     return;
@@ -890,7 +931,7 @@ handleInfiniteLoop() {
     
   const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
   
-  console.log(`Reposition without transition: index=${this.currentIndex}, position=${targetPosition}`);
+  // console.log(`Reposition without transition: index=${this.currentIndex}, position=${targetPosition}`);
   
   this.track.style.transition = 'none';
   
