@@ -289,12 +289,13 @@ noir-éclairci : #adadac
 
   .fleches-sections-projets{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     font-family: 'Switzer-Extralight', 'Helvetica Neue', Arial, sans-serif;
-    font-size:4rem;
+    font-size:2rem;
     border: none;
     background-color: transparent;
+    padding:0;
   }
 
   .fleches-sections-projets:disabled {
@@ -309,13 +310,25 @@ noir-éclairci : #adadac
   }
 
   #fleche-gauche-projets{
-    grid-column: 1/2;
-    grid-row: 3/4;
+    display: none;
   }
 
   #fleche-droite-projets{
-    grid-column: 7/8;
-    grid-row: 3/4;
+    display: none;
+  }
+
+  #fleche-haut-projets{
+    display: flex;
+    grid-column: 4/5;
+    grid-row: 2/3;
+    align-self: start;
+  }
+
+  #fleche-bas-projets{
+    display: flex;
+    grid-column: 4/5;
+    grid-row: 6/7;
+    align-self: end;
   }
 
   /*--- SECTIONS SCROLLABLES ---*/
@@ -336,8 +349,8 @@ noir-éclairci : #adadac
     flex: 0 0 100vw;           /* largeur fixe égale à la fenêtre */
     height: 100vh;
     width:100vw;
-    grid-template-columns: 9.375vw repeat(5, 1fr) 9.375vw;
-    grid-template-rows: 16.667vh repeat(3, 1fr) 16.667vh;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: 8% 12% 20% 20% 20% 12% 8%;
     background-color: #f1f2f1;
     scroll-snap-align: start;  /* optionnel : aligne proprement au scroll */
   }
@@ -347,10 +360,11 @@ noir-éclairci : #adadac
     flex-direction: column;
     justify-content: center;
     gap:0.5rem;
-    grid-column: 2/4;
-    grid-row: 2/5;
+    grid-column: 2/7;
+    grid-row: 2/4;
     padding: 0;
-    padding-right: calc(25% + 4.63vh);
+    /* padding-right: 40%; */
+    width: 80%;
     color: #0f0c0c;
     text-align: left;
     /* background-color: aqua; */
@@ -420,15 +434,14 @@ noir-éclairci : #adadac
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: calc(100% - (4.63vh + calc(25% + 4.63vh)));
+    width: 100vw;
     gap: 4.63vh;
-    grid-column: 3/7;
-    grid-row: 1/6;
-    margin: 0;
-    margin-right: 4.63vh;
-    margin-left: calc(25% + 4.63vh);
+    grid-column: 1/8;
+    grid-row: 4/7;
+    margin:2vh 0 4vh 0;
+    /* margin-left: calc(25% + 4.63vh); */
     background-color: #0f0c0c;
-    height: 100%;
+    height: calc(100% - 4vh);
     position: relative;
     overflow: hidden;
     touch-action: pan-y;
@@ -444,10 +457,10 @@ noir-éclairci : #adadac
 
   .scroll-capture {
     position: absolute;
-    top: 16.667vh; /* même position que focus-frame */
+    top:0;
     left: 0;
     width: 100%;
-    height: calc(100% - 2 * 16.667vh);
+    height: 100%;
     z-index: 15; /* supérieur à .focus-frame (z-index: 5) */
     background: transparent;
   }
@@ -477,42 +490,50 @@ noir-éclairci : #adadac
   .carrousel-slide img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
   }
 
   /* Cadre visuel qui correspond à .img-principale */
   .focus-frame {
     position: absolute;
-    top: 16.667vh; /* position normale au centre */
-    left: 0;
-    width: 100%;
-    height: calc(100vh - 2 * 16.667vh);
+    margin: 0;
+    left: 9.5vw;
+    top:0;
+    width: calc(100vw - 2 * 9.5vw);
+    height: 100%;
+    /* height: calc(100% - 4vh); */
+    /* height: calc(100vh - 2 * 16.667vh); */
     /* border: 3px solid var(--highlight-color); */
     pointer-events: none;
     z-index: 5;
+    border: solid 1px red;
   }
 
   .previous-frame {
     position: absolute;
-    top: calc(16.667vh - (100vh - 2 * 16.667vh) - 4.63vh); /* focus-frame - hauteur frame - gap */
-    left: 0;
-    width: 100%;
-    height: calc(100vh - 2 * 16.667vh);
+    margin: 0;
+    left: calc(9.5vw - calc(100vw - 2 * 9.5vw) - 4vw);
+    top:0;
+    width: calc(100vw - 2 * 9.5vw);
+    height: 100%;
     /* border: 2px solid rgba(255, 255, 255, 0.3); */
     pointer-events: none;
     z-index: 4;
+    border: solid 1px blue;
   }
 
   .next-frame {
     position: absolute;
-    top: calc(16.667vh + (100vh - 2 * 16.667vh) + 4.63vh); /* focus-frame + hauteur frame + gap */
-    left: 0;
-    width: 100%;
-    height: calc(100vh - 2 * 16.667vh);
+    margin: 0;
+    left: calc(9.5vw + calc(100vw - 2 * 9.5vw) + 4vw);
+    top:0;
+    width: calc(100vw - 2 * 9.5vw);
+    height: 100%;
     /* border: 2px solid rgba(255, 255, 255, 0.3); */
     pointer-events: none;
     z-index: 4;
+    border: solid 1px blue;
   }
 
   /* Barre de scroll sur le côté */

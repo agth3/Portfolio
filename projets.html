@@ -22,8 +22,12 @@
                     <div class="elements-menu-bas" id="mail-menu">agathe.cotton@gmail.com</div>
                     <div class="elements-menu-bas" id="insta-menu"><a class="a-menu highlight-projet" href="https://www.instagram.com/happy_factoryy/?hl=fr" target="_blank">@happy_factoryy</a></div>
 
+                    <!-- caracteres de fleches : ᐸᐳᐱᐯ ˂˃˄˅  🢒🢑🢓  ᐊᐅᐃᐁ -->
                     <button class="fleches-sections-projets" id="fleche-gauche-projets">ᐸ</button>
                     <button class="fleches-sections-projets" id="fleche-droite-projets">ᐳ</button>
+                    <button class="fleches-sections-projets" id="fleche-haut-projets">ᐱ</button>
+                    <button class="fleches-sections-projets" id="fleche-bas-projets">ᐯ</button>
+
         </div>
 
         <div class="container-projets" id="container-projets">   
@@ -462,6 +466,8 @@ avec Luca SCHARRENBACH</span> -->
 const container = document.getElementById("container-projets");
 const btnLeft = document.getElementById("fleche-gauche-projets");
 const btnRight = document.getElementById("fleche-droite-projets");
+const btnUp = document.getElementById("fleche-haut-projets");
+const btnDown = document.getElementById("fleche-bas-projets");
 const sections = document.querySelectorAll(".grid-projets");
 
 const sectionWidth = window.innerWidth;
@@ -470,6 +476,8 @@ let currentIndex = 0;
 function updateButtons() {
   btnLeft.disabled = currentIndex === 0;
   btnRight.disabled = currentIndex === sections.length - 1;
+  btnUp.disabled = currentIndex === 0;
+  btnDown.disabled = currentIndex === sections.length - 1;
 }
 
 function scrollToIndex(index) {
@@ -491,6 +499,18 @@ btnRight.addEventListener("click", () => {
   }
 });
 
+btnUp.addEventListener("click", () => {
+  if (currentIndex > 0) {
+    scrollToIndex(currentIndex - 1);
+  }
+});
+
+btnDown.addEventListener("click", () => {
+  if (currentIndex < sections.length - 1) {
+    scrollToIndex(currentIndex + 1);
+  }
+});
+
 // Support des touches fléchées du clavier
 document.addEventListener("keydown", (event) => {
   // Vérifier si aucun champ de saisie n'est actif
@@ -505,12 +525,18 @@ document.addEventListener("keydown", (event) => {
   if (isInputFocused) return;
   
   if (event.key === "ArrowLeft" && currentIndex > 0) {
-    event.preventDefault(); // Empêche le comportement par défaut
-    scrollToIndex(currentIndex - 1);
-  } else if (event.key === "ArrowRight" && currentIndex < sections.length - 1) {
-    event.preventDefault(); // Empêche le comportement par défaut
-    scrollToIndex(currentIndex + 1);
-  }
+  event.preventDefault();
+  scrollToIndex(currentIndex - 1);
+} else if (event.key === "ArrowRight" && currentIndex < sections.length - 1) {
+  event.preventDefault();
+  scrollToIndex(currentIndex + 1);
+} else if (event.key === "ArrowUp" && currentIndex > 0) {
+  event.preventDefault();
+  scrollToIndex(currentIndex - 1);
+} else if (event.key === "ArrowDown" && currentIndex < sections.length - 1) {
+  event.preventDefault();
+  scrollToIndex(currentIndex + 1);
+}
 });
 
 // Auto-calcule la section visible au scroll manuel

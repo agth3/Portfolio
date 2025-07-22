@@ -459,6 +459,14 @@ color: #0f0c0c;
   grid-row: 3/4;
 }
 
+#fleche-haut-projets{
+    display:none;
+  }
+
+  #fleche-bas-projets{
+    display:none;
+  }
+
 /*--- SECTIONS SCROLLABLES ---*/
 
 .container-projets{
@@ -561,13 +569,13 @@ color: #0f0c0c;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: calc(100% - (4.63vh + calc(25% + 4.63vh)));
+  width: calc(100% - (4.63vh * 2));
   gap: 4.63vh;
-  grid-column: 3/7;
+  grid-column: 4/7;
   grid-row: 1/6;
-  margin: 0;
-  margin-right: 4.63vh;
-  margin-left: calc(25% + 4.63vh);
+  margin: 0 4.63vh;
+  /* margin-right: 4.63vh;
+  margin-left: calc(25% + 4.63vh); */
   background-color: #0f0c0c;
   height: 100%;
   position: relative;
