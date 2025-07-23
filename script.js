@@ -6,37 +6,44 @@ document.addEventListener("DOMContentLoaded", () => {
     {
       lowRes: 'asset/img/low/20231005_154014.png',
       highRes: 'asset/img/high/20231005_154014.jpg',
-      link: 'projets.html'
+      link: 'projets.html',
+      title: 'Affiche 1'
     },
     {
       lowRes: 'asset/img/low/affiches_2e_2.png',
       highRes: 'asset/img/high/affiches_2e_2.jpg',
-      link: 'projets.html'
+      link: 'projets.html',
+      title: 'Affiche 2'
     },
     {
       lowRes: 'asset/img/low/DSC_0004.png',
       highRes: 'asset/img/high/DSC_0004.JPG',
-      link: 'projets.html'
+      link: 'projets.html',
+      title: 'Affiche 3'
     },
     {
       lowRes: 'asset/img/low/Insta_Post-Feed.png',
       highRes: 'asset/img/high/Insta_Post-Feed.png',
-      link: 'projets.html'
+      link: 'projets.html',
+      title: 'Affiche 4'
     },
     {
       lowRes: 'asset/img/low/my_artwork-45.png',
       highRes: 'asset/img/high/my_artwork-45.png',
-      link: 'projets.html'
+      link: 'projets.html',
+      title: 'Affiche 5'
     },
     {
       lowRes: 'asset/img/low/my_artwork-71.png',
       highRes: 'asset/img/high/my_artwork-71.png',
-      link: 'projets.html'
+      link: 'projets.html',
+      title: 'Affiche 6'
     },
     {
       lowRes: 'asset/img/low/Posterwall.png',
       highRes: 'asset/img/high/Posterwall.jpg',
-      link: 'projets.html'
+      link: 'projets.html',
+      title: 'Affiche 7'
     }
   ];
 
@@ -225,24 +232,24 @@ function cleanupImageCache() {
         if (!titleEl || !titleEl.classList.contains('floating-image-title')) {
           titleEl = document.createElement('div');
           titleEl.classList.add('floating-image-title');
-          titleEl.style.cssText = `
-            position: absolute;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 14px;
-            pointer-events: none;
-            z-index: 1001;
-            transform: translateX(-50%);
-            transition: opacity 0.2s;
-          `;
+          // titleEl.style.cssText = `
+          //   position: absolute;
+          //   background: rgba(0,0,0,0.8);
+          //   color: white;
+          //   padding: 8px 12px;
+          //   border-radius: 4px;
+          //   font-size: 14px;
+          //   pointer-events: none;
+          //   z-index: 1001;
+          //   transform: translateX(-50%);
+          //   transition: opacity 0.2s;
+          // `;
           img.parentNode.appendChild(titleEl);
         }
-        
         titleEl.textContent = title;
-        titleEl.style.left = img.style.left;
-        titleEl.style.top = (parseFloat(img.style.top) + img.offsetHeight + 10) + 'px';
+        titleEl.style.left = (parseFloat(img.style.left) + img.offsetWidth / 2 - titleEl.offsetWidth / 2) + 'px';
+titleEl.style.top = (parseFloat(img.style.top) + img.offsetHeight / 2 - titleEl.offsetHeight / 2) + 'px';
+
         titleEl.style.display = 'block';
         titleEl.style.opacity = '1';
       }
@@ -286,12 +293,16 @@ function cleanupImageCache() {
               img.src = highResSrc;
               d.isHighRes = true;
               // Titre affiché SEULEMENT quand l'image HD est chargée
-              showImageTitle(img, `Image ${index + 1}`);
+              //showImageTitle(img, `Image ${index + 1}`); -> titre defini comme image + numéro
+              const title = imageConfig[index].title || `Image ${index + 1}`; //-> titre defini comme paramètre 'title' des img, et si non défini prend image + numéro
+              showImageTitle(img, title);
             }
           }).catch(console.error);
         } else {
           // Si déjà en HD, afficher le titre immédiatement
-          showImageTitle(img, `Image ${index + 1}`);
+          //showImageTitle(img, `Image ${index + 1}`); -> titre defini comme image + numéro
+          const title = imageConfig[index].title || `Image ${index + 1}`; //-> titre defini comme paramètre 'title' des img, et si non défini prend image + numéro
+          showImageTitle(img, title);
         }
       }
 

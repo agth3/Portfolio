@@ -2,7 +2,8 @@
 
 TO DO :
 
-_drag&drop a faire fonctionner sur mobile (trouver solution pour alternative au hover)
+_ mieux gérer l'apparition/disparition des titres (synchro parfaite avec l'état HD)
+_les ajouter en hover pour la version desktop (centrer dans l'image et classe texte "double-clic")
 _set les styles hover/active du menu et éléments interactifs
 _intégration des contenus (images, textes, liens..)
 
