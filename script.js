@@ -40,7 +40,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   ];
 
-  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+ const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+  const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  // Détecter si on est en mode développeur mobile sur desktop
+  const isDevToolsMobile = window.innerWidth <= 768 && !(/Mobi|Android/i.test(navigator.userAgent));
+  const isTouch = isMobile || hasTouch || isDevToolsMobile;
+
   const minImages = isMobile ? 3 : 4;
   const baseSpeed = 0.7;
   const fixedSpeeds = [1.5, 2.25, 3, 3.75];
@@ -84,16 +89,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  //CHATGPT MADE ME ADD THIS FUNCTION
   function cleanupImage(img) {
-  if (img.floatingData.clickTimer) {
-    clearTimeout(img.floatingData.clickTimer);
+    if (img.floatingData.clickTimer) {
+      clearTimeout(img.floatingData.clickTimer);
+    }
+    if (img.floatingData.lowResTimer) {
+      clearTimeout(img.floatingData.lowResTimer);
+    }
+    if (img.floatingData.focusTimer) {
+      clearTimeout(img.floatingData.focusTimer);
+    }
+    
+    // Nettoyage du titre si mode tactile
+    if (isTouch) {
+      hideImageTitle(img);
+    }
+    
+    preloadedImages.delete(img.floatingData.index);
   }
-  if (img.floatingData.lowResTimer) {
-    clearTimeout(img.floatingData.lowResTimer);
-  }
-  preloadedImages.delete(img.floatingData.index);
-}
 
 function cleanupImageCache() {
   const maxCacheSize = 10;
@@ -160,6 +173,121 @@ function cleanupImageCache() {
     }
   }
 
+  function resetImageState(img) {
+    console.log('Resetting image state');
+    const d = img.floatingData;
+    if (!d) return;
+    
+    d.state = 'normal';
+    img.dataset.paused = 'false'; // Reprendre l'animation
+    
+    // Retour à low-res
+    if (d.isHighRes) {
+      setTimeout(() => {
+        if (d.state === 'normal') {
+          img.src = d.originalSrc;
+          d.isHighRes = false;
+        }
+      }, 200);
+    }
+    
+    // Nettoyer le timer de focus
+    if (d.focusTimer) {
+      clearTimeout(d.focusTimer);
+      d.focusTimer = null;
+    }
+    
+    hideImageTitle(img);
+  }
+
+      function showImageTitle(img, title) {
+        let titleEl = img.nextElementSibling;
+        if (!titleEl || !titleEl.classList.contains('floating-image-title')) {
+          titleEl = document.createElement('div');
+          titleEl.classList.add('floating-image-title');
+          titleEl.style.cssText = `
+            position: absolute;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 1001;
+            transform: translateX(-50%);
+            transition: opacity 0.2s;
+          `;
+          img.parentNode.appendChild(titleEl);
+        }
+        
+        titleEl.textContent = title;
+        titleEl.style.left = img.style.left;
+        titleEl.style.top = (parseFloat(img.style.top) + img.offsetHeight + 10) + 'px';
+        titleEl.style.display = 'block';
+        titleEl.style.opacity = '1';
+      }
+
+      function hideImageTitle(img) {
+        // Chercher le titre suivant l'image
+        let titleEl = img.nextElementSibling;
+        if (!titleEl || !titleEl.classList.contains('floating-image-title')) {
+          // Si pas trouvé comme sibling, chercher dans le container
+          const allTitles = container.querySelectorAll('.floating-image-title');
+          titleEl = Array.from(allTitles).find(title => {
+            // Trouver le titre qui correspond à cette image (par position approximative)
+            const titleLeft = parseFloat(title.style.left);
+            const imgLeft = parseFloat(img.style.left) + img.offsetWidth/2;
+            return Math.abs(titleLeft - imgLeft) < 50; // Tolérance de 50px
+          });
+        }
+        
+        if (titleEl && titleEl.classList.contains('floating-image-title')) {
+          titleEl.style.opacity = '0';
+          setTimeout(() => {
+            if (titleEl.parentNode) {
+              titleEl.parentNode.removeChild(titleEl);
+            }
+          }, 200);
+        }
+      }
+
+      // Fonction pour les interactions tactiles (à placer AVANT createFloatingImage aussi)
+      function handleTouchInteraction(img, index, e) {
+        console.log('Touch interaction triggered, current state:', img.floatingData.state);
+        
+        if (e && e.preventDefault) e.preventDefault();
+        const d = img.floatingData;
+        
+        if (d.state === 'normal') {
+          console.log('Switching to focused state');
+          // Premier tap/clic : focus ET pause
+          d.state = 'focused';
+          img.dataset.paused = 'true'; // IMPORTANT : stopper l'animation
+          
+          // Switch vers HD
+          if (!d.isHighRes) {
+            preloadHighResImage(index).then(highResSrc => {
+              if (d.state === 'focused') {
+                img.src = highResSrc;
+                d.isHighRes = true;
+              }
+            }).catch(console.error);
+          }
+          
+          // Affichage du titre
+          showImageTitle(img, `Image ${index + 1}`);
+          
+          // Auto-reset après 3 secondes
+          if (d.focusTimer) clearTimeout(d.focusTimer);
+          d.focusTimer = setTimeout(() => resetImageState(img), 3000);
+          
+        } else if (d.state === 'focused') {
+          console.log('Navigating to:', imageConfig[index].link);
+          // Deuxième tap : navigation
+          window.location.href = imageConfig[index].link;
+        }
+      }
+
   function createFloatingImage(forcedIndex = null) {
     let index;
 
@@ -197,124 +325,262 @@ function cleanupImageCache() {
       transitionProgress: 1, isDragging: false,
       index, originalSrc: imageConfig[index].lowRes,
       isHighRes: false, clickCount: 0, clickTimer: null,
-      lowResTimer: null // Ajouté
+      lowResTimer: null, wasDragged: false,
+      // Propriétés tactiles conditionnelles
+      ...(isTouch && {
+        state: 'normal',
+        focusTimer: null
+      })
     };
 
-    // // Gestion du hover pour switch vers HD
     // Gestion du hover pour switch vers HD avec délai anti-flickering
-img.addEventListener('mouseenter', () => {
-  img.dataset.paused = 'true';
-
-  if (img.floatingData.lowResTimer) {
-    clearTimeout(img.floatingData.lowResTimer);
-    img.floatingData.lowResTimer = null;
-  }
-
-  if (!img.floatingData.isHighRes) {
-    preloadHighResImage(index).then(highResSrc => {
-      if (img.matches(':hover') && !img.floatingData.lowResTimer) {
-        img.src = highResSrc;
-        img.floatingData.isHighRes = true;
+      // État de l'image pour le mode tactile
+      if (isTouch) {
+        img.floatingData.state = 'normal'; // normal, focused
+        img.floatingData.focusTimer = null;
       }
-    }).catch(console.error);
-  }
-});
 
-img.addEventListener('mouseleave', () => {
-  if (!img.floatingData.isDragging && img.floatingData.isHighRes) {
-    img.dataset.paused = 'false';
+      // Interactions pour appareils tactiles
+      if (isTouch) {
+        let touchStartTime = 0;
+        let touchStartPos = { x: 0, y: 0 };
+        let hasMoved = false;
+        
+        img.addEventListener('touchstart', e => {
+          touchStartTime = Date.now();
+          hasMoved = false;
+          if (e.touches && e.touches[0]) {
+            touchStartPos.x = e.touches[0].clientX;
+            touchStartPos.y = e.touches[0].clientY;
+          }
+        });
+        
+        img.addEventListener('touchmove', e => {
+          if (e.touches && e.touches[0]) {
+            const moveDistance = Math.abs(e.touches[0].clientX - touchStartPos.x) + 
+                                Math.abs(e.touches[0].clientY - touchStartPos.y);
+            if (moveDistance > 10) { // Si mouvement > 10px
+              hasMoved = true;
+            }
+          }
+        });
+        
+        img.addEventListener('touchend', e => {
+          const touchDuration = Date.now() - touchStartTime;
+          const d = img.floatingData;
+          
+          // Si c'était un drag (mouvement détecté OU wasDragged), on ignore pour la navigation
+          if (hasMoved || d.wasDragged) {
+            console.log('Drag detected, not triggering navigation');
+            d.wasDragged = false;
+            return;
+          }
+          
+          // Si c'était un tap rapide sans mouvement, traiter comme interaction
+          if (touchDuration < 300 && !hasMoved) {
+            handleTouchInteraction(img, index, e);
+          }
+          
+          d.wasDragged = false;
+        });
+        
+        // Clic souris pour le développement mobile sur desktop
+        img.addEventListener('click', e => {
+          if (!img.floatingData.isDragging && !img.floatingData.wasDragged) {
+            handleTouchInteraction(img, index, e);
+          }
+        });
+      } else {
+        // Interactions classiques pour desktop
+        img.addEventListener('mouseenter', () => {
+          img.dataset.paused = 'true';
 
-    img.floatingData.lowResTimer = setTimeout(() => {
-      if (!img.matches(':hover')) {
-        img.src = img.floatingData.originalSrc;
-        img.floatingData.isHighRes = false;
+          if (img.floatingData.lowResTimer) {
+            clearTimeout(img.floatingData.lowResTimer);
+            img.floatingData.lowResTimer = null;
+          }
+
+          if (!img.floatingData.isHighRes) {
+            preloadHighResImage(index).then(highResSrc => {
+              if (img.matches(':hover') && !img.floatingData.lowResTimer) {
+                img.src = highResSrc;
+                img.floatingData.isHighRes = true;
+              }
+            }).catch(console.error);
+          }
+        });
+
+        img.addEventListener('mouseleave', () => {
+          if (!img.floatingData.isDragging && img.floatingData.isHighRes) {
+            img.dataset.paused = 'false';
+
+            img.floatingData.lowResTimer = setTimeout(() => {
+              if (!img.matches(':hover')) {
+                img.src = img.floatingData.originalSrc;
+                img.floatingData.isHighRes = false;
+              }
+              img.floatingData.lowResTimer = null;
+            }, 100);
+          }
+        });
+
+        // Gestion du clic simple pour desktop (arrêt) et double-clic (navigation)
+        img.addEventListener('click', (e) => {
+          if (img.floatingData.isDragging || img.floatingData.wasDragged) return;
+          
+          img.floatingData.clickCount++;
+          
+          if (img.floatingData.clickCount === 1) {
+            // Premier clic : arrêter l'image si elle bouge
+            if (img.dataset.paused === 'false') {
+              img.dataset.paused = 'true';
+            }
+            
+            img.floatingData.clickTimer = setTimeout(() => {
+              img.floatingData.clickCount = 0;
+              // Reprendre le mouvement après timeout si pas de second clic
+              if (img.dataset.paused === 'true') {
+                img.dataset.paused = 'false';
+              }
+            }, 400);
+          } else if (img.floatingData.clickCount === 2) {
+            clearTimeout(img.floatingData.clickTimer);
+            img.floatingData.clickCount = 0;
+            window.location.href = imageConfig[index].link;
+          }
+        });
       }
-      img.floatingData.lowResTimer = null;
-    }, 100);
-  }
-});
 
+      
 
-    // Gestion du clic/double-clic
-    img.addEventListener('click', (e) => {
-      if (img.floatingData.isDragging) return;
-      
-      img.floatingData.clickCount++;
-      
-      if (img.floatingData.clickCount === 1) {
-        img.floatingData.clickTimer = setTimeout(() => {
-          img.floatingData.clickCount = 0;
-          // Simple clic - ne rien faire ou action légère
-        }, 300);
-      } else if (img.floatingData.clickCount === 2) {
-        clearTimeout(img.floatingData.clickTimer);
-        img.floatingData.clickCount = 0;
-        // Double-clic - navigation
-        window.location.href = imageConfig[index].link;
-      }
-    });
-
-    // Système de drag & drop
-    img.style.cursor = 'grab';
-    
-    let newX = 0, newY = 0, startX = 0, startY = 0;
-    let isDragging = false;
-    
-    img.addEventListener('mousedown', mouseDown);
-    img.addEventListener('touchstart', e => {
-      const t = e.touches[0];
-      mouseDown({ clientX: t.clientX, clientY: t.clientY });
-    });
-
-    function mouseDown(e) {
-      e.preventDefault();
-      isDragging = true;
-      const d = img.floatingData;
-      d.isDragging = true;
-      img.dataset.paused = 'true';
-      
-      startX = e.clientX;
-      startY = e.clientY;
-      
-      img.style.cursor = 'grabbing';
-      img.style.zIndex = '1000';
-      
-      document.addEventListener('mousemove', mouseMove);
-      document.addEventListener('mouseup', mouseUp);
-    }
-
-    function mouseMove(e) {
-      if (!isDragging) return;
-      e.preventDefault();
-      
-      newX = startX - e.clientX;
-      newY = startY - e.clientY;
-      
-      startX = e.clientX;
-      startY = e.clientY;
-      
-      img.style.left = (img.offsetLeft - newX) + 'px';
-      img.style.top = (img.offsetTop - newY) + 'px';
-    }
-
-    function mouseUp(e) {
-      if (!isDragging) return;
-      
-      isDragging = false;
-      const d = img.floatingData;
-      d.isDragging = false;
-      img.dataset.paused = 'false';
+    // Système de drag & drop unifié
       img.style.cursor = 'grab';
-      img.style.zIndex = 'auto';
-      img.dataset.mode = 'random';
-      d.hasChangedDirection = true;
-      d.targetAngle = Math.random() * 360;
-      d.transitionProgress = 0;
-      d.angleChangeTimer = 0;
-      
-      document.removeEventListener('mousemove', mouseMove);
-      document.removeEventListener('mouseup', mouseUp);
-    }
+
+      let newX = 0, newY = 0, startX = 0, startY = 0;
+      let isDragging = false;
+      let dragStartTime = 0;
+
+      // Events communs
+      img.addEventListener('mousedown', mouseDown);
+
+      // Events tactiles seulement si tactile
+      if (isTouch) {
+        img.addEventListener('touchstart', e => {
+          e.preventDefault();
+          const t = e.touches[0];
+          mouseDown({ 
+            clientX: t.clientX, 
+            clientY: t.clientY,
+            preventDefault: () => {} // Ajouter une fonction preventDefault factice
+          });
+        }, { passive: false });
+      }
+
+      function mouseDown(e) {
+        if (e.preventDefault) e.preventDefault();
+        isDragging = true;
+        dragStartTime = Date.now();
+        const d = img.floatingData;
+        d.isDragging = true;
+        img.dataset.paused = 'true';
+        
+        // EN MODE TACTILE : déclencher immédiatement le focus au début du drag
+        if (isTouch && d.state === 'normal') {
+          d.state = 'focused';
+          
+          // Switch vers HD
+          if (!d.isHighRes) {
+            preloadHighResImage(index).then(highResSrc => {
+              if (d.state === 'focused') {
+                img.src = highResSrc;
+                d.isHighRes = true;
+              }
+            }).catch(console.error);
+          }
+          
+          // Affichage du titre
+          showImageTitle(img, `Image ${index + 1}`);
+          
+          // Auto-reset après 3 secondes
+          if (d.focusTimer) clearTimeout(d.focusTimer);
+          d.focusTimer = setTimeout(() => resetImageState(img), 3000);
+        }
+        
+        startX = e.clientX;
+        startY = e.clientY;
+        
+        img.style.cursor = 'grabbing';
+        img.style.zIndex = '1000';
+        
+        document.addEventListener('mousemove', mouseMove);
+        document.addEventListener('mouseup', mouseUp);
+        
+        if (isTouch) {
+          const touchMoveHandler = (touchEvent) => {
+            if (touchEvent.touches && touchEvent.touches[0]) {
+              touchEvent.preventDefault();
+              mouseMove({ 
+                clientX: touchEvent.touches[0].clientX, 
+                clientY: touchEvent.touches[0].clientY,
+                preventDefault: () => {}
+              });
+            }
+          };
+          
+          document.addEventListener('touchmove', touchMoveHandler, { passive: false });
+          document.addEventListener('touchend', (touchEvent) => {
+            document.removeEventListener('touchmove', touchMoveHandler);
+            mouseUp(touchEvent);
+          });
+        }
+      }
+
+      function mouseMove(e) {
+        if (!isDragging) return;
+        if (e.preventDefault) e.preventDefault(); // Vérification avant appel
+        
+        newX = startX - e.clientX;
+        newY = startY - e.clientY;
+        
+        startX = e.clientX;
+        startY = e.clientY;
+        
+        img.style.left = (img.offsetLeft - newX) + 'px';
+        img.style.top = (img.offsetTop - newY) + 'px';
+      }
+
+      function mouseUp(e) {
+        if (!isDragging) return;
+        
+        const dragDuration = Date.now() - dragStartTime;
+        const d = img.floatingData;
+        
+        // Considérer comme drag si durée > 150ms OU si mouvement significatif
+        const wasDragOperation = dragDuration > 150;
+        
+        isDragging = false;
+        d.isDragging = false;
+        d.wasDragged = wasDragOperation;
+
+        // Reset du flag wasDragged après un court délai
+        setTimeout(() => {
+          d.wasDragged = false;
+        }, 50);
+        
+        img.dataset.paused = 'false';
+        img.style.cursor = 'grab';
+        img.style.zIndex = 'auto';
+        img.dataset.mode = 'random';
+        d.hasChangedDirection = true;
+        d.targetAngle = Math.random() * 360;
+        d.transitionProgress = 0;
+        d.angleChangeTimer = 0;
+        
+        document.removeEventListener('mousemove', mouseMove);
+        document.removeEventListener('mouseup', mouseUp);
+        
+        // Les event listeners tactiles sont gérés différemment maintenant
+      }
 
     console.log('Floating image created', index);
     container.appendChild(img);
@@ -419,18 +685,27 @@ img.addEventListener('mouseleave', () => {
 if (imagesToRemove.length > 0) {
   imagesToRemove.forEach(img => {
     const idx = img.floatingData.index;
-
-    cleanupImage(img); // <-- Ajout important
-
+    
+    cleanupImage(img); // Cette fonction doit être appelée
+    
     visibleImages.delete(idx);
     const oldSpeed = imageSpeeds.get(idx);
     if (oldSpeed !== undefined) {
       speedPool.push(oldSpeed);
       imageSpeeds.delete(idx);
     }
-    if (img.parentNode) container.removeChild(img);
+    if (img.parentNode) {
+      container.removeChild(img);
+    }
   });
+
+  // S'assurer que cleanupImageCache() soit appelée periodiquement
+  if (performance.now() % 10000 < 33) { // Environ toutes les 10 secondes
+    cleanupImageCache();
+  }
 }
+
+
 
     // Optimisation : création d'images moins fréquente
     const currentImageCount = document.getElementsByClassName('floating-image').length;
