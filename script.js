@@ -213,6 +213,11 @@ function cleanupImageCache() {
   
   // IMPORTANT : Nettoyer le titre à chaque défocus
   hideImageTitle(img);
+
+  // Reset du tap count pour le mode tactile
+  if (shouldUseTouchMode) {
+    d.tapCount = 0;
+  }
 }
 
       function showImageTitle(img, title) {
@@ -292,67 +297,46 @@ function cleanupImageCache() {
 
       // Fonction pour les interactions tactiles (à placer AVANT createFloatingImage aussi)
       function handleTouchInteraction(img, index, e) {
-        console.log('Touch interaction triggered, current state:', img.floatingData.state);
-        
-        if (e && e.preventDefault) e.preventDefault();
-        const d = img.floatingData;
-        
-        if (d.state === 'normal') {
-          console.log('First tap: Switching to focused state and STOPPING animation');
-          applyFocusedState(img, index);
-        } else if (d.state === 'focused' && d.dragStarted === false) {
-          // L'image était déjà focused par un tap court précédent
-          console.log('Image already focused from short tap - ready for navigation on next tap');
-          // Ne rien faire, prêt pour la navigation
-          
-          // Pas d'auto-reset, l'image reste focus jusqu'à interaction avec autre élément
-          if (d.focusTimer) {
-            clearTimeout(d.focusTimer);
-            d.focusTimer = null;
-          }
-
-          // Premier tap/clic : focus ET pause
-          d.state = 'focused';
-          img.dataset.paused = 'true'; // IMPORTANT : stopper l'animation
-          
-          // Double vérification que l'image est bien en pause
-          console.log('Image pause state after setting:', img.dataset.paused);
-          console.log('Image floating data state:', d.state);
-          
-          // Switch vers HD
-          if (!d.isHighRes) {
-            preloadHighResImage(index).then(highResSrc => {
-              if (d.state === 'focused') {
-                img.src = highResSrc;
-                d.isHighRes = true;
-              }
-            }).catch(console.error);
-          }
-          
-          // Affichage du titre
-          showImageTitle(img, `Image ${index + 1}`);
-          
-          // Pas d'auto-reset, l'image reste focus jusqu'à interaction avec autre élément
-          if (d.focusTimer) {
-            clearTimeout(d.focusTimer);
-            d.focusTimer = null;
-          }
-          
-          // Défocuser toutes les autres images
-          const allImages = document.getElementsByClassName('floating-image');
-          Array.from(allImages).forEach(otherImg => {
-            if (otherImg !== img && otherImg.floatingData.state === 'focused') {
-              resetImageState(otherImg);
-            }
-          });
-          
-        } else if (d.state === 'focused') {
-          console.log('Navigating to:', imageConfig[index].link);
-          alert('TOUCH: Should navigate to ' + imageConfig[index].link);
-          // Deuxième tap : navigation
-          // window.location.href = imageConfig[index].link; // Désactivé pour debug
-        }
+  console.log('=== handleTouchInteraction CALLED ===');
+  console.log('Touch interaction triggered, current state:', img.floatingData.state, 'tapCount:', img.floatingData.tapCount);
+  
+  if (e && e.preventDefault) e.preventDefault();
+  const d = img.floatingData;
+  
+  // Premier tap : image normale -> focused
+  if (d.state === 'normal' && d.tapCount === 0) {
+    console.log('FIRST TAP: Switching to focused state');
+    d.tapCount = 1;
+    
+    // Appliquer l'état focused (HD + titre + pause)
+    applyFocusedState(img, index);
+    
+    // Défocuser toutes les autres images
+    const allImages = document.getElementsByClassName('floating-image');
+    Array.from(allImages).forEach(otherImg => {
+      if (otherImg !== img && otherImg.floatingData.state === 'focused') {
+        console.log('Unfocusing other image due to first tap');
+        resetImageState(otherImg);
       }
+    });
+    
+  // Deuxième tap : image focused + tapCount = 1 -> navigation
+  } else if (d.state === 'focused' && d.tapCount === 1) {
+    console.log('SECOND TAP: Navigating to:', imageConfig[index].link);
+    // alert('TOUCH: Should navigate to ' + imageConfig[index].link);
+    window.location.href = imageConfig[index].link; // Réactiver quand debug terminé
+    
+    // Reset pour les prochaines interactions
+    d.tapCount = 0;
+    
+  // Image déjà focused par un tap précédent -> deuxième tap = navigation  
+  } else if (d.state === 'focused' && d.tapCount === 0) {
+    console.log('FIRST TAP on already focused image (from drag) - setting tapCount to 1');
+    d.tapCount = 1;
+  } else {
+    console.log('TAP IGNORED - state:', d.state, 'tapCount:', d.tapCount);
+  }
+}
 
   function createFloatingImage(forcedIndex = null) {
     let index;
@@ -393,9 +377,10 @@ function cleanupImageCache() {
       isHighRes: false, clickCount: 0, clickTimer: null,
       lowResTimer: null, wasDragged: false,
       // Propriétés tactiles conditionnelles
-      ...(isTouch && {
+      ...(shouldUseTouchMode && {
         state: 'normal',
-        focusTimer: null
+        focusTimer: null,
+        tapCount: 0  // NOUVEAU FLAG
       })
     };
 
@@ -433,6 +418,7 @@ function cleanupImageCache() {
         });
         
         img.addEventListener('touchend', e => {
+          console.log('=== TOUCHEND EVENT ===');
           const touchDuration = Date.now() - touchStartTime;
           const d = img.floatingData;
           
@@ -445,6 +431,7 @@ function cleanupImageCache() {
           
           // Si c'était un tap rapide sans mouvement, traiter comme interaction
           if (touchDuration < 300 && !hasMoved) {
+            console.log('Calling handleTouchInteraction from touchend');
             handleTouchInteraction(img, index, e);
           }
           
@@ -495,9 +482,10 @@ function cleanupImageCache() {
         });
 
         // Gestion du clic simple pour desktop (arrêt) et double-clic (navigation)
-        img.addEventListener('click', (e) => {
-          alert('DESKTOP click handler triggered - Mode should be: ' + (shouldUseTouchMode ? 'TOUCH' : 'DESKTOP'));
+         img.addEventListener('click', (e) => {
+          console.log('=== DESKTOP CLICK HANDLER CALLED ===');
           console.log('DESKTOP CLICK detected - isDragging:', img.floatingData.isDragging, 'wasDragged:', img.floatingData.wasDragged);
+          // alert('DESKTOP click handler triggered - Mode should be: ' + (shouldUseTouchMode ? 'TOUCH' : 'DESKTOP'));
 
           if (img.floatingData.isDragging || img.floatingData.wasDragged) return;
           
@@ -519,8 +507,8 @@ function cleanupImageCache() {
           } else if (img.floatingData.clickCount === 2) {
             clearTimeout(img.floatingData.clickTimer);
             img.floatingData.clickCount = 0;
-            alert('DESKTOP: Should navigate to ' + imageConfig[index].link);
-            // window.location.href = imageConfig[index].link; // Désactivé pour debug
+            // alert('DESKTOP: Should navigate to ' + imageConfig[index].link);
+            window.location.href = imageConfig[index].link; // Désactivé pour debug
           }
         });
       }
@@ -658,9 +646,10 @@ function cleanupImageCache() {
             console.log('Real drag completed - staying focused');
             // L'image reste en focused, pas de changement d'état
           } else if (d.dragStarted) {
-            // Tap court : ne rien faire, laisser handleTouchInteraction gérer
-            console.log('Short tap detected - letting handleTouchInteraction manage');
-            // L'image reste focused, handleTouchInteraction va gérer selon son état
+            // Tap court : l'image est déjà focused par mouseDown, incrémenter tapCount
+            console.log('Short tap detected - image already focused, setting tapCount to 1');
+            d.tapCount = 1; // Marquer comme premier tap
+            // L'image reste focused (HD + titre + pause) - c'est ce qu'on veut !
           }
           
           // Reset du flag
