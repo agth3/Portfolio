@@ -7,43 +7,50 @@ document.addEventListener("DOMContentLoaded", () => {
       lowRes: 'asset/img/low/20231005_154014.png',
       highRes: 'asset/img/high/20231005_154014.jpg',
       link: 'projets.html',
-      title: 'Affiche 1'
+      titleMobile:'Img Mob 1',
+      titleDesktop:'Img Ord 1'
     },
     {
       lowRes: 'asset/img/low/affiches_2e_2.png',
       highRes: 'asset/img/high/affiches_2e_2.jpg',
       link: 'projets.html',
-      title: 'Affiche 2'
+      titleMobile:'Img Mob 2',
+      titleDesktop:'Img Ord 2'
     },
     {
       lowRes: 'asset/img/low/DSC_0004.png',
       highRes: 'asset/img/high/DSC_0004.JPG',
       link: 'projets.html',
-      title: 'Affiche 3'
+      titleMobile:'Img Mob 3',
+      titleDesktop:'Img Ord 3'
     },
     {
       lowRes: 'asset/img/low/Insta_Post-Feed.png',
       highRes: 'asset/img/high/Insta_Post-Feed.png',
       link: 'projets.html',
-      title: 'Affiche 4'
+      titleMobile:'Img Mob 4',
+      titleDesktop:'Img Ord 4'
     },
     {
       lowRes: 'asset/img/low/my_artwork-45.png',
       highRes: 'asset/img/high/my_artwork-45.png',
       link: 'projets.html',
-      title: 'Affiche 5'
+      titleMobile:'Img Mob 5',
+      titleDesktop:'Img Ord 5'
     },
     {
       lowRes: 'asset/img/low/my_artwork-71.png',
       highRes: 'asset/img/high/my_artwork-71.png',
       link: 'projets.html',
-      title: 'Affiche 6'
+      titleMobile:'Img Mob 6',
+      titleDesktop:'Img Ord 1'
     },
     {
       lowRes: 'asset/img/low/Posterwall.png',
       highRes: 'asset/img/high/Posterwall.jpg',
       link: 'projets.html',
-      title: 'Affiche 7'
+      titleMobile:'Img Mob 7',
+      titleDesktop:'Img Ord 7'
     }
   ];
 
@@ -66,6 +73,12 @@ document.addEventListener("DOMContentLoaded", () => {
     userAgent: navigator.userAgent,
     windowWidth: window.innerWidth
   });
+
+  imageConfig.forEach(item => {
+      item.title = shouldUseTouchMode
+        ? item.titleMobile || 'Toucher' //toucher pour Message fallback
+        : item.titleDesktop || 'Double-Cliquer'; //cliquer pour Message fallback
+    });
 
   const minImages = isMobile ? 3 : 4;
   const baseSpeed = isMobile ? 0.5 : 0.7; // Plus lent sur mobile
@@ -317,7 +330,10 @@ function cleanupImageCache() {
             img.src = highResSrc;
             d.isHighRes = true;
             
-            const title = imageConfig[index].title || `Image ${index + 1}`;
+            // const title = imageConfig[index].title || `Image ${index + 1}`;
+            const title = shouldUseTouchMode
+              ? imageConfig[index].titleMobile || imageConfig[index].title || `Image ${index + 1}`
+              : imageConfig[index].titleDesktop || imageConfig[index].title || `Image ${index + 1}`;
             showImageTitle(img, title);
           }
         }).catch(console.error);
@@ -419,7 +435,7 @@ function cleanupImageCache() {
 
       // Interactions pour appareils tactiles
       if (shouldUseTouchMode) {
-        console.log('Using TOUCH MODE for image', index);
+        // console.log('Using TOUCH MODE for image', index);
         let touchStartTime = 0;
         let touchStartPos = { x: 0, y: 0 };
         let hasMoved = false;
@@ -490,7 +506,11 @@ function cleanupImageCache() {
             }
 
             // CORRECTION : Titre immédiat sans condition
-            const title = imageConfig[index].title || `Image ${index + 1}`;
+            // const title = imageConfig[index].title || `Image ${index + 1}`;
+            const title = shouldUseTouchMode
+              ? imageConfig[index].titleMobile || imageConfig[index].title || `Image ${index + 1}`
+              : imageConfig[index].titleDesktop || imageConfig[index].title || `Image ${index + 1}`;
+
             showImageTitle(img, title);
 
             // Switch HD immédiat
@@ -715,7 +735,7 @@ function cleanupImageCache() {
         document.removeEventListener('mouseup', mouseUp);
       }
 
-    console.log('Floating image created', index);
+    // console.log('Floating image created', index);
     container.appendChild(img);
     return img;
     
@@ -895,6 +915,24 @@ if (imagesToRemove.length > 0) {
 
   initFloatingImages();
   animationFrameId = requestAnimationFrame(updatePositions);
+
+    //Désactive le focus si on tape à côté
+    if (shouldUseTouchMode) {
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+      const isImage = target.classList.contains('floating-image');
+
+      if (!isImage) {
+        const images = document.getElementsByClassName('floating-image');
+        Array.from(images).forEach(img => {
+          const d = img.floatingData;
+          if (d && d.state === 'focused') {
+            resetImageState(img);
+          }
+        });
+      }
+    });
+  }
 
   // Event listeners pour la gestion de la visibilité
   document.addEventListener('visibilitychange', handleVisibilityChange);
