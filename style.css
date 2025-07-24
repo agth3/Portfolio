@@ -348,8 +348,24 @@ color: #0f0c0c;
 
 .floating-image:hover {
   transform: scale(1.1);
-  z-index: 1000;
+  z-index: 20;
 }
+
+.floating-image-title{
+    position: absolute;
+    /* background-color:#f1f2f1;
+    color: #0f0c0c; */
+    color:yellow;
+    padding: 1vh 1.5vh;
+    font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
+    font-size:1.25rem;
+    pointer-events: none;
+    z-index: 25;
+    transition: opacity 0.2s;
+    white-space: nowrap; /*pas de retour à la ligne*/
+    transform: translate(-50%, -50%);
+  }
+
 
 
 /*--------- PAGE MOSAIQUE ---------*/

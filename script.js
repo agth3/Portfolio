@@ -68,8 +68,11 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const minImages = isMobile ? 3 : 4;
-  const baseSpeed = 0.7;
-  const fixedSpeeds = [1.5, 2.25, 3, 3.75];
+  const baseSpeed = isMobile ? 0.5 : 0.7; // Plus lent sur mobile
+  const fixedSpeeds = isMobile ? 
+  [1.5, 2.25, 3, 3.75] :      // Vitesses mobile
+  [2.25, 3, 3.75, 4.5];       // Vitesses desktop
+
   const speedPool = [...fixedSpeeds];
   const imageSpeeds = new Map();
   const visibleImages = new Set();
@@ -121,12 +124,16 @@ document.addEventListener("DOMContentLoaded", () => {
       clearTimeout(img.floatingData.focusTimer);
     }
     
-    // Nettoyage du titre si mode tactile
-    if (isTouch) {
-      hideImageTitle(img);
-    }
+    // Nettoyage du titre amélioré
+    hideImageTitle(img);
     
+    // Suppression référence cache
     preloadedImages.delete(img.floatingData.index);
+    
+    // Reset référence titre
+    if (img.titleElement) {
+      img.titleElement = null;
+    }
   }
 
 function cleanupImageCache() {
@@ -195,87 +202,102 @@ function cleanupImageCache() {
   }
 
   function resetImageState(img) {
-  console.log('Resetting image state - restarting animation');
-  const d = img.floatingData;
-  if (!d) return;
-  
-  d.state = 'normal';
-  img.dataset.paused = 'false'; // Reprendre l'animation
-  
-  // Retour à low-res
-  if (d.isHighRes) {
-    setTimeout(() => {
-      if (d.state === 'normal') {
-        img.src = d.originalSrc;
-        d.isHighRes = false;
-      }
-    }, 200);
-  }
-  
-  // Nettoyer le timer de focus
-  if (d.focusTimer) {
-    clearTimeout(d.focusTimer);
-    d.focusTimer = null;
-  }
-  
-  // IMPORTANT : Nettoyer le titre à chaque défocus
-  hideImageTitle(img);
+    console.log('Resetting image state - restarting animation');
+    const d = img.floatingData;
+    if (!d) return;
+    
+    console.log('Before reset - state:', d.state, 'tapCount:', d.tapCount); // DEBUG
+    
+    d.state = 'normal';
 
-  // Reset du tap count pour le mode tactile
-  if (shouldUseTouchMode) {
-    d.tapCount = 0;
+    const defaultZ = 10 + d.index * 2;
+    img.style.zIndex = defaultZ;
+    d.zImage = defaultZ;
+
+    img.dataset.paused = 'false';
+    
+    // Retour à low-res
+    if (d.isHighRes) {
+      setTimeout(() => {
+        if (d.state === 'normal') {
+          img.src = d.originalSrc;
+          d.isHighRes = false;
+        }
+      }, 200);
+    }
+    
+    // Nettoyer le timer de focus
+    if (d.focusTimer) {
+      clearTimeout(d.focusTimer);
+      d.focusTimer = null;
+    }
+    
+    // IMPORTANT : Nettoyer le titre à chaque défocus
+    hideImageTitle(img);
+
+    // Reset du tap count pour le mode tactile
+    if (shouldUseTouchMode) {
+      d.tapCount = 0;
+    }
+    console.log('After reset - state:', d.state, 'tapCount:', d.tapCount); // DEBUG
   }
-}
 
       function showImageTitle(img, title) {
-        let titleEl = img.nextElementSibling;
-        if (!titleEl || !titleEl.classList.contains('floating-image-title')) {
-          titleEl = document.createElement('div');
-          titleEl.classList.add('floating-image-title');
-          // titleEl.style.cssText = `
-          //   position: absolute;
-          //   background: rgba(0,0,0,0.8);
-          //   color: white;
-          //   padding: 8px 12px;
-          //   border-radius: 4px;
-          //   font-size: 14px;
-          //   pointer-events: none;
-          //   z-index: 1001;
-          //   transform: translateX(-50%);
-          //   transition: opacity 0.2s;
-          // `;
-          img.parentNode.appendChild(titleEl);
-        }
-        titleEl.textContent = title;
-        titleEl.style.left = (parseFloat(img.style.left) + img.offsetWidth / 2 - titleEl.offsetWidth / 2) + 'px';
-titleEl.style.top = (parseFloat(img.style.top) + img.offsetHeight / 2 - titleEl.offsetHeight / 2) + 'px';
-
-        titleEl.style.display = 'block';
-        titleEl.style.opacity = '1';
+      let titleEl = img.titleElement;
+      if (!titleEl) {
+        titleEl = document.createElement('div');
+        titleEl.classList.add('floating-image-title');
+        // titleEl.style.cssText = `
+        //   position: absolute;
+        //   background: rgba(0,0,0,0.85);
+        //   color: white;
+        //   padding: 6px 10px;
+        //   border-radius: 4px;
+        //   font-size: 13px;
+        //   font-weight: 500;
+        //   pointer-events: none;
+        //   z-index: 1001;
+        //   white-space: nowrap;
+        //   transform: translate(-50%, -50%);
+        //   transition: opacity 0.15s ease-out;
+        //   opacity: 0;
+        // `;
+        container.appendChild(titleEl);
+        img.titleElement = titleEl;
+        const zImage = img.floatingData?.zImage || parseInt(img.style.zIndex) || 10;
+        titleEl.style.zIndex = zImage + 1;
       }
+      
+      titleEl.textContent = title;
+
+      // CORRECTION : affichage immédiat, calcul de position en parallèle
+      titleEl.style.opacity = '1';
+      updateTitlePosition(img, titleEl);
+    }
 
       function hideImageTitle(img) {
-        // Chercher le titre suivant l'image
-        let titleEl = img.nextElementSibling;
-        if (!titleEl || !titleEl.classList.contains('floating-image-title')) {
-          // Si pas trouvé comme sibling, chercher dans le container
-          const allTitles = container.querySelectorAll('.floating-image-title');
-          titleEl = Array.from(allTitles).find(title => {
-            // Trouver le titre qui correspond à cette image (par position approximative)
-            const titleLeft = parseFloat(title.style.left);
-            const imgLeft = parseFloat(img.style.left) + img.offsetWidth/2;
-            return Math.abs(titleLeft - imgLeft) < 50; // Tolérance de 50px
-          });
-        }
-        
-        if (titleEl && titleEl.classList.contains('floating-image-title')) {
-          titleEl.style.opacity = '0';
+        if (img.titleElement) {
+          img.titleElement.style.opacity = '0';
           setTimeout(() => {
-            if (titleEl.parentNode) {
-              titleEl.parentNode.removeChild(titleEl);
+            if (img.titleElement && img.titleElement.parentNode) {
+              container.removeChild(img.titleElement);
+              img.titleElement = null;
             }
-          }, 200);
+          }, 150);
         }
+      }
+
+      // Nouvelle fonction pour mise à jour position titre
+      function updateTitlePosition(img, titleEl) {
+        const imgLeft = parseFloat(img.style.left) || 0;
+        const imgTop = parseFloat(img.style.top) || 0;
+        
+        // Utiliser les dimensions actuelles ou par défaut
+        const imgWidth = img.offsetWidth || img.naturalWidth || 150;
+        const imgHeight = img.offsetHeight || img.naturalHeight || 150;
+        
+        titleEl.style.left = (imgLeft + imgWidth / 2) + 'px';
+        titleEl.style.top = (imgTop + imgHeight / 2) + 'px';
       }
 
       // Fonction pour appliquer l'état focused de manière cohérente
@@ -286,68 +308,57 @@ titleEl.style.top = (parseFloat(img.style.top) + img.offsetHeight / 2 - titleEl.
         d.state = 'focused';
         img.dataset.paused = 'true';
         
-        // Switch vers HD et titre en même temps
-        if (!d.isHighRes) {
-          preloadHighResImage(index).then(highResSrc => {
-            if (d.state === 'focused') {
-              img.src = highResSrc;
-              d.isHighRes = true;
-              // Titre affiché SEULEMENT quand l'image HD est chargée
-              //showImageTitle(img, `Image ${index + 1}`); -> titre defini comme image + numéro
-              const title = imageConfig[index].title || `Image ${index + 1}`; //-> titre defini comme paramètre 'title' des img, et si non défini prend image + numéro
-              showImageTitle(img, title);
-            }
-          }).catch(console.error);
-        } else {
-          // Si déjà en HD, afficher le titre immédiatement
-          //showImageTitle(img, `Image ${index + 1}`); -> titre defini comme image + numéro
-          const title = imageConfig[index].title || `Image ${index + 1}`; //-> titre defini comme paramètre 'title' des img, et si non défini prend image + numéro
-          showImageTitle(img, title);
-        }
+        // Switch vers HD et titre en même temps - CORRECTION du bug
+        preloadHighResImage(index).then(highResSrc => {
+          if (d.state === 'focused') { // Vérifier que l'état est toujours focused
+            img.style.zIndex = 100;
+            d.zImage = 100; // pour showImageTitle
+            
+            img.src = highResSrc;
+            d.isHighRes = true;
+            
+            const title = imageConfig[index].title || `Image ${index + 1}`;
+            showImageTitle(img, title);
+          }
+        }).catch(console.error);
       }
 
       // Fonction pour les interactions tactiles (à placer AVANT createFloatingImage aussi)
       function handleTouchInteraction(img, index, e) {
-  console.log('=== handleTouchInteraction CALLED ===');
-  console.log('Touch interaction triggered, current state:', img.floatingData.state, 'tapCount:', img.floatingData.tapCount);
-  
-  if (e && e.preventDefault) e.preventDefault();
-  const d = img.floatingData;
-  
-  // Premier tap : image normale -> focused
-  if (d.state === 'normal' && d.tapCount === 0) {
-    console.log('FIRST TAP: Switching to focused state');
-    d.tapCount = 1;
-    
-    // Appliquer l'état focused (HD + titre + pause)
-    applyFocusedState(img, index);
-    
-    // Défocuser toutes les autres images
-    const allImages = document.getElementsByClassName('floating-image');
-    Array.from(allImages).forEach(otherImg => {
-      if (otherImg !== img && otherImg.floatingData.state === 'focused') {
-        console.log('Unfocusing other image due to first tap');
-        resetImageState(otherImg);
+        console.log('=== handleTouchInteraction CALLED ===');
+        console.log('Touch interaction triggered, current state:', img.floatingData.state, 'tapCount:', img.floatingData.tapCount);
+        
+        if (e && e.preventDefault) e.preventDefault();
+        const d = img.floatingData;
+        
+        // CORRECTION : Premier tap sur image normale OU image focused sans tapCount
+        if (d.state === 'normal' || (d.state === 'focused' && d.tapCount === 0)) {
+          console.log('FIRST TAP: Switching to focused state');
+          d.tapCount = 1;
+          
+          // Appliquer l'état focused seulement si pas déjà focused
+          if (d.state === 'normal') {
+            applyFocusedState(img, index);
+            
+            // Défocuser toutes les autres images
+            const allImages = document.getElementsByClassName('floating-image');
+            Array.from(allImages).forEach(otherImg => {
+              if (otherImg !== img && otherImg.floatingData.state === 'focused') {
+                console.log('Unfocusing other image due to first tap');
+                resetImageState(otherImg);
+              }
+            });
+          }
+          
+        // Deuxième tap : navigation
+        } else if (d.state === 'focused' && d.tapCount === 1) {
+          console.log('SECOND TAP: Navigating to:', imageConfig[index].link);
+          window.location.href = imageConfig[index].link;
+          d.tapCount = 0; // Reset
+        } else {
+          console.log('TAP IGNORED - state:', d.state, 'tapCount:', d.tapCount);
+        }
       }
-    });
-    
-  // Deuxième tap : image focused + tapCount = 1 -> navigation
-  } else if (d.state === 'focused' && d.tapCount === 1) {
-    console.log('SECOND TAP: Navigating to:', imageConfig[index].link);
-    // alert('TOUCH: Should navigate to ' + imageConfig[index].link);
-    window.location.href = imageConfig[index].link; // Réactiver quand debug terminé
-    
-    // Reset pour les prochaines interactions
-    d.tapCount = 0;
-    
-  // Image déjà focused par un tap précédent -> deuxième tap = navigation  
-  } else if (d.state === 'focused' && d.tapCount === 0) {
-    console.log('FIRST TAP on already focused image (from drag) - setting tapCount to 1');
-    d.tapCount = 1;
-  } else {
-    console.log('TAP IGNORED - state:', d.state, 'tapCount:', d.tapCount);
-  }
-}
 
   function createFloatingImage(forcedIndex = null) {
     let index;
@@ -394,6 +405,10 @@ titleEl.style.top = (parseFloat(img.style.top) + img.offsetHeight / 2 - titleEl.
         tapCount: 0  // NOUVEAU FLAG
       })
     };
+
+
+    // Préchargement immédiat de l'image HD pour switch instantané
+    setTimeout(() => preloadHighResImage(index), 100);
 
     // Gestion du hover pour switch vers HD avec délai anti-flickering
       // État de l'image pour le mode tactile
@@ -458,39 +473,62 @@ titleEl.style.top = (parseFloat(img.style.top) + img.offsetHeight / 2 - titleEl.
             });
           }
         } else {
-        // Interactions classiques pour desktop
-        console.log('Using DESKTOP MODE for image', index);
-        img.addEventListener('mouseenter', () => {
-          img.dataset.paused = 'true';
+        
+          // Interactions classiques pour desktop
+          console.log('Using DESKTOP MODE for image', index);
 
-          if (img.floatingData.lowResTimer) {
-            clearTimeout(img.floatingData.lowResTimer);
-            img.floatingData.lowResTimer = null;
-          }
+          img.addEventListener('mouseenter', () => {
+            console.log('Desktop mouseenter triggered'); // Debug
+            img.dataset.paused = 'true';
+            img.style.zIndex = 100;
+            img.floatingData.zImage = 100;
 
-          if (!img.floatingData.isHighRes) {
-            preloadHighResImage(index).then(highResSrc => {
-              if (img.matches(':hover') && !img.floatingData.lowResTimer) {
-                img.src = highResSrc;
-                img.floatingData.isHighRes = true;
-              }
-            }).catch(console.error);
-          }
-        });
-
-        img.addEventListener('mouseleave', () => {
-          if (!img.floatingData.isDragging && img.floatingData.isHighRes) {
-            img.dataset.paused = 'false';
-
-            img.floatingData.lowResTimer = setTimeout(() => {
-              if (!img.matches(':hover')) {
-                img.src = img.floatingData.originalSrc;
-                img.floatingData.isHighRes = false;
-              }
+            // Nettoyer les timers existants
+            if (img.floatingData.lowResTimer) {
+              clearTimeout(img.floatingData.lowResTimer);
               img.floatingData.lowResTimer = null;
-            }, 100);
-          }
-        });
+            }
+
+            // CORRECTION : Titre immédiat sans condition
+            const title = imageConfig[index].title || `Image ${index + 1}`;
+            showImageTitle(img, title);
+
+            // Switch HD immédiat
+            if (!img.floatingData.isHighRes) {
+              if (preloadedImages.has(index)) {
+                img.src = preloadedImages.get(index);
+                img.floatingData.isHighRes = true;
+              } else {
+                preloadHighResImage(index).then(highResSrc => {
+                  // CORRECTION : Supprimer toutes les conditions ici
+                  img.src = highResSrc;
+                  img.floatingData.isHighRes = true;
+                }).catch(console.error);
+              }
+            }
+          });
+
+          img.addEventListener('mouseleave', () => {
+            console.log('Desktop mouseleave triggered'); // Debug
+            if (!img.floatingData.isDragging) {
+              img.dataset.paused = 'false';
+              const zDefault = 10 + img.floatingData.index * 2;
+              img.style.zIndex = zDefault;
+              img.floatingData.zImage = zDefault;
+              hideImageTitle(img);
+              
+              if (img.floatingData.isHighRes) {
+                img.floatingData.lowResTimer = setTimeout(() => {
+                  // CORRECTION : Garder seulement cette condition
+                  if (!img.matches(':hover')) {
+                    img.src = img.floatingData.originalSrc;
+                    img.floatingData.isHighRes = false;
+                  }
+                  img.floatingData.lowResTimer = null;
+                }, 100);
+              }
+            }
+          });
 
         // Gestion du clic simple pour desktop (arrêt) et double-clic (navigation)
          img.addEventListener('click', (e) => {
@@ -579,7 +617,8 @@ titleEl.style.top = (parseFloat(img.style.top) + img.offsetHeight / 2 - titleEl.
         startY = e.clientY;
         
         img.style.cursor = 'grabbing';
-        img.style.zIndex = '1000';
+        const zImage = img.floatingData?.zImage || parseInt(img.style.zIndex) || 10;
+        img.style.zIndex = zImage;
         
         document.addEventListener('mousemove', mouseMove);
         document.addEventListener('mouseup', mouseUp);
@@ -606,7 +645,7 @@ titleEl.style.top = (parseFloat(img.style.top) + img.offsetHeight / 2 - titleEl.
 
       function mouseMove(e) {
         if (!isDragging) return;
-        if (e.preventDefault) e.preventDefault(); // Vérification avant appel
+        if (e.preventDefault) e.preventDefault();
         
         newX = startX - e.clientX;
         newY = startY - e.clientY;
@@ -616,6 +655,11 @@ titleEl.style.top = (parseFloat(img.style.top) + img.offsetHeight / 2 - titleEl.
         
         img.style.left = (img.offsetLeft - newX) + 'px';
         img.style.top = (img.offsetTop - newY) + 'px';
+        
+        // Mise à jour position titre pendant drag
+        if (img.titleElement && img.titleElement.style.opacity === '1') {
+          updateTitlePosition(img, img.titleElement);
+        }
       }
 
       function mouseUp(e) {
@@ -637,7 +681,8 @@ titleEl.style.top = (parseFloat(img.style.top) + img.offsetHeight / 2 - titleEl.
         }, 50);
         
         img.style.cursor = 'grab';
-        img.style.zIndex = 'auto';
+        const z = img.floatingData?.zImage || parseInt(img.style.zIndex) || 10;
+        img.style.zIndex = z;
         img.dataset.mode = 'random';
         d.hasChangedDirection = true;
         d.targetAngle = Math.random() * 360;
@@ -653,14 +698,13 @@ titleEl.style.top = (parseFloat(img.style.top) + img.offsetHeight / 2 - titleEl.
           console.log('Touch mode mouseUp - wasDragOperation:', wasDragOperation, 'dragStarted:', d.dragStarted);
           
           if (wasDragOperation && d.dragStarted) {
-            // Vrai drag : l'image reste focused (déjà fait dans mouseDown)
+            // Vrai drag : l'image reste focused
             console.log('Real drag completed - staying focused');
-            // L'image reste en focused, pas de changement d'état
-          } else if (d.dragStarted) {
-            // Tap court : l'image est déjà focused par mouseDown, incrémenter tapCount
-            console.log('Short tap detected - image already focused, setting tapCount to 1');
-            d.tapCount = 1; // Marquer comme premier tap
-            // L'image reste focused (HD + titre + pause) - c'est ce qu'on veut !
+            // L'image est déjà focused par mouseDown, pas de changement
+          } else if (d.dragStarted && !wasDragOperation) {
+            // Tap court qui a déclenché mouseDown : ne pas incrémenter tapCount ici
+            // car ce sera géré par handleTouchInteraction
+            console.log('Short tap detected - letting touchend handle it');
           }
           
           // Reset du flag
@@ -698,7 +742,7 @@ titleEl.style.top = (parseFloat(img.style.top) + img.offsetHeight / 2 - titleEl.
 
   function updatePositions(timestamp) {
     // Optimisation : réduction à 30fps pour économiser les ressources
-    if (timestamp - lastTimestamp < 33) { // 33ms = ~30fps
+    if (timestamp - lastTimestamp < 33) { // 33ms = ~30fps  16ms = ~60fps
       animationFrameId = requestAnimationFrame(updatePositions);
       return;
     }
@@ -714,7 +758,7 @@ titleEl.style.top = (parseFloat(img.style.top) + img.offsetHeight / 2 - titleEl.
 
     images.forEach(img => {
       if (img.dataset.paused === 'true' || img.floatingData.isDragging) {
-        console.log('Image paused - skipping animation for image', img.floatingData.index, 'paused:', img.dataset.paused);
+        // console.log('Image paused - skipping animation for image', img.floatingData.index, 'paused:', img.dataset.paused);
         return;
       }
 
@@ -768,6 +812,10 @@ titleEl.style.top = (parseFloat(img.style.top) + img.offsetHeight / 2 - titleEl.
       if (deltaX > 0.5 || deltaY > 0.5) { // Seuil de mise à jour
         img.style.left = `${x}px`;
         img.style.top = `${y}px`;
+      // Mise à jour titre si visible
+        if (img.titleElement && img.titleElement.style.opacity === '1') {
+          updateTitlePosition(img, img.titleElement);
+        }
       }
 
       if (isOutOfBounds(x, y)) imagesToRemove.push(img);
@@ -810,7 +858,7 @@ if (imagesToRemove.length > 0) {
     // if (++cleanupCounter % 300 === 0) { //cleanup n'est pas défini ce qui pose problème
     // cleanupImageCache();
 // }
-    console.log('update frame');
+    // console.log('update frame');
     animationFrameId = requestAnimationFrame(updatePositions);
   }
 
