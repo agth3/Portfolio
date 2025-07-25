@@ -199,25 +199,27 @@ noir-éclairci : #adadac
 
   .floating-image {
     position: absolute;
-    max-width: 50vw;
-    max-height: 50vh;
+    /* max-width: 50vw;
+    max-height: 50vh; */
     transition: transform 0.2s linear;
     pointer-events: auto;
     z-index: 10;
+    /* object-fit: cover; précisé dans le js*/
   }
 
   .floating-image-title{
     position: absolute;
-    /* background-color:#f1f2f1;
-    color: #0f0c0c; */
-    color:yellow;
+    background: rgb(15, 12, 12, 50%);
+    color: #f1f2f1;
+    /* color:yellow; */
     padding: 1vh 1.5vh;
     font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
+    text-align: center;
     font-size:1.25rem;
     pointer-events: none;
     z-index: 25;
     transition: opacity 0.2s;
-    white-space: nowrap; /*pas de retour à la ligne*/
+    /* white-space: nowrap; pas de retour à la ligne */
     transform: translate(-50%, -50%);
   }
 
@@ -623,6 +625,7 @@ noir-éclairci : #adadac
     font-weight: 400;
     color: #0f0c0c;
     margin: 0;
+    margin-top: 2vh;
   }
 
   #img-bio{
@@ -630,19 +633,24 @@ noir-éclairci : #adadac
   }
 
   #img-bio-mobile{
-    width: 100%; /*prévu 60% dans la maquette mais autant avoir un scroll qui vaut le coup, sinon carrément virer l'image*/
+    display: none;
+  }
+
+  /* #img-bio-mobile{
+    width: 100%; prévu 60% dans la maquette mais autant avoir un scroll qui vaut le coup, sinon carrément virer l'image
     align-self: flex-start;
     display: flex;
     justify-content: flex-start;
     align-items: flex-end;
-    margin-top: auto; /* pousse vers le bas si possible */
-  }
+    margin-top: auto;  pousse vers le bas si possible 
+  }*/
 
+/*
   #img-bio-mobile img{
-    width: 100%;         /* image limitée à 100% de la largeur du bloc */
-    height: auto;        /* conserve le ratio */
-    object-fit: contain; /* important */
-  }
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  } */
 
   /*----- MINI TABLEAU PARCOURS -----*/
 

@@ -4,53 +4,109 @@ document.addEventListener("DOMContentLoaded", () => {
   // Configuration des images avec lazy-loading
   const imageConfig = [
     {
-      lowRes: 'asset/img/low/20231005_154014.png',
-      highRes: 'asset/img/high/20231005_154014.jpg',
-      link: 'projets.html',
-      titleMobile:'Img Mob 1',
-      titleDesktop:'Img Ord 1'
+      lowRes: 'asset/img/low/hack_1.jpg',
+      highRes: 'asset/img/high/hack_1.jpg',
+      link: 'projets.html#projet-Affiches-Animees',
+      titleMobile:'Affiches Animées',
+      titleDesktop:'Affiches Animées'
     },
     {
-      lowRes: 'asset/img/low/affiches_2e_2.png',
-      highRes: 'asset/img/high/affiches_2e_2.jpg',
-      link: 'projets.html',
-      titleMobile:'Img Mob 2',
-      titleDesktop:'Img Ord 2'
+      lowRes: 'asset/img/low/amasha_6.jpg',
+      highRes: 'asset/img/high/amasha_6.jpg',
+      link: 'projets.html#projet-Stone-of-Amasha',
+      titleMobile:'Amasha',
+      titleDesktop:'The Stone of Amasha'
     },
     {
-      lowRes: 'asset/img/low/DSC_0004.png',
-      highRes: 'asset/img/high/DSC_0004.JPG',
-      link: 'projets.html',
-      titleMobile:'Img Mob 3',
-      titleDesktop:'Img Ord 3'
+      lowRes: 'asset/img/low/couv-AR.jpg',
+      highRes: 'asset/img/high/couv-AR.jpg',
+      link: 'projets.html#projet-Entre-et-tenir-pt2',
+      titleMobile:'Entre et tenir',
+      titleDesktop:'Entre et tenir Pt.2'
     },
     {
-      lowRes: 'asset/img/low/Insta_Post-Feed.png',
-      highRes: 'asset/img/high/Insta_Post-Feed.png',
-      link: 'projets.html',
-      titleMobile:'Img Mob 4',
-      titleDesktop:'Img Ord 4'
+      lowRes: 'asset/img/low/brique-bloc_5.jpg',
+      highRes: 'asset/img/high/brique-bloc_5.jpg',
+      link: 'projets.html#projet-Brique-Bloc',
+      titleMobile:'Brique Bloc',
+      titleDesktop:'Brique Bloc'
     },
     {
-      lowRes: 'asset/img/low/my_artwork-45.png',
-      highRes: 'asset/img/high/my_artwork-45.png',
-      link: 'projets.html',
-      titleMobile:'Img Mob 5',
-      titleDesktop:'Img Ord 5'
+      lowRes: 'asset/img/low/catalogue-bouees_2.jpg',
+      highRes: 'asset/img/high/catalogue-bouees_2.jpg',
+      link: 'projets.html#projet-Catalogue-bouees',
+      titleMobile:'Bouées',
+      titleDesktop:'Catalogue de bouées'
     },
     {
-      lowRes: 'asset/img/low/my_artwork-71.png',
-      highRes: 'asset/img/high/my_artwork-71.png',
-      link: 'projets.html',
-      titleMobile:'Img Mob 6',
-      titleDesktop:'Img Ord 1'
+      lowRes: 'asset/img/low/cimes_1.jpg',
+      highRes: 'asset/img/high/cimes_1.jpg',
+      link: 'projets.html#projet-Cimes',
+      titleMobile:'Les Cimes',
+      titleDesktop:'Les Cimes'
     },
     {
-      lowRes: 'asset/img/low/Posterwall.png',
-      highRes: 'asset/img/high/Posterwall.jpg',
-      link: 'projets.html',
-      titleMobile:'Img Mob 7',
-      titleDesktop:'Img Ord 7'
+      lowRes: 'asset/img/low/couv-HAL9000.jpg',
+      highRes: 'asset/img/high/couv-HAL9000.jpg',
+      link: 'projets.html#projet-HAL9000',
+      titleMobile:'HAL9000/ES',
+      titleDesktop:'HAL9000/ES'
+    },
+    {
+      lowRes: 'asset/img/low/just-click_2.jpg',
+      highRes: 'asset/img/high/just-click_2.jpg',
+      link: 'projets.html#projet-Just-Click',
+      titleMobile:'just-click',
+      titleDesktop:'you-just-have-to-click'
+    },
+    {
+      lowRes: 'asset/img/low/kaleidoscope_1.jpg',
+      highRes: 'asset/img/high/kaleidoscope_1.jpg',
+      link: 'projets.html#projet-Kaleidoscope',
+      titleMobile:'Kaléidoscope musical',
+      titleDesktop:'Kaléidoscope musical'
+    },
+    {
+      lowRes: 'asset/img/low/memoire_5.jpg',
+      highRes: 'asset/img/high/memoire_5.jpg',
+      link: 'projets.html#projet-Memoire',
+      titleMobile:'Conversations souterraines',
+      titleDesktop:'Conversations souterraines'
+    },
+    {
+      lowRes: 'asset/img/low/offkey_3.jpg',
+      highRes: 'asset/img/high/offkey_3.jpg',
+      link: 'projets.html#projet-OffKey',
+      titleMobile:'OffKey',
+      titleDesktop:'OffKey'
+    },
+    {
+      lowRes: 'asset/img/low/oursins_1.jpg',
+      highRes: 'asset/img/high/oursins_1.jpg',
+      link: 'projets.html#projet-Oursins',
+      titleMobile:'Les Oursins',
+      titleDesktop:'Les Oursins'
+    },
+    {
+      lowRes: 'asset/img/low/phytom_6.jpg',
+      highRes: 'asset/img/high/phytom_6.jpg',
+      link: 'projets.html#projet-Phytomorphose',
+      titleMobile:'Phytomorphose',
+      titleDesktop:'Phytomorphose'
+    },
+    {
+      lowRes: 'asset/img/low/tissage_1.jpg',
+      highRes: 'asset/img/high/tissage_1.jpg',
+      link: 'projets.html#projet-Entre-et-tenir-pt1',
+      titleMobile:'Entre et tenir',
+      titleDesktop:'Entre et tenir Pt.1'
+    },
+    {
+      lowRes: 'asset/img/low/vitrine_7.jpg',
+      highRes: 'asset/img/high/vitrine_7.jpg',
+      link: 'projets.html#projet-Vitrine',
+      titleMobile:'La Vitrine',
+      titleDesktop:'La Vitrine'
     }
   ];
 
@@ -83,8 +139,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const minImages = isMobile ? 3 : 4;
   const baseSpeed = isMobile ? 0.5 : 0.7; // Plus lent sur mobile
   const fixedSpeeds = isMobile ? 
-  [1.5, 2.25, 3, 3.75] :      // Vitesses mobile
+  [1.25, 2, 2.75, 2.75,] :      // Vitesses mobile (que trois vitesse en réalité car trois images max)
   [2.25, 3, 3.75, 4.5];       // Vitesses desktop
+  //[1.5, 2.25, 3, 3.75] :      // Vitesses d'origine
 
   const speedPool = [...fixedSpeeds];
   const imageSpeeds = new Map();
@@ -121,7 +178,10 @@ document.addEventListener("DOMContentLoaded", () => {
         preloadedImages.set(index, img.src);
         resolve(img.src);
       };
-      img.onerror = reject;
+      img.onerror = (error) => {
+        console.error('Failed to preload image:', imageConfig[index].highRes, error);
+        reject(error);
+      };
       img.src = imageConfig[index].highRes;
     });
   }
@@ -235,6 +295,7 @@ function cleanupImageCache() {
         if (d.state === 'normal') {
           img.src = d.originalSrc;
           d.isHighRes = false;
+          console.log('Switched back to low-res for image', d.index);
         }
       }, 200);
     }
@@ -322,7 +383,9 @@ function cleanupImageCache() {
         img.dataset.paused = 'true';
         
         // Switch vers HD et titre en même temps - CORRECTION du bug
+        console.log('Checking if HD image is preloaded:', preloadedImages.has(index)); // NOUVEAU LOG
         preloadHighResImage(index).then(highResSrc => {
+          console.log('HD image loaded successfully for focused state:', index); // NOUVEAU LOG
           if (d.state === 'focused') { // Vérifier que l'état est toujours focused
             img.style.zIndex = 100;
             d.zImage = 100; // pour showImageTitle
@@ -330,13 +393,14 @@ function cleanupImageCache() {
             img.src = highResSrc;
             d.isHighRes = true;
             
-            // const title = imageConfig[index].title || `Image ${index + 1}`;
             const title = shouldUseTouchMode
               ? imageConfig[index].titleMobile || imageConfig[index].title || `Image ${index + 1}`
               : imageConfig[index].titleDesktop || imageConfig[index].title || `Image ${index + 1}`;
             showImageTitle(img, title);
           }
-        }).catch(console.error);
+        }).catch(error => {
+          console.error('Failed to load HD image for focused state:', error); // NOUVEAU LOG
+        });
       }
 
       // Fonction pour les interactions tactiles (à placer AVANT createFloatingImage aussi)
@@ -423,8 +487,59 @@ function cleanupImageCache() {
     };
 
 
-    // Préchargement immédiat de l'image HD pour switch instantané
-    setTimeout(() => preloadHighResImage(index), 100);
+    // Vider le cache de cette image spécifique pour forcer le recalcul
+    if (preloadedImages.has(index)) {
+      preloadedImages.delete(index);
+    }
+
+    // Dimensionnement avec contraintes vw/vh et préservation du ratio
+    const dimensionImg = new Image();
+    dimensionImg.onload = () => {
+      if (img.parentNode && img.floatingData && img.floatingData.index === index) {
+        const originalWidth = dimensionImg.naturalWidth;
+        const originalHeight = dimensionImg.naturalHeight;
+        
+        // Contraintes en vw/vh
+        const maxWidthVw = isMobile ? 50 : 30;
+        const maxHeightVh = isMobile ? 50 : 40;
+        const maxWidth = (maxWidthVw * window.innerWidth) / 100;
+        const maxHeight = (maxHeightVh * window.innerHeight) / 100;
+        
+        // Calculer les dimensions finales en préservant le ratio
+        let finalWidth = originalWidth;
+        let finalHeight = originalHeight;
+        
+        if (finalWidth > maxWidth || finalHeight > maxHeight) {
+          const widthRatio = maxWidth / finalWidth;
+          const heightRatio = maxHeight / finalHeight;
+          const ratio = Math.min(widthRatio, heightRatio);
+          
+          finalWidth = Math.round(finalWidth * ratio);
+          finalHeight = Math.round(finalHeight * ratio);
+        }
+        
+        img.style.width = finalWidth + 'px';
+        img.style.height = finalHeight + 'px';
+        img.style.objectFit = 'cover';
+        
+        // IMPORTANT: Précharger APRÈS le dimensionnement pour s'assurer que l'image HD est disponible
+        preloadHighResImage(index).then(() => {
+          console.log(`HD image ready for mobile interaction - image ${index}`);
+        });
+      }
+    };
+    dimensionImg.src = imageConfig[index].highRes;
+
+// SUPPRIMER la ligne : setTimeout(() => preloadHighResImage(index), 200);
+
+      // Préchargement séparé
+      setTimeout(() => preloadHighResImage(index), 200);
+
+      // État de l'image pour le mode tactile
+      if (isTouch) {
+        img.floatingData.state = 'normal';
+        img.floatingData.focusTimer = null;
+      }
 
     // Gestion du hover pour switch vers HD avec délai anti-flickering
       // État de l'image pour le mode tactile
@@ -520,7 +635,6 @@ function cleanupImageCache() {
                 img.floatingData.isHighRes = true;
               } else {
                 preloadHighResImage(index).then(highResSrc => {
-                  // CORRECTION : Supprimer toutes les conditions ici
                   img.src = highResSrc;
                   img.floatingData.isHighRes = true;
                 }).catch(console.error);
