@@ -373,7 +373,8 @@ noir-éclairci : #adadac
     width:100vw;
     grid-template-columns: repeat(7, 1fr);
     grid-template-rows: 8% 12% 20% 20% 20% 12% 8%;
-    background-color: #f1f2f1;
+    /* background-color: #f1f2f1; */
+  background-color: var(--highlight-color);
     scroll-snap-align: start;  /* optionnel : aligne proprement au scroll */
   min-height: 100vh;    
   scroll-snap-align: start;

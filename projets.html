@@ -299,7 +299,7 @@ avec Luca SCHARRENBACH</span> -->
                   <div class="carrousel-container">
                     <div class="scroll-capture"></div>
                     <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low/HAL9000_7.jpg" alt="Clone Image HAL900/ES 5"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/HAL9000_5.jpg" alt="Clone Image HAL900/ES 5"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/HAL9000_1.jpg" alt="Image HAL900/ES 1"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/HAL9000_2.jpg" alt="Image HAL900/ES 2"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/HAL9000_3.jpg" alt="Image HAL900/ES 3"></div>
@@ -454,7 +454,7 @@ avec Luca SCHARRENBACH</span> -->
                   <div class="carrousel-container">
                     <div class="scroll-capture"></div>
                     <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low/phytom_7.jpg" alt="Clone Image Phytomorphose 6"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/phytom_6.jpg" alt="Clone Image Phytomorphose 6"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/phytom_1.jpg" alt="Image Phytomorphose 1"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/phytom_2.jpg" alt="Image Phytomorphose 2"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/phytom_3.jpg" alt="Image Phytomorphose 3"></div>
@@ -484,7 +484,7 @@ avec Luca SCHARRENBACH</span> -->
                   <div class="carrousel-container">
                     <div class="scroll-capture"></div>
                     <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low/just-click_7.jpg" alt="Clone Image Just-Click 4"></div>
+                      <div class="carrousel-slide"><img src="asset/img/low/just-click_4.jpg" alt="Clone Image Just-Click 4"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/just-click_1.jpg" alt="Image Just-Click 1"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/just-click_2.jpg" alt="Image Just-Click 2"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/just-click_3.jpg" alt="Image Just-Click 3"></div>
@@ -722,11 +722,23 @@ updateButtons();
 
 // Associe chaque ID de section à une couleur
 const sectionColors = {
-  "projet-OffKey": "#e74c3c",    // Rouge
-  "projet-OffKey-2": "#3498db",   // Bleu
-  "projet-OffKey-3": "#67d92a",  // Vert
-  // Ajoute d'autres IDs ici
+"projet-OffKey": "#cc003a", // rouge, "#aedfb3" cyan, "daff1c" citron
+"projet-Stone-of-Amasha": "#ab8b69",  // sable, "#6d5452" violet chaud, "#a07a58" sable sombre, "#b69973" sable clair
+"projet-Brique-Bloc": "#f9b32d", //jaune, "#005596" bleu, "#e94d1c"rouge
+"projet-Affiches-Animees": "#f9d738", // orange, "#b1dac8" cyan,
+"projet-Vitrine": "#939997", //gris clair, "#3b3b39" gris foncé, "#938c82" gris sable
+"projet-Oursins": "#004d76", //turquoise sombre, "#e00c1a" rouge, "#4b4b4e" gris chaud
+"projet-Cimes": "#67792c",  //vert, "#4a582f" kaki terne, "#2a3725" vert sombre, "#42452c" kaki sombre
+"projet-Kaleidoscope": "#41150a", //brun rouge, "#764218" brun doré, "#53110f" bordeau sombre
+"projet-HAL9000": "#4f428a",  // violet, "#320d96" violet sombre, "#6328d0" violet pétard, "#f73d56" fuscia, "#d748e2" rose pétard, "#01c6e9" bleu pétard
+"projet-Entre-et-tenir-pt1": "#575f30",  //vert terne, "#524f29" kaki, "#576051" turquoise sombre, "#83b8e4" bleu clair, "#cba689" rose sablé
+"projet-Entre-et-tenir-pt2": "#464646", //blender, "#3a2c22" marron sombre, "#4f3c2b" marron, "#79634f" marron clair, "#6c635b" gris
+"projet-Memoire": "#ffb47e", // orange, "#d8b1ed" lavande, "#faadde" rose, "#004b81" bleu, "#274e12" vert
+"projet-Phytomorphose": "#606062",  // gris violet, "#7fa1a3"turquoise, "#514b45" gris chaud sombre, "#7c7066" gris chaud clair, "#a4947b" sable
+"projet-Just-Click": "#ef3407", //rouge, "#06a7ef" bleu, "#63503f" marron, "ffe4c9" beige
+"projet-Catalogue-bouees": "#d0b03f", //jaune, "#272763" bleu, "#b71d1b"rouge
 };
+
 
 // Fonction appelée à chaque changement de visibilité
 function handleIntersection(entries) {
@@ -960,6 +972,17 @@ class VerticalCarousel {
       const img = slide.querySelector('img');
       if (!img) return;
       
+    this.slides.forEach((slide, index) => {
+      slide.classList.remove('is-focus', 'is-prev', 'is-next');
+      if (index === this.currentIndex) {
+        slide.classList.add('is-focus');
+      } else if (index === this.currentIndex - 1) {
+        slide.classList.add('is-prev');
+      } else if (index === this.currentIndex + 1) {
+        slide.classList.add('is-next');
+      }
+    });
+
       const currentLowResSrc = img.getAttribute('src');
       
       if (index === this.currentIndex) {
@@ -1301,6 +1324,7 @@ scrollZone.addEventListener('touchend', () => {
 
 // Lancer tous les carrousels au DOM prêt
 document.addEventListener('DOMContentLoaded', () => {
+
   const tracks = document.querySelectorAll('.carrousel-track');
   tracks.forEach(track => {
     const carousel = new VerticalCarousel(track);

@@ -495,7 +495,6 @@ color: #0f0c0c;
   scroll-snap-type: x mandatory; /* optionnel : scroll fluide par section */
   scroll-behavior: smooth;
     /* position: relative; */
-
 }
 
 .grid-projets{ /*grid des diff sections de projet*/
@@ -505,7 +504,8 @@ color: #0f0c0c;
   width:100vw;
   grid-template-columns: 9.375vw repeat(5, 1fr) 9.375vw;
   grid-template-rows: 16.667vh repeat(3, 1fr) 16.667vh;
-  background-color: #f1f2f1;
+  /* background-color: #f1f2f1; */
+  background-color: var(--highlight-color);
   scroll-snap-align: start;  /* optionnel : aligne proprement au scroll */
 }
 
@@ -635,18 +635,28 @@ color: #0f0c0c;
   width: 100%;
   height: calc(100vh - 2 * 16.667vh); /* même taille que focus-frame */
   display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: flex-end; /*définit gauche-centre-droite*/
   flex-shrink: 0;
   margin-bottom: 4.63vh; /* espacement entre les images */
+   position: relative;
+  overflow: hidden;
 }
 
 .carrousel-slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  margin-left: auto;
   display: block;
 }
+
+/* Bichromie uniquement sur les slides précédentes/suivantes */
+/* .carrousel-slide.is-prev img,    
+.carrousel-slide.is-next img {
+  filter: invert(100%);
+  mix-blend-mode: multiply;
+  background-color: var(--highlight-color); -> ne marche pas car on ne peut pas modifier directement les couleurs de l'image, pour cela il faudrait avoir un fond transparent pour les zones que l'on veut colorer
+} */
 
 /* Cadre visuel qui correspond à .img-principale */
 .focus-frame {

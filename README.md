@@ -2,10 +2,8 @@
 
 TO DO :
 
-_ attribuer dimensions des images HD aux low res (car sinon écart de taille)
 _set les styles hover/active du menu et éléments interactifs
-_couleurs highlight à adapter par page
-_intégration des contenus multimédia
+_intégration des contenus multimédia (wbe, vidéos, audios)
 
 _adapter à tous navigateurs
 _adapter toutes les interactions au format smartphone
