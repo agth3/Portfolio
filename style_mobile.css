@@ -481,15 +481,15 @@ noir-éclairci : #adadac
     overflow: hidden;
   }
 
-  .scroll-capture {
+  /* .scroll-capture {
     position: absolute;
     top:0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 15; /* supérieur à .focus-frame (z-index: 5) */
+    z-index: 15;  supérieur à .focus-frame (z-index: 5) 
     background: transparent;
-  }
+  } */
 
   /* La "piste" de slides verticales */
   .carrousel-track {
@@ -607,7 +607,7 @@ noir-éclairci : #adadac
   display: block;
   pointer-events: auto; /* Permettre les interactions normales */
   position: relative;
-  z-index: 20; /* Au-dessus de scroll-capture (z-index: 15) */
+  z-index: 5;
 }
 
 /* Vidéo spécifique */
@@ -723,21 +723,42 @@ noir-éclairci : #adadac
 }
 
 
-.video-controls-zone {
-    height: 80px; /* Plus grand sur mobile */
-  }
-  
-  .audio-controls-zone {
-    width: 90%;
-    height: 80px;
-  }
-  
-  .iframe-interaction-zone {
-    top: 30px;
-    left: 30px;
-    right: 30px;
-    bottom: 30px;
-  }
+/* Désactiver scroll-capture quand un média est en focus */
+/* .carrousel-slide.is-focus[data-media-type="video"] ~ .scroll-capture,
+.carrousel-slide.is-focus[data-media-type="audio"] ~ .scroll-capture,
+.carrousel-slide.is-focus[data-media-type="iframe"] ~ .scroll-capture {
+  pointer-events: none;
+} */
+
+/* Alternative plus propre avec une classe 
+.scroll-capture.media-focus-disabled {
+  pointer-events: none;
+}*/
+
+/* Assurer que les médias gardent leurs interactions */
+.carrousel-slide video,
+.carrousel-slide audio,
+.carrousel-slide iframe,
+.carrousel-slide .audio-container {
+  pointer-events: auto;
+  z-index: 20;
+}
+
+/* Style pour indiquer que le média gère le scroll */
+.carrousel-slide.is-focus[data-media-type] {
+  position: relative;
+}
+
+.carrousel-slide.is-focus[data-media-type]::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
 
 
   /*--------- PAGE BIO ---------*/

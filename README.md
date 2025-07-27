@@ -4,7 +4,11 @@ TO DO :
 
 _set les styles hover/active du menu et éléments interactifs
 _intégration des contenus multimédia (wbe, vidéos, audios)
-_rendre cliquable la zone de texte des projets (au cas où il y a des liens)
+_préparer les thumbnails des medias
+
+_désactiver les médias (ou faire pause) lorsqu'on passe dans une autre section
+_régler les positionnements des audios et afficher une seule fois tous les média dans leur conteneur (no repeat)
+_assurer le bon ratio pour l'affichage du site du mémoire
 
 _choisir version finale images
 

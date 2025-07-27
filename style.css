@@ -444,6 +444,12 @@ color: #0f0c0c;
   grid-template-columns: 9.375vw repeat(5, 1fr) 9.375vw;
   grid-template-rows: 16.667vh repeat(3, 1fr) 16.667vh;
   /* overflow: hidden; */
+  pointer-events: none; /*temporaire pour réparer le carrousel*/
+}
+
+/*réactive les evenement pour les enfants qui en ont besoin*/
+.container-menu-projets * {
+  pointer-events: auto;
 }
 
 .fleches-sections-projets{
@@ -609,16 +615,16 @@ color: #0f0c0c;
   overflow: hidden;
 }
 
-.scroll-capture {
+/* .scroll-capture {
   position: absolute;
-  top: 10vh; /* un peu plus long que focus-frame */
+  top: 10vh;  un peu plus long que focus-frame 
   left: 0;
   width: 100%;
   height: calc(100% - 2 * 10vh);
-  z-index: 15; /* supérieur à .focus-frame (z-index: 5) */
+  z-index: 15;  supérieur à .focus-frame (z-index: 5) 
   background: transparent;
-  pointer-events:auto; /*ne pas désactiver car les z-index élevés des media va rendre le scroll du carrousel indetectable*/
-}
+  pointer-events:auto; ne pas désactiver car les z-index élevés des media va rendre le scroll du carrousel indetectable
+} */
 
 /* La "piste" de slides verticales */
 .carrousel-track {
@@ -717,9 +723,7 @@ color: #0f0c0c;
   border-radius: 2px;
 }
 
-/* Ajouts CSS pour les nouveaux médias */
-
-/* Style commun pour tous les médias */
+/* === STYLES POUR TOUS LES MÉDIAS === */
 .carrousel-slide video,
 .carrousel-slide audio,
 .carrousel-slide iframe {
@@ -728,55 +732,11 @@ color: #0f0c0c;
   object-fit: contain;
   margin-left: auto;
   display: block;
-  pointer-events: auto; /* Permettre les interactions normales */
+  pointer-events: auto;
   position: relative;
-  align-self: center; /*axe y*/
-  z-index: 20; /* Au-dessus de scroll-capture (z-index: 15) */
-}
-
-/* Vidéo spécifique */
-.carrousel-slide video {
-  background-color: #000;
-}
-
-/* Audio avec contrôles personnalisés */
-.carrousel-slide .audio-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: #0f0c0c;
-  position: relative;
-  z-index: 20; /* Au-dessus de scroll-capture */
-}
-
-.carrousel-slide audio {
-  width: 80%;
-  max-width: 400px;
-  margin: 0;
-  filter: sepia(1) saturate(2) hue-rotate(0deg); /* Style personnalisé */
-}
-
-/* Iframe sécurisée */
-.carrousel-slide iframe {
-  border: none;
-  background-color: #fff;
-  pointer-events: auto; /* Permettre l'interaction avec le contenu */
-  user-select: none;
-}
-
-/* Protection spécifique iframe - empêcher seulement le clic droit sur le cadre */
-.carrousel-slide iframe {
-  border: 1px solid transparent; /* Cadre invisible pour capturer les clics */
-}
-
-/* Protection contre le téléchargement - SEULEMENT user-select et drag */
-.carrousel-slide img,
-.carrousel-slide video,
-.carrousel-slide audio,
-.carrousel-slide iframe {
+  align-self: center;
+  z-index: 5;
+  /* Protection contre le téléchargement */
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -788,19 +748,67 @@ color: #0f0c0c;
   /* user-drag: none; */
 }
 
-/* Overlay de protection invisible - ne bloque PAS les interactions */
-.carrousel-slide::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1; /* En arrière-plan pour ne pas bloquer */
-  pointer-events: none;
+/* === STYLES SPÉCIFIQUES PAR TYPE DE MÉDIA === */
+
+/* Vidéo */
+.carrousel-slide video {
+  background-color: #000;
 }
 
-/* État de chargement */
+/* Audio avec container personnalisé */
+.carrousel-slide .audio-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #0f0c0c;
+  position: relative;
+  z-index: 5;
+  pointer-events: auto;
+}
+
+.carrousel-slide audio {
+  width: 80%;
+  max-width: 400px;
+  margin: 0;
+  filter: sepia(1) saturate(2) hue-rotate(0deg);
+}
+
+/* Iframe */
+.carrousel-slide iframe {
+  width:100%;
+  height:100%;
+  border: none;
+  background-color: #fff;
+  pointer-events: auto;
+  /* Protection contre le téléchargement */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* === ÉTATS INTERACTIFS === */
+
+/* Slide avec média en focus - z-index plus élevé */
+.carrousel-slide.media-interactive {
+  position: relative;
+  z-index: 10;
+}
+
+.carrousel-slide.media-interactive video,
+.carrousel-slide.media-interactive audio,
+.carrousel-slide.media-interactive iframe,
+.carrousel-slide.media-interactive .audio-container {
+  z-index: 15; /* Plus élevé que le z-index: 10 actuel */
+  pointer-events: auto;
+}
+
+/* === GESTION DES PLACEHOLDERS ET CHARGEMENT === */
+
+/* État de chargement avec spinner */
 .media-loading::after {
   content: '';
   position: absolute;
@@ -820,7 +828,7 @@ color: #0f0c0c;
   100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-/* Règle spécifique pour l'iframe unique - chargement lent accepté */
+/* Gestion spéciale pour les iframes avec transition */
 .carrousel-slide[data-media-type="iframe"] {
   position: relative;
 }
@@ -836,8 +844,6 @@ color: #0f0c0c;
 
 .carrousel-slide[data-media-type="iframe"] iframe {
   position: absolute;
-  /* top: 0;
-  left: 0; */
   object-fit: contain;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -847,64 +853,34 @@ color: #0f0c0c;
   opacity: 1;
 }
 
+/* === PROTECTION ANTI-TÉLÉCHARGEMENT === */
 
-/* Zones d'interaction spécifiques par type de média (recouvrant le scroll-capture)*/
+/* Protection pour toutes les images */
+.carrousel-slide img {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  /* user-drag: none; */
+  pointer-events: auto; /* Garder les interactions pour le scroll */
+}
 
-/* Zone pour les contrôles vidéo */
-.video-controls-zone {
+/* Protection par overlay invisible (ne bloque pas les interactions) */
+/* .carrousel-slide::before {
+  content: '';
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   width: 100%;
-  height: 60px; /* Zone des contrôles vidéo */
-  z-index: 25;
-  pointer-events: auto;
-}
-
-/* Zone pour les contrôles audio */
-.audio-controls-zone {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80%;
-  max-width: 400px;
-  height: 60px;
-  z-index: 25;
-  pointer-events: auto;
-}
-
-/* Zone pour iframe - toute la zone sauf les bords pour le scroll */
-.iframe-interaction-zone {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  right: 20px;
-  bottom: 20px;
-  z-index: 25;
-  pointer-events: auto;
-}
-
-/* Assurer que les médias restent interactifs dans leurs zones */
-.carrousel-slide video {
-  pointer-events: auto;
-  z-index: 20;
-}
-
-.carrousel-slide audio {
-  pointer-events: auto;
-  z-index: 20;
-}
-
-.carrousel-slide iframe {
-  pointer-events: auto;
-  z-index: 20;
-}
-
-.carrousel-slide .audio-container {
-  pointer-events: auto;
-  z-index: 20;
-}
+  height: 100%;
+  background: transparent;
+  pointer-events: none;
+  z-index: -1;
+} */
 
 
 /*--------- PAGE BIO ---------*/
