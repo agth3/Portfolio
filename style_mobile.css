@@ -594,6 +594,150 @@ noir-éclairci : #adadac
   }
 
 
+/* Ajouts CSS pour les nouveaux médias */
+
+/* Style commun pour tous les médias */
+.carrousel-slide video,
+.carrousel-slide audio,
+.carrousel-slide iframe {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  margin-left: auto;
+  display: block;
+  pointer-events: auto; /* Permettre les interactions normales */
+  position: relative;
+  z-index: 20; /* Au-dessus de scroll-capture (z-index: 15) */
+}
+
+/* Vidéo spécifique */
+.carrousel-slide video {
+  background-color: #000;
+}
+
+/* Audio avec contrôles personnalisés */
+.carrousel-slide .audio-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #0f0c0c;
+  position: relative;
+  z-index: 20; /* Au-dessus de scroll-capture */
+}
+
+.carrousel-slide audio {
+  width: 90%;
+  max-width: 300px;
+  margin: 0;
+  filter: sepia(1) saturate(2) hue-rotate(0deg); /* Style personnalisé */
+}
+
+/* Iframe sécurisée */
+.carrousel-slide iframe {
+  border: none;
+  background-color: #fff;
+  pointer-events: auto; /* Permettre l'interaction avec le contenu */
+  user-select: none;
+}
+
+/* Protection spécifique iframe - empêcher seulement le clic droit sur le cadre */
+.carrousel-slide iframe {
+  border: 1px solid transparent; /* Cadre invisible pour capturer les clics */
+}
+
+/* Protection contre le téléchargement - SEULEMENT user-select et drag */
+.carrousel-slide img,
+.carrousel-slide video,
+.carrousel-slide audio,
+.carrousel-slide iframe {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  /* user-drag: none; */
+}
+
+/* Overlay de protection invisible - ne bloque PAS les interactions */
+.carrousel-slide::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* En arrière-plan pour ne pas bloquer */
+  pointer-events: none;
+}
+
+/* État de chargement */
+.media-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30px;
+  height: 30px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid var(--highlight-color);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Règle spécifique pour l'iframe unique - chargement lent accepté */
+.carrousel-slide[data-media-type="iframe"] {
+  position: relative;
+}
+
+.carrousel-slide[data-media-type="iframe"] .media-placeholder {
+  transition: opacity 0.3s ease;
+}
+
+.carrousel-slide[data-media-type="iframe"].iframe-loaded .media-placeholder {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.carrousel-slide[data-media-type="iframe"] iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.carrousel-slide[data-media-type="iframe"].iframe-loaded iframe {
+  opacity: 1;
+}
+
+
+.video-controls-zone {
+    height: 80px; /* Plus grand sur mobile */
+  }
+  
+  .audio-controls-zone {
+    width: 90%;
+    height: 80px;
+  }
+  
+  .iframe-interaction-zone {
+    top: 30px;
+    left: 30px;
+    right: 30px;
+    bottom: 30px;
+  }
 
 
   /*--------- PAGE BIO ---------*/

@@ -54,8 +54,24 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                       <div class="carrousel-slide"><img src="asset/img/low/offkey_4.jpg" alt="Image OffKey 4"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/offkey_5.jpg" alt="Image OffKey 5"></div>
                       <div class="carrousel-slide"><img src="asset/img/low/offkey_6.jpg" alt="Image OffKey 6"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low/offkey_7.jpg" alt="Image OffKey 7"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low/offkey_1.jpg" alt="Clone Image OffKey 1"></div>
+          <!-- Vidéo avec placeholder -->
+          <div class="carrousel-slide" id="vid-offkey-1" data-media-type="video" data-video-src="asset/media/offkey-vid_1.mp4" data-poster="asset/img/low/offkey_1-thumbnail.jpg">
+            <img src="asset/img/low/offkey_1-thumbnail.jpg" alt="Vidéo OffKey 1" class="media-placeholder">
+          </div>
+          
+          <!-- Audio avec placeholder -->
+          <div class="carrousel-slide" id="audio-HAL9000-1" data-media-type="audio" data-audio-src="asset/media/audio-1_pride.mp3" data-poster="asset/img/low/offkey_4-thumbnail.jpg">
+            <img src="asset/img/low/offkey_4-thumbnail.jpg" alt="Audio OffKey" class="media-placeholder">
+          </div>
+          
+          <!-- Page web intégrée avec placeholder -->
+          <div class="carrousel-slide" id="iframe-just-click" data-media-type="iframe" data-iframe-src="https://agth3.github.io/just-click/" data-poster="asset/img/low/just-click_3-thumbnail.jpg">
+            <img src="asset/img/low/just-click_3-thumbnail.jpg" alt="Site web OffKey" class="media-placeholder">
+          </div>
+          
+          
+          <div class="carrousel-slide"><img src="asset/img/low/offkey_7.jpg" alt="Image OffKey 7"></div>
+          <div class="carrousel-slide"><img src="asset/img/low/offkey_1.jpg" alt="Clone Image OffKey 1"></div>
                     </div>
                     <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
@@ -897,6 +913,11 @@ const highResMapping = {
   'asset/img/low/vitrine_7.jpg': 'asset/img/high/vitrine_7.jpg',
   'asset/img/low/vitrine_8.jpg': 'asset/img/high/vitrine_8.jpg',
 
+  //mapping des contenus multimédia autre
+
+  'asset/img/low/offkey_1-thumbnail.jpg': 'asset/media/offkey-vid_1.mp4',
+  'asset/img/low/offkey_4-thumbnail.jpg': 'asset/media/audio-1_pride.mp3',
+  'asset/img/low/just-click_3-thumbnail.jpg': 'https://agth3.github.io/just-click/',
 };
 
 function getHighResVersion(lowResSrc) {
@@ -937,9 +958,13 @@ class VerticalCarousel {
     this.maxScrollDistance = 3;
     this.preloadedImages = new Map();
 
+    this.loadedMedia = new Set(); // Tracker les médias déjà chargés
+    this.preloadedImages = new Map();
+
     this.initWithRealFirstImage();
     this.bindEvents();
     this.updateImageQuality();
+    this.bindScrollEventsToInteractionZones();
   }
 
   validateDimensions() {
@@ -967,49 +992,537 @@ class VerticalCarousel {
     });
   }
 
-  updateImageQuality() {
-    this.slides.forEach((slide, index) => {
-      const img = slide.querySelector('img');
-      if (!img) return;
-      
-    this.slides.forEach((slide, index) => {
-      slide.classList.remove('is-focus', 'is-prev', 'is-next');
-      if (index === this.currentIndex) {
-        slide.classList.add('is-focus');
-      } else if (index === this.currentIndex - 1) {
-        slide.classList.add('is-prev');
-      } else if (index === this.currentIndex + 1) {
-        slide.classList.add('is-next');
-      }
-    });
+  //Méthodes pour les média autres
 
-      const currentLowResSrc = img.getAttribute('src');
+  createMediaElement(slide, mediaSrc, mediaType) {
+  // Vérifier si le média existe déjà dans cette slide
+  const existingMedia = slide.querySelector('video, audio, iframe, .audio-container');
+  if (existingMedia) {
+    return existingMedia;
+  }
+
+  let mediaElement;
+  
+  switch (mediaType) {
+    case 'video':
+      mediaElement = document.createElement('video');
+      mediaElement.src = mediaSrc;
+      mediaElement.controls = false;
+      mediaElement.muted = true;
+      mediaElement.loop = true;
+      mediaElement.playsInline = true;
+      mediaElement.preload = 'metadata'; // Évite le chargement complet immédiat
+      break;
       
-      if (index === this.currentIndex) {
-        // Focus frame - charger la high-res
+    case 'audio':
+      const audioContainer = document.createElement('div');
+      audioContainer.className = 'audio-container';
+      
+      mediaElement = document.createElement('audio');
+      mediaElement.src = mediaSrc;
+      mediaElement.controls = true;
+      mediaElement.preload = 'metadata';
+      
+      audioContainer.appendChild(mediaElement);
+      return audioContainer;
+      
+    case 'iframe':
+      mediaElement = document.createElement('iframe');
+      mediaElement.src = mediaSrc;
+      mediaElement.sandbox = 'allow-scripts allow-same-origin allow-popups';
+      mediaElement.loading = 'lazy';
+      break;
+      
+    default:
+      return null;
+  }
+  
+  // Protection contre le téléchargement
+  mediaElement.addEventListener('contextmenu', (e) => e.preventDefault());
+  mediaElement.addEventListener('dragstart', (e) => e.preventDefault());
+  
+  return mediaElement;
+}
+
+//Créer les zones interactives des medias
+
+createMediaInteractionZones(slide, mediaType) {
+  // Supprimer les anciennes zones
+  const existingZones = slide.querySelectorAll('.media-interaction-zone');
+  existingZones.forEach(zone => zone.remove());
+  
+  if (mediaType === 'video') {
+    this.createVideoInteractionZone(slide);
+  } else if (mediaType === 'audio') {
+    this.createAudioInteractionZone(slide);
+  } else if (mediaType === 'iframe') {
+    this.createIframeInteractionZone(slide);
+  }
+}
+
+createVideoInteractionZone(slide) {
+  const video = slide.querySelector('video');
+  if (!video) return;
+  
+  // Zone pour les contrôles (partie basse de la vidéo)
+  const controlsZone = document.createElement('div');
+  controlsZone.className = 'media-interaction-zone video-controls-zone';
+  controlsZone.style.cssText = `
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    z-index: 25;
+    pointer-events: auto;
+    background: transparent;
+  `;
+  
+  // Zone pour play/pause (centre de la vidéo)
+  const playZone = document.createElement('div');
+  playZone.className = 'media-interaction-zone video-play-zone';
+  playZone.style.cssText = `
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    z-index: 25;
+    pointer-events: auto;
+    background: transparent;
+    border-radius: 50%;
+  `;
+  
+  // Gérer les clics sur la zone de play
+  playZone.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (video.paused) {
+      video.play();
+    } else {
+      video.pause();
+    }
+  });
+  
+  // Gérer les contrôles
+  controlsZone.addEventListener('click', (e) => {
+    e.stopPropagation();
+    // Laisser les contrôles natifs fonctionner
+  });
+  
+  slide.appendChild(controlsZone);
+  slide.appendChild(playZone);
+}
+
+createAudioInteractionZone(slide) {
+  const audioContainer = slide.querySelector('.audio-container');
+  const audio = slide.querySelector('audio');
+  if (!audio || !audioContainer) return;
+  
+  // Zone centrée sur les contrôles audio
+  const audioZone = document.createElement('div');
+  audioZone.className = 'media-interaction-zone audio-controls-zone';
+  audioZone.style.cssText = `
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 400px;
+    height: 80px;
+    z-index: 25;
+    pointer-events: auto;
+    background: transparent;
+  `;
+  
+  // Transférer les événements vers l'audio
+  audioZone.addEventListener('click', (e) => {
+    e.stopPropagation();
+    // Laisser les contrôles audio natifs fonctionner
+  });
+  
+  slide.appendChild(audioZone);
+}
+
+createIframeInteractionZone(slide) {
+  const iframe = slide.querySelector('iframe');
+  if (!iframe) return;
+  
+  // Zone couvrant l'iframe mais laissant les bords pour le scroll
+  const iframeZone = document.createElement('div');
+  iframeZone.className = 'media-interaction-zone iframe-interaction-zone';
+  iframeZone.style.cssText = `
+    position: absolute;
+    top: ${this.isMobile ? '30px' : '20px'};
+    left: ${this.isMobile ? '30px' : '20px'};
+    right: ${this.isMobile ? '30px' : '20px'};
+    bottom: ${this.isMobile ? '30px' : '20px'};
+    z-index: 25;
+    pointer-events: auto;
+    background: transparent;
+  `;
+  
+  // Transférer les événements vers l'iframe
+  iframeZone.addEventListener('click', (e) => {
+    e.stopPropagation();
+    // Laisser l'iframe gérer ses propres interactions
+  });
+  
+  slide.appendChild(iframeZone);
+}
+
+removeMediaInteractionZones(slide) {
+  const zones = slide.querySelectorAll('.media-interaction-zone');
+  zones.forEach(zone => zone.remove());
+}
+
+// Modifier votre méthode toggleMediaVisibility existante
+toggleMediaVisibility(slide, index, shouldShow) {
+  const mediaType = slide.dataset.mediaType;
+  if (!mediaType || mediaType === 'image') return;
+  
+  const existingMedia = slide.querySelector('video, audio, iframe, .audio-container');
+  const placeholder = slide.querySelector('.media-placeholder');
+  
+  if (shouldShow) {
+    // Afficher le média s'il existe, sinon le charger
+    if (existingMedia) {
+      if (mediaType === 'iframe') {
+        slide.classList.add('iframe-loaded');
+      } else {
+        existingMedia.style.display = 'block';
+        placeholder.style.display = 'none';
+      }
+      
+      // Auto-play pour les vidéos
+      if (mediaType === 'video') {
+        const video = existingMedia.tagName === 'VIDEO' ? existingMedia : existingMedia.querySelector('video');
+        if (video) {
+          video.currentTime = 0;
+          video.play().catch(() => {});
+        }
+      }
+    } else {
+      // Charger le média si pas encore fait
+      this.loadMediaContent(slide, index);
+    }
+    
+    // AJOUTER: Créer les zones d'interaction
+    this.createMediaInteractionZones(slide, mediaType);
+    
+  } else {
+    // Cacher le média, montrer le placeholder
+    if (existingMedia) {
+      if (mediaType === 'iframe') {
+        slide.classList.remove('iframe-loaded');
+      } else {
+        existingMedia.style.display = 'none';
+      }
+      
+      // Pause les médias
+      if (mediaType === 'video') {
+        const video = existingMedia.tagName === 'VIDEO' ? existingMedia : existingMedia.querySelector('video');
+        if (video && !video.paused) {
+          video.pause();
+        }
+      } else if (mediaType === 'audio') {
+        const audio = existingMedia.tagName === 'AUDIO' ? existingMedia : existingMedia.querySelector('audio');
+        if (audio && !audio.paused) {
+          audio.pause();
+        }
+      }
+    }
+    if (placeholder && mediaType !== 'iframe') {
+      placeholder.style.display = 'block';
+    }
+    
+    // AJOUTER: Supprimer les zones d'interaction
+    this.removeMediaInteractionZones(slide);
+  }
+}
+
+// Ajouter cette méthode pour gérer les événements de scroll sur les zones d'interaction
+bindScrollEventsToInteractionZones() {
+  // Cette méthode s'assure que même les zones d'interaction 
+  // transmettent les événements de scroll au carrousel
+  
+  document.addEventListener('wheel', (e) => {
+    const interactionZone = e.target.closest('.media-interaction-zone');
+    if (interactionZone) {
+      // Si on est sur une zone d'interaction mais pas sur un contrôle spécifique
+      const isOnControl = e.target.tagName === 'VIDEO' || 
+                         e.target.tagName === 'AUDIO' || 
+                         e.target.tagName === 'IFRAME' ||
+                         e.target.closest('audio, video, iframe');
+      
+      if (!isOnControl) {
+        // Transmettre l'événement au système de scroll du carrousel
+        const scrollCapture = interactionZone.closest('.carrousel-container').querySelector('.scroll-capture');
+        if (scrollCapture) {
+          // Créer un nouvel événement et le dispatcher sur scroll-capture
+          const newEvent = new WheelEvent('wheel', {
+            deltaY: e.deltaY,
+            deltaX: e.deltaX,
+            bubbles: true,
+            cancelable: true
+          });
+          scrollCapture.dispatchEvent(newEvent);
+          e.preventDefault();
+        }
+      }
+    }
+  }, { passive: false });
+}
+
+
+
+// Gestion spéciale pour l'iframe unique
+loadMediaContent(slide, index) {
+  const mediaType = slide.dataset.mediaType;
+  const placeholder = slide.querySelector('.media-placeholder');
+  
+  if (!placeholder || !mediaType || mediaType === 'image') return;
+  
+  // Créer un ID unique pour ce média
+  const mediaId = `${slide.dataset.videoSrc || slide.dataset.audioSrc || slide.dataset.iframeSrc}_${index}`;
+  
+  // Si déjà chargé, juste l'afficher
+  if (this.loadedMedia.has(mediaId)) {
+    const existingMedia = slide.querySelector('video, audio, iframe, .audio-container');
+    const placeholder = slide.querySelector('.media-placeholder');
+    
+    if (existingMedia && placeholder) {
+      if (mediaType === 'iframe') {
+        // Gestion spéciale iframe
+        slide.classList.add('iframe-loaded');
+      } else {
+        placeholder.style.display = 'none';
+        existingMedia.style.display = 'block';
+      }
+      
+      // Auto-play pour les vidéos en focus
+      if (mediaType === 'video' && index === this.currentIndex) {
+        const video = existingMedia.tagName === 'VIDEO' ? existingMedia : existingMedia.querySelector('video');
+        if (video) {
+          video.currentTime = 0;
+          video.play().catch(() => {});
+        }
+      }
+    }
+    return;
+  }
+  
+  // Si pas encore chargé, charger une seule fois
+  slide.classList.add('media-loading');
+  
+  let mediaSrc;
+  switch (mediaType) {
+    case 'video':
+      mediaSrc = slide.dataset.videoSrc;
+      break;
+    case 'audio':
+      mediaSrc = slide.dataset.audioSrc;
+      break;
+    case 'iframe':
+      mediaSrc = slide.dataset.iframeSrc;
+      break;
+  }
+  
+  if (!mediaSrc) return;
+  
+  const mediaElement = this.createMediaElement(slide, mediaSrc, mediaType);
+  if (!mediaElement) return;
+  
+  // Gestion du chargement selon le type
+  const handleLoad = () => {
+    slide.classList.remove('media-loading');
+    
+    if (mediaType === 'iframe') {
+      // Gestion spéciale iframe avec transition
+      slide.appendChild(mediaElement);
+      setTimeout(() => {
+        slide.classList.add('iframe-loaded');
+      }, 100);
+    } else {
+      placeholder.style.display = 'none';
+      slide.appendChild(mediaElement);
+    }
+    
+    // Marquer comme chargé
+    this.loadedMedia.add(mediaId);
+    
+    // Auto-play pour les vidéos en focus
+    if (mediaType === 'video' && index === this.currentIndex) {
+      const video = mediaElement.tagName === 'VIDEO' ? mediaElement : mediaElement.querySelector('video');
+      if (video) {
+        video.play().catch(() => {});
+      }
+    }
+  };
+  
+  const handleError = () => {
+    slide.classList.remove('media-loading');
+    console.warn(`Erreur de chargement pour ${mediaType}: ${mediaSrc}`);
+  };
+  
+  if (mediaType === 'video') {
+    mediaElement.addEventListener('loadeddata', handleLoad, { once: true });
+    mediaElement.addEventListener('error', handleError, { once: true });
+  } else if (mediaType === 'audio') {
+    const audio = mediaElement.querySelector ? mediaElement.querySelector('audio') : mediaElement;
+    audio.addEventListener('loadedmetadata', handleLoad, { once: true });
+    audio.addEventListener('error', handleError, { once: true });
+  } else if (mediaType === 'iframe') {
+    // Pour iframe, timeout de sécurité plus long
+    let loaded = false;
+    const timeoutId = setTimeout(() => {
+      if (!loaded) {
+        loaded = true;
+        handleLoad();
+      }
+    }, 8000); // 8 secondes de timeout
+    
+    mediaElement.addEventListener('load', () => {
+      if (!loaded) {
+        loaded = true;
+        clearTimeout(timeoutId);
+        handleLoad();
+      }
+    }, { once: true });
+    
+    mediaElement.addEventListener('error', () => {
+      clearTimeout(timeoutId);
+      handleError();
+    }, { once: true });
+  }
+}
+
+
+pauseAllMedia() {
+  this.slides.forEach(slide => {
+    const video = slide.querySelector('video');
+    const audio = slide.querySelector('audio');
+    
+    if (video && !video.paused) {
+      video.pause();
+    }
+    if (audio && !audio.paused) {
+      audio.pause();
+    }
+  });
+}
+
+toggleMediaVisibility(slide, index, shouldShow) {
+  const mediaType = slide.dataset.mediaType;
+  if (!mediaType || mediaType === 'image') return;
+  
+  const existingMedia = slide.querySelector('video, audio, iframe, .audio-container');
+  const placeholder = slide.querySelector('.media-placeholder');
+  
+  if (shouldShow) {
+    // Afficher le média s'il existe, sinon le charger
+    if (existingMedia) {
+      if (mediaType === 'iframe') {
+        slide.classList.add('iframe-loaded');
+      } else {
+        existingMedia.style.display = 'block';
+        placeholder.style.display = 'none';
+      }
+      
+      // Auto-play pour les vidéos
+      if (mediaType === 'video') {
+        const video = existingMedia.tagName === 'VIDEO' ? existingMedia : existingMedia.querySelector('video');
+        if (video) {
+          video.currentTime = 0;
+          video.play().catch(() => {});
+        }
+      }
+    } else {
+      // Charger le média si pas encore fait
+      this.loadMediaContent(slide, index);
+    }
+  } else {
+    // Cacher le média, montrer le placeholder
+    if (existingMedia) {
+      if (mediaType === 'iframe') {
+        slide.classList.remove('iframe-loaded');
+      } else {
+        existingMedia.style.display = 'none';
+      }
+      
+      // Pause les médias
+      if (mediaType === 'video') {
+        const video = existingMedia.tagName === 'VIDEO' ? existingMedia : existingMedia.querySelector('video');
+        if (video && !video.paused) {
+          video.pause();
+        }
+      } else if (mediaType === 'audio') {
+        const audio = existingMedia.tagName === 'AUDIO' ? existingMedia : existingMedia.querySelector('audio');
+        if (audio && !audio.paused) {
+          audio.pause();
+        }
+      }
+    }
+    if (placeholder && mediaType !== 'iframe') {
+      placeholder.style.display = 'block';
+    }
+  }
+}
+
+
+updateImageQuality() {
+  // Pause tous les médias d'abord
+  this.pauseAllMedia();
+  
+  this.slides.forEach((slide, index) => {
+    const img = slide.querySelector('img:not(.media-placeholder)');
+    const mediaType = slide.dataset.mediaType;
+    
+    // Réinitialiser les classes
+    slide.classList.remove('is-focus', 'is-prev', 'is-next');
+    if (index === this.currentIndex) {
+      slide.classList.add('is-focus');
+    } else if (index === this.currentIndex - 1) {
+      slide.classList.add('is-prev');
+    } else if (index === this.currentIndex + 1) {
+      slide.classList.add('is-next');
+    }
+
+    if (index === this.currentIndex) {
+      // Focus frame - afficher le contenu
+      if (mediaType && mediaType !== 'image') {
+        this.toggleMediaVisibility(slide, index, true);
+      } else if (img) {
+        // Logique existante pour les images
+        const currentLowResSrc = img.getAttribute('src');
         const highResSrc = getHighResVersion(currentLowResSrc);
         if (highResSrc !== currentLowResSrc) {
           this.preloadHighResImage(highResSrc).then(() => {
-            if (index === this.currentIndex) { // Vérifier qu'on est toujours en focus
+            if (index === this.currentIndex) {
               img.src = highResSrc;
             }
           }).catch(() => {
-            img.src = currentLowResSrc; // Fallback
+            img.src = currentLowResSrc;
           });
         }
-      } else {
-        // Previous/next frames - utiliser low-res du mapping ou garder l'original
+      }
+    } else {
+      // Previous/next frames - cacher les médias, montrer les placeholders
+      if (mediaType && mediaType !== 'image') {
+        this.toggleMediaVisibility(slide, index, false);
+      } else if (img) {
+        // Logique existante pour les images
+        const currentLowResSrc = img.getAttribute('src');
         const lowResSrc = Object.keys(highResMapping).find(key => 
           getHighResVersion(key) === currentLowResSrc
         ) || currentLowResSrc;
         img.src = lowResSrc;
       }
-    });
-  }
+    }
+  });
+}
 
-
-
-  preloadAdjacentImages() {
+preloadAdjacentImages() {
   // Précharger UNIQUEMENT la high-res de l'image suivante probable
   const nextIndex = this.currentIndex + 1;
   
@@ -1324,6 +1837,34 @@ scrollZone.addEventListener('touchend', () => {
 
 // Lancer tous les carrousels au DOM prêt
 document.addEventListener('DOMContentLoaded', () => {
+  
+  //Peut être pas au bon endroit
+// Protection contre le clic droit sur tous les médias
+  document.addEventListener('contextmenu', (e) => {
+    if (e.target.closest('.carrousel-slide')) {
+      e.preventDefault();
+      return false;
+    }
+  });
+  
+  // Protection contre le drag & drop
+  document.addEventListener('dragstart', (e) => {
+    if (e.target.closest('.carrousel-slide')) {
+      e.preventDefault();
+      return false;
+    }
+  });
+  
+  // Protection contre les raccourcis clavier
+  document.addEventListener('keydown', (e) => {
+    if (e.target.closest('.carrousel-slide')) {
+      // Empêcher Ctrl+S, Ctrl+A, etc.
+      if (e.ctrlKey && (e.key === 's' || e.key === 'a' || e.key === 'u')) {
+        e.preventDefault();
+        return false;
+      }
+    }
+  });
 
   const tracks = document.querySelectorAll('.carrousel-track');
   tracks.forEach(track => {
