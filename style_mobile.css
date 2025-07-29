@@ -1,29 +1,5 @@
 /*--------- COULEURS ---------*/
 
-:root {
-  --highlight-color: blue; /*couleur de highlight à appeler partout et que l'on peut faire varier localement dans les sections :width:
-  .classe {
-    --highlight-color: #cc33aa;
-  };*/
-}
-
-/*
-fond : #f1f2f1
-faux-noir : #0f0c0c
-noir-éclairci : #adadac
-
-*/
-
-/*--------- TITRAGES ---------*/
-
-/* h1{
-    font-family: "Wagon Bold";
-    margin:0;
-    background-color: #161b27;
-    color:#d8b1ed;
-    font-size: 6em;
-} */
-
 
 @media screen and (max-width: 1024px) {
     
@@ -33,13 +9,6 @@ noir-éclairci : #adadac
 
   /*--------- GENERAL ---------*/
 
-  body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      /* overflow-x: hidden; */
-      /* font-family: Arial, Helvetica, sans-serif; */
-  }
 
   html {
     font-family: 'Switzer-Regular', 'Helvetica Neue', Arial, sans-serif;
@@ -55,19 +24,12 @@ noir-éclairci : #adadac
   .container{
       display: grid;
       width:100vw;
-      height:100vh;
+      height:100dvh; /*test en dvh*/
       grid-template-columns: repeat(7, 1fr);
       grid-template-rows: 8% 12% 20% 20% 20% 12% 8%;
-      background-color:#f1f2f1; /* bisque;*/
   }
 
-  .cadre{
-      /* background-color: #faadde; */
-      display: flex;
-      
-  }
-
-  .bord-haut {
+  /*.bord-haut {
     grid-column: 1 / 8;
     grid-row: 1 / 2;
   }
@@ -77,7 +39,7 @@ noir-éclairci : #adadac
     grid-row: 7 / 8;
   }
 
-  /* .bord-gauche {
+   .bord-gauche {
     grid-column: 1 / 2;
     grid-row: 2 / 5;
   }
@@ -91,64 +53,21 @@ noir-éclairci : #adadac
       display: flex;
       grid-column: 2/7;
       grid-row: 2/7;
-      /* background-color: aquamarine; */
   }
 
 
   /*--------- ELEMENTS MENU ---------*/
 
-
-  /* .bloc-accueil{
-    display: flex;
-    grid-column: 1/3;
-    grid-row: 1/2;
-    background-color: #ff7b7b;
-    align-items: center;
-  
-  } */
-
   .logo-menu{
     display: flex;
     grid-column: 1/2;
     grid-row: 1/2;
-    aspect-ratio: 1 / 1; 
-    height:27.778%;
-    background-color:#0f0c0c;
-    align-self:center;
-    justify-self: center;
   }
 
   #nom-menu{
   display: flex;
     grid-column: 2/5;
     grid-row: 1/2;
-    /* font-size:1.35rem;
-      text-transform: uppercase;
-    align-self:center;
-    font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif; */
-    justify-self: left;
-  }
-
-  .elements-menu-haut{
-    display: flex;
-    font-size:1.35rem;
-    text-transform: uppercase;
-    align-self:center;
-    justify-self: center;
-    color: #0f0c0c;
-    z-index: 3;
-    font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
-  }
-
-  .elements-menu-bas{
-    display: flex;
-    font-size:1.15rem;
-    text-transform: lowercase;
-    align-self:center;
-    justify-self: center;
-    color: #0f0c0c;
-    z-index: 3;
-    font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
   }
 
   #bio-menu{
@@ -176,52 +95,9 @@ noir-éclairci : #adadac
     grid-row: 7/8;
   }
 
-  .a-menu{
-  text-decoration: none;
-  color: #0f0c0c;
-  }
-
 
   /*--------- IMAGES FLOTTANTES ---------*/
 
-
-
-  #image-container {
-    position: fixed; /* fixe la div par-dessus tout */
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none; /* important pour ne pas bloquer les clics en-dessous */
-    /* z-index: 9; */
-  }
-
-
-  .floating-image {
-    position: absolute;
-    /* max-width: 50vw;
-    max-height: 50vh; */
-    transition: transform 0.2s linear;
-    pointer-events: auto;
-    z-index: 10;
-    /* object-fit: cover; précisé dans le js*/
-  }
-
-  .floating-image-title{
-    position: absolute;
-    background: rgb(15, 12, 12, 50%);
-    color: #f1f2f1;
-    /* color:yellow; */
-    padding: 1vh 1.5vh;
-    font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
-    text-align: center;
-    font-size:1.25rem;
-    pointer-events: none;
-    z-index: 25;
-    transition: opacity 0.2s;
-    /* white-space: nowrap; pas de retour à la ligne */
-    transform: translate(-50%, -50%);
-  }
 
 
   /*--------- PAGE MOSAIQUE ---------*/
@@ -236,25 +112,6 @@ noir-éclairci : #adadac
     width:100%;
     height:100%;
     padding: 4vh 0;
-  }
-
-  .case-mosaique{
-  width: 100%;
-    height: 100%;
-    display: block;
-    position: relative;
-    overflow: hidden;
-  }
-
-  /* .case-mosaique:hover .img-mosaique {
-    transform: scale(1.05);
-  } */
-
-  .img-mosaique{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
   }
 
   .case1{ grid-column: 1/2; grid-row: 1/2; /* background-color: #faadde; */}
@@ -275,16 +132,6 @@ noir-éclairci : #adadac
 
   /*--------- PAGE PROJETS ---------*/
 
-  .highlight-projet{
-    color: var(--highlight-color);
-  }
-
-  /* #projet-OffKey{
-      --highlight-color: #e01e1e;
-    } */
-
-  /* Chaque projet aura une couleur différente pour le highlight. Ici il faut détecter quelle section est affichée à l'écran pour aller chercher la bonne teinte à définir pour le highligh. Il faut un observer comme dans mon mémoire qui observe la section en cours et trouve sa teinte associé, partie à faire en js*/
-
 
   /*--- MENU FIXE ---*/
 
@@ -292,16 +139,15 @@ noir-éclairci : #adadac
     display: grid;
     position: absolute; /* pas fixed pour ne pas empêcher les cliques en dessous */
     width: 100vw;
-    height: 100vh;
+    height: 100dvh;
     z-index: 5;
     grid-template-columns: repeat(7, 1fr);
     grid-template-rows: 8% 12% 20% 20% 20% 12% 8%;
     pointer-events: none;
-    /* overflow: hidden; */
   }
 
-  .container-menu-projets * {
-    pointer-events: auto;  /* Permettre les interactions sur tous les éléments de menu */
+  .highlight-projet{
+    color: #0f0c0c;
   }
 
   .fleches-sections-projets{
@@ -316,17 +162,6 @@ noir-éclairci : #adadac
     pointer-events: auto;
     touch-action: manipulation;
     /* cursor: pointer; */
-  }
-
-  .fleches-sections-projets:disabled {
-    opacity: 0;
-    cursor: default;
-  }
-
-  .fleches-sections-projets:active {
-    color:var(--highlight-color);
-    border: none;
-    background-color: transparent;
   }
 
   #fleche-gauche-projets{
@@ -357,101 +192,30 @@ noir-éclairci : #adadac
     display: block;
     flex-direction: column;
     flex-wrap: nowrap;        /* aligne les éléments horizontalement */
-                          
-  height: 100vh;    
-  overflow-y: auto;         
-  overflow-x: hidden;            
-  scroll-snap-type: y mandatory;  
-  scroll-behavior: smooth;
-
+    overflow-y: auto;         
+    overflow-x: hidden;                        
+    height: 100dvh;              
+    scroll-snap-type: y mandatory;  
+    scroll-behavior: smooth;
   }
 
   .grid-projets{ /*grid des diff sections de projet*/
-      display: grid;
-    flex: 0 0 100vh;          /* hauteur fixe égale à la fenêtre */
-    height: 100vh;
+    display: grid;
+    flex: 0 0 100dvh;          /* hauteur fixe égale à la fenêtre */
+    height: 100dvh;
+    min-height: 100dvh;  
     width:100vw;
     grid-template-columns: repeat(7, 1fr);
     grid-template-rows: 8% 12% 20% 20% 20% 12% 8%;
     /* background-color: #f1f2f1; */
-  background-color: var(--highlight-color);
-    scroll-snap-align: start;  /* optionnel : aligne proprement au scroll */
-  min-height: 100vh;    
-  scroll-snap-align: start;
-  flex: none;
+    background-color: var(--highlight-color);
+    flex: none;
   }
 
   .zone-texte-projets{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap:0.5rem;
     grid-column: 2/7;
     grid-row: 2/4;
-    padding: 0;
-    /* padding-right: 40%; */
     width: 80%;
-    color: #0f0c0c;
-    text-align: left;
-    /* background-color: aqua; */
-  }
-
-  .titre-projets{
-    font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
-    font-weight: 500;
-    font-size:2.25rem;
-    margin:0;
-  }
-
-  .date-projets{
-    font-family: 'Switzer-Extralight', 'Helvetica Neue', Arial, sans-serif;
-    font-size:1.4rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .description-projets{
-    font-family: 'Switzer-Regular', 'Helvetica Neue', Arial, sans-serif;
-    font-size:1.1rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .outil-projets{
-    font-family: 'Switzer-Regular', 'Helvetica Neue', Arial, sans-serif;
-    font-size:0.95rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .contexte-projets{
-    font-family: 'Switzer-Light', 'Helvetica Neue', Arial, sans-serif;
-    font-size:1.1rem;
-  }
-
-  .collab-projets{
-    font-size:0.95rem;
-  }
-
-  .sous-titre-projets{
-    font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
-    font-size:1.1rem;
-    margin-top: 1.5rem;
-    margin-bottom: 0.25rem;
-  }
-
-  .sous-description-projets{
-    font-family: 'Switzer-Regular', 'Helvetica Neue', Arial, sans-serif;
-    font-size:0.95rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .liens-externes{
-    font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
-    font-size:1.1rem;
-    text-decoration: underline;
-    color: var(--highlight-color);
-  }
-
-  .italique{
-      font-family: 'Switzer-ExtralightItalic', 'Helvetica Neue', Arial, sans-serif;
   }
 
   /*--------- SECTION SLIDES IMG --------*/
@@ -461,35 +225,14 @@ noir-éclairci : #adadac
     flex-direction: column;
     justify-content: center;
     width: 100vw;
+    height: calc(100% - 4vh);
     gap: 4.63vh;
     grid-column: 1/8;
     grid-row: 4/7;
     margin:2vh 0 4vh 0;
-    /* margin-left: calc(25% + 4.63vh); */
-    background-color: #0f0c0c;
-    height: calc(100% - 4vh);
-    position: relative;
-    overflow: hidden;
-    touch-action: pan-y;
   }
 
-  /* Le conteneur global du carrousel */
-  .carrousel-container {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-  }
 
-  /* .scroll-capture {
-    position: absolute;
-    top:0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 15;  supérieur à .focus-frame (z-index: 5) 
-    background: transparent;
-  } */
 
   /* La "piste" de slides verticales */
   .carrousel-track {
@@ -505,14 +248,14 @@ noir-éclairci : #adadac
   /* Chaque slide (image) */
   .carrousel-slide {
     width: calc(100vw - 2 * 9.5vw); /* Largeur = largeur de focus-frame */
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-right: 4vw; /* Espacement horizontal au lieu de vertical */
-  margin-bottom: 0;
-  margin-left: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-right: 4vw; /* Espacement horizontal au lieu de vertical */
+    margin-bottom: 0;
+    margin-left: 0;
   }
 
   /* Premier slide sans marge gauche */
@@ -520,12 +263,6 @@ noir-éclairci : #adadac
   margin-left: 0;
 }
 
-  .carrousel-slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-  }
 
   /* Cadre visuel qui correspond à .img-principale */
   .focus-frame {
@@ -535,12 +272,6 @@ noir-éclairci : #adadac
     top:0;
     width: calc(100vw - 2 * 9.5vw);
     height: 100%;
-    /* height: calc(100% - 4vh); */
-    /* height: calc(100vh - 2 * 16.667vh); */
-    /* border: 3px solid var(--highlight-color); */
-    pointer-events: none;
-    z-index: 5;
-    /* border: solid 1px red; */
   }
 
   .previous-frame {
@@ -550,10 +281,6 @@ noir-éclairci : #adadac
     top:0;
     width: calc(100vw - 2 * 9.5vw);
     height: 100%;
-    /* border: 2px solid rgba(255, 255, 255, 0.3); */
-    pointer-events: none;
-    z-index: 4;
-    /* border: solid 1px blue; */
   }
 
   .next-frame {
@@ -563,70 +290,13 @@ noir-éclairci : #adadac
     top:0;
     width: calc(100vw - 2 * 9.5vw);
     height: 100%;
-    /* border: 2px solid rgba(255, 255, 255, 0.3); */
-    pointer-events: none;
-    z-index: 4;
-    /* border: solid 1px blue; */
-  }
-
-  /* Barre de scroll sur le côté */
-  .scroll-indicator {
-    position: absolute;
-    right: 1vh;
-    top: 16.667vh;
-    width: 4px;
-    height: calc(100% - 2 * 16.667vh);
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
-    z-index: 5;
-    overflow: hidden;
-  }
-
-  .scroll-indicator::after {
-    content: '';
-    position: absolute;
-    top: var(--scroll-progress, 0px);
-    left: 0;
-    width: 100%;
-    height: 20px;
-    background: var(--highlight-color);
-    border-radius: 2px;
   }
 
 
-/* Ajouts CSS pour les nouveaux médias */
+/* STYLES par types de MÉDIAS */
 
-/* Style commun pour tous les médias */
-.carrousel-slide video,
-.carrousel-slide audio,
-.carrousel-slide iframe {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  margin-left: auto;
-  display: block;
-  pointer-events: auto; /* Permettre les interactions normales */
-  position: relative;
-  z-index: 5;
-}
-
-/* Vidéo spécifique */
-.carrousel-slide video {
-  background-color: #000;
-}
 
 /* Audio avec contrôles personnalisés */
-.carrousel-slide .audio-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: #0f0c0c;
-  position: relative;
-  z-index: 20; /* Au-dessus de scroll-capture */
-}
 
 .carrousel-slide audio {
   width: 90%;
@@ -635,129 +305,14 @@ noir-éclairci : #adadac
   filter: sepia(1) saturate(2) hue-rotate(0deg); /* Style personnalisé */
 }
 
-/* Iframe sécurisée */
-.carrousel-slide iframe {
-  border: none;
-  background-color: #fff;
-  pointer-events: auto; /* Permettre l'interaction avec le contenu */
-  user-select: none;
+
+#projet-Memoire .carrousel-slide.lien-externe-slide {
+  cursor:default;
 }
 
-/* Protection spécifique iframe - empêcher seulement le clic droit sur le cadre */
-.carrousel-slide iframe {
-  border: 1px solid transparent; /* Cadre invisible pour capturer les clics */
-}
-
-/* Protection contre le téléchargement - SEULEMENT user-select et drag */
-.carrousel-slide img,
-.carrousel-slide video,
-.carrousel-slide audio,
-.carrousel-slide iframe {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-user-drag: none;
-  -khtml-user-drag: none;
-  -moz-user-drag: none;
-  -o-user-drag: none;
-  /* user-drag: none; */
-}
-
-/* Overlay de protection invisible - ne bloque PAS les interactions */
-.carrousel-slide::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1; /* En arrière-plan pour ne pas bloquer */
-  pointer-events: none;
-}
-
-/* État de chargement */
-.media-loading::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 30px;
-  height: 30px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top: 3px solid var(--highlight-color);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: translate(-50%, -50%) rotate(0deg); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-/* Règle spécifique pour l'iframe unique - chargement lent accepté */
-.carrousel-slide[data-media-type="iframe"] {
-  position: relative;
-}
-
-.carrousel-slide[data-media-type="iframe"] .media-placeholder {
-  transition: opacity 0.3s ease;
-}
-
-.carrousel-slide[data-media-type="iframe"].iframe-loaded .media-placeholder {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.carrousel-slide[data-media-type="iframe"] iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.carrousel-slide[data-media-type="iframe"].iframe-loaded iframe {
-  opacity: 1;
-}
-
-
-/* Désactiver scroll-capture quand un média est en focus */
-/* .carrousel-slide.is-focus[data-media-type="video"] ~ .scroll-capture,
-.carrousel-slide.is-focus[data-media-type="audio"] ~ .scroll-capture,
-.carrousel-slide.is-focus[data-media-type="iframe"] ~ .scroll-capture {
-  pointer-events: none;
-} */
-
-/* Alternative plus propre avec une classe 
-.scroll-capture.media-focus-disabled {
-  pointer-events: none;
-}*/
-
-/* Assurer que les médias gardent leurs interactions */
-.carrousel-slide video,
-.carrousel-slide audio,
-.carrousel-slide iframe,
-.carrousel-slide .audio-container {
-  pointer-events: auto;
-  z-index: 20;
-}
-
-/* Style pour indiquer que le média gère le scroll */
-.carrousel-slide.is-focus[data-media-type] {
-  position: relative;
-}
-
-.carrousel-slide.is-focus[data-media-type]::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
+/* Lien cliquable sur toute la zone */
+.lien-externe-texte {
+  display: none;
 }
 
 
@@ -773,24 +328,14 @@ noir-éclairci : #adadac
     padding: 0;
     height: 100%;
     overflow-y:auto;
-    /* position: relative; utile pour un positionnement absolu si jamais tu changes plus tard */
-    /*min-height: 0; nouveau : autorise les enfants à shrinker dans le flex */
   }
 
   .presentation-bio{
-    font-size:1.35rem;
-    font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
-    color: #0f0c0c;
     margin-right: 20%;
     margin-top:2vh;
   }
 
   #parcours{
-    font-size:1.85rem;
-    font-family: 'Switzer-Regular', 'Helvetica Neue', Arial, sans-serif;
-    font-weight: 400;
-    color: #0f0c0c;
-    margin: 0;
     margin-top: 2vh;
   }
 
@@ -802,67 +347,9 @@ noir-éclairci : #adadac
     display: none;
   }
 
-  /* #img-bio-mobile{
-    width: 100%; prévu 60% dans la maquette mais autant avoir un scroll qui vaut le coup, sinon carrément virer l'image
-    align-self: flex-start;
-    display: flex;
-    justify-content: flex-start;
-    align-items: flex-end;
-    margin-top: auto;  pousse vers le bas si possible 
-  }*/
-
-/*
-  #img-bio-mobile img{
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-  } */
-
   /*----- MINI TABLEAU PARCOURS -----*/
 
   .bloc-liste {
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    column-gap: 2rem;     /* espacement horizontal entre colonnes */
-    row-gap: 1rem;         /* espacement vertical entre paires */
-    align-items: start;
     margin-bottom: 2vh;
   }
-
-  .date-parcours {
-    text-align: right;
-    white-space: nowrap;
-    font-size:1.15rem;
-    font-family: 'Switzer-Light', 'Helvetica Neue', Arial, sans-serif;
-    color: #0f0c0c;
-  }
-
-  .formation-parcours {
-    text-align: left;
-    font-size:1.15rem;
-    font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
-    color: #0f0c0c;
-  }
-
-  .lieu-formation{
-    font-family: 'Switzer-Light', 'Helvetica Neue', Arial, sans-serif;
-    color: #0f0c0c;
-  }
-
-
-
 }
-
-
-
-/*--------- PETITE TAILLE D'ECRAN ---------*/
-
-
-  /*
-  
-    body { 
-    }
-  }
-  */
-  
-

@@ -159,18 +159,6 @@ fond : #f1f2f1
 faux-noir : #0f0c0c
 noir-éclairci : #adadac
 
-*/
-
-/*--------- TITRAGES ---------*/
-
-/* h1{
-    font-family: "Wagon Bold";
-    margin:0;
-    background-color: #161b27;
-    color:#d8b1ed;
-    font-size: 6em;
-} */
-
 /*--------- GENERAL ---------*/
 
 body {
@@ -194,7 +182,7 @@ html {
 .container{
     display: grid;
     width:100vw;
-    height:100vh;
+    height:100dvh;
     grid-template-columns: 9.375vw repeat(5, 1fr) 9.375vw;
     grid-template-rows: 16.667vh repeat(3, 1fr) 16.667vh;
     background-color:#f1f2f1; /* bisque;*/
@@ -207,7 +195,7 @@ html {
     
 }
 
-.bord-haut {
+/*.bord-haut {
   grid-column: 1 / 8;
   grid-row: 1 / 2;
 }
@@ -225,13 +213,12 @@ html {
 .bord-droit {
   grid-column: 7 / 8;
   grid-row: 2 / 5;
-}
+}*/
 
 .center-grid{
     display: flex;
     grid-column: 2/7;
     grid-row: 2/5;
-    /* background-color: aquamarine; */
 }
 
 
@@ -331,7 +318,7 @@ color: #0f0c0c;
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   pointer-events: none; /* important pour ne pas bloquer les clics en-dessous */
   /* z-index: 9; */
 }
@@ -424,14 +411,7 @@ color: #0f0c0c;
 
 .highlight-projet{
   color: var(--highlight-color);
-}
-
-/* #projet-OffKey{
-    --highlight-color: #e01e1e;
-  } */
-
-/* Chaque projet aura une couleur différente pour le highlight. Ici il faut détecter quelle section est affichée à l'écran pour aller chercher la bonne teinte à définir pour le highligh. Il faut un observer comme dans mon mémoire qui observe la section en cours et trouve sa teinte associé, partie à faire en js*/
-
+} /* Chaque projet a une couleur différente de highlight définie en .js dans projets.html*/
 
 /*--- MENU FIXE ---*/
 
@@ -439,7 +419,7 @@ color: #0f0c0c;
   display: grid;
   position: absolute; /* pas fixed pour ne pas empêcher les cliques en dessous */
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   z-index: 5;
   grid-template-columns: 9.375vw repeat(5, 1fr) 9.375vw;
   grid-template-rows: 16.667vh repeat(3, 1fr) 16.667vh;
@@ -504,9 +484,9 @@ color: #0f0c0c;
 }
 
 .grid-projets{ /*grid des diff sections de projet*/
-    display: grid;
+  display: grid;
   flex: 0 0 100vw;           /* largeur fixe égale à la fenêtre */
-  height: 100vh;
+  height: 100dvh;
   width:100vw;
   grid-template-columns: 9.375vw repeat(5, 1fr) 9.375vw;
   grid-template-rows: 16.667vh repeat(3, 1fr) 16.667vh;
@@ -526,7 +506,6 @@ color: #0f0c0c;
   padding-right: calc(25% + 4.63vh);
   color: #0f0c0c;
   text-align: left;
-  /* background-color: aqua; */
 }
 
 .titre-projets{
@@ -594,6 +573,7 @@ color: #0f0c0c;
   flex-direction: column;
   justify-content: center;
   width: calc(100% - (4.63vh * 2));
+  height: 100%;
   gap: 4.63vh;
   grid-column: 4/7;
   grid-row: 1/6;
@@ -601,7 +581,6 @@ color: #0f0c0c;
   /* margin-right: 4.63vh;
   margin-left: calc(25% + 4.63vh); */
   background-color: #0f0c0c;
-  height: 100%;
   position: relative;
   overflow: hidden;
   touch-action: pan-y;
@@ -657,6 +636,7 @@ color: #0f0c0c;
   display: block;
 }
 
+
 /* Bichromie uniquement sur les slides précédentes/suivantes */
 /* .carrousel-slide.is-prev img,    
 .carrousel-slide.is-next img {
@@ -700,7 +680,7 @@ color: #0f0c0c;
 }
 
 /* Barre de scroll sur le côté */
-.scroll-indicator {
+/* .scroll-indicator {
   position: absolute;
   right: 1vh;
   top: 16.667vh;
@@ -721,9 +701,9 @@ color: #0f0c0c;
   height: 20px;
   background: var(--highlight-color);
   border-radius: 2px;
-}
+} */
 
-/* === STYLES POUR TOUS LES MÉDIAS === */
+/* STYLES POUR TOUS LES MÉDIAS */
 .carrousel-slide video,
 .carrousel-slide audio,
 .carrousel-slide iframe {
@@ -750,10 +730,6 @@ color: #0f0c0c;
 
 /* === STYLES SPÉCIFIQUES PAR TYPE DE MÉDIA === */
 
-/* Vidéo */
-.carrousel-slide video {
-  background-color: #000;
-}
 
 /* Audio avec container personnalisé */
 .carrousel-slide .audio-container {
@@ -882,6 +858,38 @@ color: #0f0c0c;
   z-index: -1;
 } */
 
+#projet-Memoire .carrousel-slide.lien-externe-slide {
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Lien cliquable sur toute la zone */
+.lien-externe-texte {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;                          /* permet de centrer le texte */
+  justify-content: center;
+  align-items: center;
+  font-family: 'Switzer-Medium', sans-serif;
+  font-size: 1.25rem;
+  text-decoration: none;
+  color: #f1f2f1;
+  z-index: 15;
+  transition: background-color 0.2s ease;
+  text-align: center;
+}
+
+.lien-externe-slide:hover .lien-externe-texte {
+  background-color: rgb(241, 242, 241, 0.2);
+  color: white /*var(--highlight-color);  ou white, ou autre */
+}
+
+
 
 /*--------- PAGE BIO ---------*/
 
@@ -963,17 +971,3 @@ color: #0f0c0c;
 
 
 /*--------- PETITE TAILLE D'ECRAN ---------*/
-
-
-  /*@media screen and (max-width: 1024px) {
-    
-    * {
-      box-sizing: border-box; Empêche les marges ou bordures d'élargir un élément
-    }
-  
-    body { 
-    }
-  }
-  */
-  
-
