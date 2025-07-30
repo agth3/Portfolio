@@ -8,23 +8,26 @@
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="style_mobile.css">
         <!-- <link rel="preload" href="/fonts/myfont.woff2" as="font" type="font/woff2" crossorigin="anonymous"> -->
+        <script src="script-general.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     </head>
 
-    <body>
+    <body class="body-projets">
         <div class="container-menu-projets">
-                    <a class="a-menu logo-menu" href="index.html"></a>
-                    <div class="elements-menu-haut" id="nom-menu"><a class="a-menu" href="index.html">Agathe Cotton</a></div>
-                    <div class="elements-menu-haut" id="bio-menu"><a class="a-menu highlight-projet" href="bio.html">Bio</a></div>
-                    <div class="elements-menu-haut" id="projet-menu"><a class="a-menu highlight-projet" href="mosaique.html">Projets</a></div>
-                    <div class="elements-menu-haut" id="lang-menu">FR / ENG</div>
-                    <div class="elements-menu-bas highlight-projet" id="tel-menu">06 89 32 68 76</div>
-                    <div class="elements-menu-bas" id="mail-menu">agathe.cotton@gmail.com</div>
-                    <div class="elements-menu-bas" id="insta-menu"><a class="a-menu highlight-projet" href="https://www.instagram.com/happy_factoryy/?hl=fr" target="_blank">@happy_factoryy</a></div>
+
+                    <div class="elements-menu-haut" id="nom-menu">
+                        <a class="a-menu logo-menu hoverable" href="index.html"></a>
+                        <a class="a-menu hoverable" id="a-nom-menu" href="index.html">Agathe Cotton</a></div>
+                    <div class="elements-menu-haut hoverable" id="bio-menu"><a class="a-menu" href="bio.html">Bio</a></div>
+                    <div class="elements-menu-haut hoverable" id="projet-menu"><a class="a-menu" href="mosaique.html">Projets</a></div>
+                    <div class="elements-menu-haut hoverable" id="lang-menu"><a class="a-menu">FR / ENG</a></div>
+                    <div class="elements-menu-bas hoverable" id="tel-menu">06 89 32 68 76</div>
+                    <div class="elements-menu-bas hoverable" id="mail-menu">agathe.cotton@gmail.com</div>
+                    <div class="elements-menu-bas hoverable" id="insta-menu"><a class="a-menu" href="https://www.instagram.com/happy_factoryy/?hl=fr" target="_blank">@happy_factoryy</a></div>
 
                     <!-- caracteres de fleches : ᐸᐳᐱᐯ ˂˃˄˅  🢒🢑🢓  ᐊᐅᐃᐁ -->
-                    <button class="fleches-sections-projets" id="fleche-gauche-projets">ᐸ</button>
-                    <button class="fleches-sections-projets" id="fleche-droite-projets">ᐳ</button>
+                    <button class="fleches-sections-projets hoverable" id="fleche-gauche-projets">ᐸ</button>
+                    <button class="fleches-sections-projets hoverable" id="fleche-droite-projets">ᐳ</button>
                     <button class="fleches-sections-projets" id="fleche-haut-projets">ᐱ</button>
                     <button class="fleches-sections-projets" id="fleche-bas-projets">ᐯ</button>
 
