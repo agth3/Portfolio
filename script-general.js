@@ -1,4 +1,21 @@
 
+/*   SCRIPT DE GESTION DE LANGUE   */
+
+async function loadLang(lang) {
+  const res = await fetch(`text-${lang}.json`);
+  const dict = await res.json();
+  
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key]) el.textContent = dict[key];
+  });
+}
+
+localStorage.setItem("lang", "en");
+loadLang("en");
+
+loadLang(localStorage.getItem("lang") || "fr");
+
 /* SCRIPT GESTION DES STYLE HOVER DU MENU */
 
 document.addEventListener("DOMContentLoaded", function () {
