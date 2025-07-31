@@ -715,6 +715,9 @@ html {
   margin-bottom: 4.63vh; /* espacement entre les images */
    position: relative;
   overflow: hidden;
+  /*align-items: center;  ➕ à ajouter */
+  position: relative;
+
 }
 
 .carrousel-slide img {
@@ -723,6 +726,7 @@ html {
   object-fit: contain;
   margin-left: auto;
   display: block;
+  /* filter: blur(5px); */
 }
 
 
@@ -792,9 +796,9 @@ html {
   border-radius: 2px;
 } */
 
-/* STYLES POUR TOUS LES MÉDIAS */
+/* STYLES PAR MÉDIAS */
+
 .carrousel-slide video,
-.carrousel-slide audio,
 .carrousel-slide iframe {
   max-width: 100%;
   max-height: 100%;
@@ -814,32 +818,47 @@ html {
   -khtml-user-drag: none;
   -moz-user-drag: none;
   -o-user-drag: none;
-  /* user-drag: none; */
 }
 
-/* === STYLES SPÉCIFIQUES PAR TYPE DE MÉDIA === */
-
-
-/* Audio avec container personnalisé */
+/* Audio avec container personnalisé - répété dans le script car sinon paramètres oubliés au scroll : si changement, reporter dans le script */
 .carrousel-slide .audio-container {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  background-color: #0f0c0c;
-  position: relative;
+  align-items: flex-end; /* Changé de center à flex-end pour coller à droite */
+  /* background-color: deeppink; */
+  background-position: right;
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute; /* Changé de relative à absolute */
+  top: 0;
+  left: 0;
   z-index: 5;
   pointer-events: auto;
 }
 
+#audio-HAL9000-1 .audio-container{background-image: url(asset/img/high/HAL9000-thumbnail_1.jpg);}
+#audio-HAL9000-2 .audio-container{background-image: url(asset/img/high/HAL9000-thumbnail_2.jpg);}
+#audio-HAL9000-3 .audio-container{background-image: url(asset/img/high/HAL9000-thumbnail_3.jpg);}
+#audio-HAL9000-4 .audio-container{background-image: url(asset/img/high/HAL9000-thumbnail_4.jpg);}
+
+
 .carrousel-slide audio {
-  width: 80%;
-  max-width: 400px;
+  max-width: 60%;
+  width:40%;
   margin: 0;
-  filter: sepia(1) saturate(2) hue-rotate(0deg);
+  margin-right: calc(33.333vh - 20%); /* soit calc(66.666vh / 2) - width/2 ;*/
+  position: relative; /* Ajouté pour s'assurer du positionnement */
+  background-color: #f1f2f1;
+  accent-color: var(--highlight-color); /*(sur navigateurs qui le supportent)*/
+  border-radius: 8px;
+  padding: 8px;
+  /* Filtres pour changer les couleurs globalement
+  filter: saturate(2) hue-rotate(50deg) brightness(0.9) contrast(1.1);*/
 }
+
 
 /* Iframe */
 .carrousel-slide iframe {
@@ -934,18 +953,70 @@ html {
   pointer-events: auto; /* Garder les interactions pour le scroll */
 }
 
-/* Protection par overlay invisible (ne bloque pas les interactions) */
-/* .carrousel-slide::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: transparent;
-  pointer-events: none;
-  z-index: -1;
-} */
+/* === SIMPLIFICATION DES CONTROLES VIDEO === */
+video::-webkit-media-controls-panel {
+  display: flex !important;
+}
+
+/* Masquer les contrôles indésirables sur Chrome/Safari */
+video::-webkit-media-controls-play-button,
+video::-webkit-media-controls-current-time-display,
+video::-webkit-media-controls-time-remaining-display,
+video::-webkit-media-controls-timeline,
+video::-webkit-media-controls-volume-slider,
+video::-webkit-media-controls-mute-button,
+video::-webkit-media-controls-fullscreen-button {
+  display: flex !important;
+}
+
+video::-webkit-media-controls-playback-rate-button,
+video::-webkit-media-controls-picture-in-picture-button,
+video::-webkit-media-controls-download-button,
+video::-webkit-media-controls-overflow-button {
+  display: none !important;
+}
+
+/* Firefox */
+video::-moz-media-controls .pip-button,
+video::-moz-media-controls .playback-rate-button {
+  display: none !important;
+}
+
+/* === SIMPLIFICATION DES CONTROLES AUDIO === */
+audio::-webkit-media-controls-panel {
+  display: flex !important;
+}
+
+/* Garder seulement les contrôles essentiels pour l'audio */
+audio::-webkit-media-controls-play-button,
+audio::-webkit-media-controls-current-time-display,
+audio::-webkit-media-controls-time-remaining-display,
+audio::-webkit-media-controls-timeline,
+audio::-webkit-media-controls-volume-slider,
+audio::-webkit-media-controls-mute-button {
+  display: flex !important;
+}
+
+audio::-webkit-media-controls-playback-rate-button,
+audio::-webkit-media-controls-download-button,
+audio::-webkit-media-controls-overflow-button {
+  display: none !important;
+}
+
+/* Firefox pour audio */
+audio::-moz-media-controls .playback-rate-button {
+  display: none !important;
+}
+
+/* === STYLE GENERAL POUR LES CONTROLES === */
+video, audio {
+  outline: none;
+}
+
+video:focus, audio:focus {
+  outline: none;
+  box-shadow: none;
+}
 
 #projet-Memoire .carrousel-slide.lien-externe-slide {
   position: relative;

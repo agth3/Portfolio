@@ -296,6 +296,19 @@
 
 /* STYLES par types de MÉDIAS */
 
+.carrousel-slide video,
+.carrousel-slide iframe,
+.carrousel-slide audio,
+.carrousel-slide img {
+ margin:0;
+ }
+
+ .carrousel-slide iframe{
+  /* padding: 2dvh 0; */
+  top: auto;
+  height: 50%;
+  align-self:center;
+ }
 
 /* Audio avec contrôles personnalisés */
 
@@ -311,9 +324,13 @@
   cursor:default;
 }
 
-/* Lien cliquable sur toute la zone */
-.lien-externe-texte {
-  display: none;
+.lien-externe-texte{
+  color: #0f0c0c;
+}
+
+.lien-externe-texte:hover {
+  background-color: rgb(241, 242, 241, 0.2);
+  color: white /*var(--highlight-color);  ou white, ou autre */
 }
 
 

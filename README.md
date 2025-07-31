@@ -2,12 +2,8 @@
 
 TO DO :
 
-_préparer les thumbnails des medias (ou leur remplacement images)
-
-_désactiver les médias (ou faire pause) lorsqu'on passe dans une autre section
-_régler les positionnements des audios et afficher une seule fois tous les média dans leur conteneur (no repeat)
-
 _choisir version finale images
+_revoir couleur de fond
 
 _adapter à tous navigateurs
 _adapter toutes les interactions au format smartphone
