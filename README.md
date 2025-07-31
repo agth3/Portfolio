@@ -3,7 +3,7 @@
 TO DO :
 
 _choisir version finale images
-_revoir couleur de fond
+_revoir couleurs de fond
 
 _adapter à tous navigateurs
 _adapter toutes les interactions au format smartphone
