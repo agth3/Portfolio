@@ -2,7 +2,10 @@
 /*   SCRIPT DE GESTION DE LANGUE   */
 
 async function loadLang(lang) {
+  try {
     const res = await fetch(`text-${lang}.json`);
+    if (!res.ok) throw new Error(`Fichier introuvable : text-${lang}.json`);
+
     const dict = await res.json();
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -18,7 +21,10 @@ async function loadLang(lang) {
     });
 
     localStorage.setItem("lang", lang);
+  } catch (error) {
+    console.error("Erreur lors du chargement de la langue :", error.message);
   }
+}
 
   document.addEventListener("DOMContentLoaded", function () {
     // Charger la langue sauvegardée ou "fr" par défaut
@@ -33,7 +39,7 @@ async function loadLang(lang) {
       loadLang(newLang);
     });
   });
-  
+
 
 /* SCRIPT GESTION DES STYLE HOVER DU MENU */
 

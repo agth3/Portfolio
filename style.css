@@ -606,6 +606,11 @@ html {
   margin-bottom: 1.5rem;
 }
 
+.p-projets{
+  margin:0;
+  margin-bottom: 0.5rem;
+}
+
 .description-projets{
   font-family: 'Switzer-Regular', 'Helvetica Neue', Arial, sans-serif;
   font-size:1.1rem;
@@ -1109,6 +1114,10 @@ video:focus, audio:focus {
   align-items: start;
 }
 
+/* .sous-bloc{
+  background-color: aquamarine;
+} */
+
 .date-parcours {
   text-align: right;
   white-space: nowrap;
@@ -1125,6 +1134,7 @@ video:focus, audio:focus {
 }
 
 .lieu-formation{
+  text-align: left;
   font-family: 'Switzer-Light', 'Helvetica Neue', Arial, sans-serif;
   color: #0f0c0c;
 }

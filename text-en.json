@@ -1,22 +1,25 @@
-const res = {
+{
 
-//MENU ENG
 "menu-bio": "Bio",
 "menu-projets": "Projects",
-"menu-lang": "ENG",
+"menu-lang": "FR",
 "menu-tel": "+33 6 89 32 68 76",
             
-//BIO ENG
+
+
+
 "bio-pres" : "DNSEP gradute, Agathe Cotton ziefhczoijzprg,erjgpvo,pketo Identité visuelle générative d’un festival fictif de musique techno basée sur des visuels génératifs programmés en p5.js - Esthétique glauque, organique et rythmique incarnée par le mille-pattes",
-"bio-parcours": "Parcours",
+"bio-parcours": "Background",
 "bio-formation-1": "DNSEP Design option, Media Design major",
 "bio-lieu-1": "School of Art and Design (ESAD) d’Orléans",
 "bio-formation-2": "Erasmus exchange at Politecnico di Milano",
 "bio-formation-3": "DNA Design option Visual Graphic Design major",
-"bio-formation-4": "Internship at Page de marque - ",
-"bio-formation-5": "Internship in the communications department of the Cnam of the Centre-Val de Loire region - ",
+"bio-formation-4": "Internship at Page de marque",
+"bio-formation-5": "Internship in the communications department of the Cnam of the Centre-Val de Loire region",
 
-//PROJETS ENG
+
+
+
 "projet-offkey-1": "Generative visual identity for a fictional techno music festival, based on generative visuals programmed in p5.js<br>Dark, organic, rhythmic aesthetic embodied by the centipede<br>Applied across multiple media (posters, social media, badges, merchandise...)",
 "projet-offkey-2": "Project completed during an Erasmus semester at Politecnico di Milano",
 "projet-offkey-3": "with Luca SCHARRENBACH",
@@ -73,5 +76,4 @@ const res = {
 "just-click-1": "Experimental web design for a useless website that tests the user's patience in order to question the value they place on their own time.",
 
 "bouees-1": "Satirical catalogue of inflatable buoys reflecting overconsumption through the eccentric aesthetics of kitsch."
-
 }
