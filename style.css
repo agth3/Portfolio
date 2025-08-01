@@ -624,6 +624,7 @@ html {
 }
 
 .collab-projets{
+  font-family: 'Switzer-Light', 'Helvetica Neue', Arial, sans-serif;
   font-size:0.95rem;
 }
 
@@ -653,6 +654,7 @@ html {
 
 .italique{
     font-family: 'Switzer-ExtralightItalic', 'Helvetica Neue', Arial, sans-serif;
+    font-size:1.1rem;
 }
 
 /*--------- SECTION SLIDES IMG --------*/

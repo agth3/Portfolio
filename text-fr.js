@@ -1,3 +1,4 @@
+el.innerHTML = dict[key];
 const res = {
 
 //MENU FR
@@ -15,5 +16,64 @@ const res = {
 "bio-formation-3": "DNA option Design mention Design visuel graphique",
 "bio-formation-4": "Stage chez Page de marque - ",
 "bio-formation-5": "Stage au service communication du Cnam en région Centre-Val de Loire - ",
+
+
+//PROJETS FR
+"projet-offkey-1": "Identité visuelle générative d’un festival fictif de musique techno basée sur des visuels génératifs programmés en p5.js<br>Esthétique glauque, organique et rythmique incarnée par le mille-pattes<br>Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produits dérivés...)",
+"projet-offkey-2": "Projet réalisé lors d’un semestre erasmus à Politecnico di Milano<br>",
+"projet-offkey-3": "avec Luca SCHARRENBACH",
+
+"projet-amasha-1": "Narration interactive abordant les dynamiques de pouvoir et marginalisations fondées sur l'âge à travers un monde fantastique où règnent complots, crise politique et religieuse<br>Storyworld, design de personnages et écriture de scenario",
+"projet-amasha-2": "Lecture du premier chapitre sur ",
+"projet-amasha-3": "Projet réalisé lors d’un semestre erasmus à Politecnico di Milano<br>",
+"projet-amasha-4": "avec Giuseppe CRITONE, Natalie ILLE, Nataliá KRAJCZÁR, Luca SCHARRENBACH et Marta ZILIOLI",
+
+"projet-brique-bloc-1": "Typographie enfantine inspirée des typographies modulaires et des jeux de construction.",
+
+"projet-hack-1": "Affiches animées sur la thématique du piratage informatique, présentées sur les panneaux publicitaires d’Orléans dans le cadre d’un partenariat avec la ville.",
+
+"projet-vitrine-1": "Identité visuelle d’une galerie d’art contemporain fictive" ,
+"projet-vitrine-2": "(La Vitrine)",
+"projet-vitrine-3": " basée sur un logo déclinable reprenant l’aspect d’un projecteur lumineux.<br>Déclinaison sur affiches et dépliant",
+
+"projet-oursins-1": "Identité visuelle d’un groupe activiste écologique fictif " ,
+"projet-oursins-2": "(Les Oursins)",
+"projet-oursins-3": " luttant contre la pollution plastique dont le symbole est à l’image de leur mode d’action non-violent mais irritant<br>Déclinaison sur affiches, cartes de visite, maquette de site web et produits dérivés<br>Conception d’un catalogue satirique vendant la beauté des déchets plastiques",
+
+"projet-cimes-1": "Design éditorial d’une maison d’édition fictive spécialisée sur les arbres ",
+"projet-cimes-2": "(Les Cimes)",
+"projet-cimes-3": ", proposant diverses collections (encyclopédie des arbres, littérature sur les arbres, herbiers et guides techniques sur le bois)<br>Conception d’une collection de guides de randonnée thématique ",
+"projet-cimes-4": "(Les Sentiers de l’Arbre)",
+"projet-cimes-5": " proposant des sentiers d'observation d’essences locales et mise en page d’une édition sur le chêne pédonculé en région Centre-Val de Loire",
+
+"projet-kaleidoscope-1": "Photomontage de l’Orchestre Symphonique d’Orléans réalisé à l’occasion de son centenaire et exposé au théâtre d’Orléans.<br>Répétition de fragments photographiques créant un chaos organisé rappelant les mouvements de la musique",
+
+"projet-HAL9000-1": "Jeu vidéo thématique sur les intelligences artificielles questionnant leur capacité de reconnaissance et de compréhension des émotions humaines au travers de l’IA HAL9000 du film ",
+"projet-HAL9000-2": "2001 : l’Odyssée de l’espace",
+"projet-HAL9000-3": " (Stanley Kubrick, 1968)<br>Walking simulator immersif explorant le système émotionnel de HAL, où chaque pièce incarne une émotion simulée par l’IA du film (fierté, doute, dédain et peur)<br>Textures visuelles générées par IA (DALL-E 2), modélisation 3D des pièces, design sonore et programmation des interactions et des mécaniques de jeu, déclinaison des visuels sur affiches, dépliant et carte gravée",
+"projet-HAL9000-4": "Projet réalisé au sein du programme de recherche Édition Média Design de l’ESAD Orléans",
+"projet-HAL9000-5": "avec Matis ARVIEU, Lisa ALÉGOT, Seona LIM, Vaiana MASSONAUD, Monika ŠKODOVÁ, Jade ROCHER",
+
+"projet-entre-pt1-1": "Projet plastique du DNSEP constitué d'un ensemble varié multimédia de dispositifs cherchant à repenser le rapport de l'Homme à la nature. Il vise à trouver les moyens plastiques pour représenter l’interconnexion globale des vivants en mobilisant l'édition et l’installation comme des espaces d’expérimentation de cet écosystème.",
+"projet-entre-pt1-2": "Série d’éditions",
+"projet-entre-pt1-3": "Variation d'éditions papier explorant le motif du réseau et des racines",
+"projet-entre-pt1-4": "Installation immersive en papier",
+"projet-entre-pt1-5": "Installation à partir de frottages en grand format de racines, créant un espace de découverte et d’immersion au sein du réseau",
+"projet-entre-pt1-6": "Tissages de photographies",
+"projet-entre-pt1-7": "Exploration du tissage de photographie comme représentation symbolique de la connexion",
+
+"projet-entre-pt2-1": "Projet plastique du DNSEP constitué d'un ensemble varié multimédia de dispositifs cherchant à repenser le rapport de l'Homme à la nature. Il vise à trouver les moyens plastiques pour représenter l’interconnexion globale des vivants en mobilisant l'édition et l’installation comme des espaces d’expérimentation de cet écosystème.",
+"projet-entre-pt2-2": "Installation en réalité augmentée",
+"projet-entre-pt2-3": "Reconstitution en AR de connexions racinaires entre des souches pour illustrer dynamiquement les phénomènes de diffusion et communication au sein des réseaux racinaires afin de conscientiser la richesse et la variété de ces transmissions.<br>Installation accompagnée d’un montage vidéo contemplatif dévoilant les reconstitutions 3D des souches, obtenues par photogrammétrie.",
+
+"memoire-1": "Mémoire de DNSEP interrogeant l’émergence d’un rapport sensible de l’homme à l’arbre à travers une représentation multidimensionnelle et dynamique des réseaux racinaires, révélant l'arbre comme une entité intelligente et communicante.<br>Exploration de la page web comme support d’édition, mettant en pratique la question des réseaux.",
+
+"phytom-1": "Animation en réalité augmentée proposant une deuxième lecture du ",
+"phytom-2": "Portrait du peintre Gabriel Deschamps",
+"phytom-3": ", profil sculpté en bronze par Auguste Prérault (1809-1879) présent au Musée des Beaux-Arts d’Orléans<br>Ce projet aborde l’opposition nature/culture en transformant la chevelure et la barbe du profil en éléments végétaux se déployant dans l’espace muséal",
+
+"just-click-1": "Webdesign expérimental d'un site web inutile testant la patience de l’utilisateur pour interroger la valeur que ce dernier accorde à son propre temps.",
+
+"bouees-1": "Catalogue satirique de bouées gonflables interrogeant la surconsommation au travers de l’esthétique excentrique du kitsch."
 
 }

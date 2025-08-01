@@ -2,19 +2,38 @@
 /*   SCRIPT DE GESTION DE LANGUE   */
 
 async function loadLang(lang) {
-  const res = await fetch(`text-${lang}.json`);
-  const dict = await res.json();
-  
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (dict[key]) el.textContent = dict[key];
+    const res = await fetch(`text-${lang}.json`);
+    const dict = await res.json();
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      const translation = dict[key];
+      if (!translation) return;
+
+      if (translation.includes('<')) {
+        el.innerHTML = translation;
+      } else {
+        el.textContent = translation;
+      }
+    });
+
+    localStorage.setItem("lang", lang);
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    // Charger la langue sauvegardée ou "fr" par défaut
+    const savedLang = localStorage.getItem("lang") || "fr";
+    loadLang(savedLang);
+
+    // Bascule langue au clic sur le bouton
+    document.getElementById("lang-menu").addEventListener("click", function (e) {
+      e.preventDefault(); // évite le scroll en haut à cause du href="#"
+      const currentLang = localStorage.getItem("lang") || "fr";
+      const newLang = currentLang === "fr" ? "en" : "fr";
+      loadLang(newLang);
+    });
   });
-}
-
-localStorage.setItem("lang", "en");
-loadLang("en");
-
-loadLang(localStorage.getItem("lang") || "fr");
+  
 
 /* SCRIPT GESTION DES STYLE HOVER DU MENU */
 
