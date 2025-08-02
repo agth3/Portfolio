@@ -158,6 +158,41 @@
 fond : #f1f2f1
 faux-noir : #0f0c0c
 noir-éclairci : #adadac
+*/
+
+/*combinaison couleurs*/
+
+/*chou mais pas avec toutes les couleurs*/
+/* .zone-texte-projets{color:#0f0c0c;}
+.section-slide{background-color: var(--highlight-color);}
+.grid-projets{background-color: #f1f2f1;} */
+
+/*bold, bien choisir les couleurs, démarque*/
+/* .zone-texte-projets{color: #0f0c0c;}
+.section-slide{background-color: #0f0c0c;}
+.grid-projets{background-color:var(--highlight-color);} */
+
+/*classique, fonctionne, mais un peu triste*/
+/* .zone-texte-projets{color: #0f0c0c;}
+.section-slide{background-color: #0f0c0c;}
+.grid-projets{background-color: #f1f2f1;} */
+
+/*chou mais vide*/
+/* .zone-texte-projets{color:#0f0c0c;}
+.grid-projets{background-color: var(--highlight-color);} */
+
+/*recherche*/
+.zone-texte-projets{color:#0f0c0c;} /*ou complètement var*/
+.section-slide{background-color: #0f0c0c;}
+.grid-projets{background-color: #f1f2f1;}
+/*aggrémenter d'un tritre coloré ?*/
+.hoverable{color:var(--highlight-color);}
+.a-menu{color:var(--highlight-color);}
+/* .date-projets{color:var(--highlight-color);}
+.contexte-projets{color:var(--highlight-color);}
+.collab-projets{color:var(--highlight-color);} */
+
+
 
 /*--------- GENERAL ---------*/
 
@@ -240,7 +275,8 @@ html {
   display: block;                 /* ou inline-block si tu préfères */
   height:calc(25%/2); /*27.778%*/
   aspect-ratio: 1 / 1;
-  background-color: #0f0c0c;
+  /* background-color: #0f0c0c; */
+  border: solid 3px var(--highlight-color);
   z-index: 3;
   flex-shrink: 0;
   margin-left: calc((9.375vw - 2.083vh) / 2); /* calcul approximatif pour centrer le logo dans col 1 */
@@ -266,7 +302,7 @@ html {
   justify-self: center;
   /* align-items: center;
   justify-content: center; */
-  color: #0f0c0c;
+  /* color: #0f0c0c; */
   z-index: 3;
   font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
 }
@@ -281,7 +317,7 @@ html {
   justify-self: center;
   /* align-items: center; 
   justify-content: center; */
-  color: #0f0c0c;
+  /* color: #0f0c0c; */
   z-index: 3;
   font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
 }
@@ -314,7 +350,7 @@ html {
 .a-menu{
   /* font-size:1.35rem; */
   text-decoration: none;
-  color: #0f0c0c;
+  /* color: #0f0c0c; */
   cursor: pointer;
 }
 
@@ -322,35 +358,46 @@ html {
 /*  STYLE DES HOVERS DU MENU  */
 
 
-.hoverable.hovered-focus,
-.hoverable.hovered-focus .a-menu {
-  font-size: 1.5rem;
-  color: #0f0c0c;
+.hoverable.hovered-focus {
+  /* font-size: 1.5rem; */
+  transform: scale(1.25);
+  transform-origin: center;
+  color: var(--highlight-color);
+  /* color: #0f0c0c; */
 }
 
 .hoverable.hovered-focus:active{
-  color: blue;
+  color: white;
 }
 
 .hoverable.hovered,
 .hoverable.hovered .a-menu {
-  color: #adadac;
+  /* color: #adadac; */
+  color: #0f0c0c;
 }
 
 .logo-menu.hovered {
   transform-origin: center;
-  background-color: #adadac;
+  /* background-color: #adadac; */
+  /* background-color: #0f0c0c; */
+  border: solid 3px #0f0c0c;
 }
 
 #nom-menu:hover .logo-menu {
-  background-color: #0f0c0c;
+  /* background-color: #0f0c0c; */
+  background-color: var(--highlight-color);
   transform: scale(1.5);
-  margin-right: 0.75dvh;
+  transform-origin: right;
+  /* margin-right: 0.75dvh; */
+  border: none;
 }
 
 #nom-menu:hover #a-nom-menu {
-  font-size: 1.5rem;
-  color: #0f0c0c;
+  /* font-size: 1.5rem; */
+    transform: scale(1.1);
+    transform-origin: left;
+  /* color: #0f0c0c; */
+  color: var(--highlight-color);
 }
 
 
@@ -463,11 +510,26 @@ html {
 
 .body-projets .hoverable.hovered-focus,
 .body-projets .hoverable.hovered-focus .a-menu {
-    color: #adadac;
+    /* color: #adadac; */
+    /* color: var(--highlight-color); */
+    color: #0f0c0c;
+    transform: scale(1.25);
+    transform-origin: center;
   }
+
+.body-projets .fleches-sections-projets{
+  color: #0f0c0c;
+}
 
 .body-projets .hoverable.hovered-focus.fleches-sections-projets{
   font-size:4rem;
+  color: var(--highlight-color);
+  transform: scaleX(0.8) scaleY(1.6); /*applatir*/
+}
+
+.body-projets .hovered.hoverable.fleches-sections-projets{
+  transform: scaleX(0.8) scaleY(1.6); /*applatir*/
+  color: #0f0c0c;
 }
 
 .body-projets .hoverable.hovered-focus:active{
@@ -476,25 +538,38 @@ html {
 
 .body-projets .hoverable.hovered,
 .body-projets .hoverable.hovered .a-menu {
-    color: #f1f2f1;
+    /* color: #f1f2f1; */
+    /* color: #0f0c0c; */
+    color: var(--highlight-color);
+    transform: scale(1.1);
+    transform-origin: center;
   }
 
+/* .body-projets .hoverable.hovered #a-menu{
+  transform-origin: left !important;
+} */
+
 .body-projets .logo-menu.hovered {
-    background-color: #f1f2f1;
+    /* background-color: #f1f2f1; */
+    border: solid 3px var(--highlight-color);
+    margin-right: 0.75dvh;
   }
 
 .body-projets #nom-menu:hover .logo-menu {
-    background-color: #adadac;
+    /* background-color: #adadac; */
+    background-color: #0f0c0c;
+    margin-right:0;
   }
 
 .body-projets #nom-menu:hover #a-nom-menu {
-    color: #adadac;
+    /* color: #adadac; */
+    color: #0f0c0c;
   }
-
 
 .highlight-projet{
   color: var(--highlight-color);
 } /* Chaque projet a une couleur différente de highlight définie en .js dans projets.html*/
+
 
 /*--- MENU FIXE ---*/
 
@@ -523,6 +598,7 @@ html {
   font-size:4rem;
   border: none;
   background-color: transparent;
+  transform: scaleX(0.8) scaleY(1.6); /*applatir*/
 }
 
 .fleches-sections-projets:disabled {
@@ -576,7 +652,7 @@ html {
   grid-template-columns: 9.375vw repeat(5, 1fr) 9.375vw;
   grid-template-rows: 16.667vh repeat(3, 1fr) 16.667vh;
   /* background-color: #f1f2f1; */
-  background-color: var(--highlight-color);
+  /* background-color: var(--highlight-color); */
   scroll-snap-align: start;  /* optionnel : aligne proprement au scroll */
 }
 
@@ -589,7 +665,7 @@ html {
   grid-row: 2/5;
   padding: 0;
   padding-right: calc(25% + 4.63vh);
-  color: #0f0c0c;
+  /* color: #0f0c0c; */
   text-align: left;
 }
 
@@ -676,7 +752,8 @@ html {
   margin: 0 4.63vh;
   /* margin-right: 4.63vh;
   margin-left: calc(25% + 4.63vh); */
-  background-color: #0f0c0c;
+  /* background-color: #0f0c0c; */
+  /* background-color: var(--highlight-color); */
   position: relative;
   overflow: hidden;
   touch-action: pan-y;
