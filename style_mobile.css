@@ -1,7 +1,7 @@
 /*--------- COULEURS ---------*/
 
 
-@media screen and (max-width: 1024px) {
+@media screen and (orientation: portrait) and (max-width: 1024px) {
     
     * {
       box-sizing: border-box; /*Empêche les marges ou bordures d'élargir un élément*/
@@ -12,7 +12,7 @@
 
   html {
     font-family: 'Switzer-Regular', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 1.2vh; /*taille de base, le reste des fontsize à déf en rem pour se baser sur la taille de celle-ci, ex : 1.5x, 0.7x etc...*/
+    font-size: 1.3vh; /*taille de base, le reste des fontsize à déf en rem pour se baser sur la taille de celle-ci, ex : 1.5x, 0.7x etc...*/
     /* overflow-x: hidden; */
     /*sur ordi taille de 1.5vh*/
   }
@@ -192,6 +192,19 @@
     color: white;
   }
 
+  #nom-menu.hovered-focus .logo-menu {
+    background-color: var(--highlight-color);
+    transform: scale(1.5);
+    transform-origin: right;
+    border: none;
+  }
+
+  #nom-menu.hovered-focus #a-nom-menu {
+    transform: scale(1.1);
+    transform-origin: left;
+    color: var(--highlight-color);
+  }
+
 /* Variantes des couleurs hover du menu */
 
 .body-projets .hoverable.hovered-focus,
@@ -252,6 +265,34 @@
     grid-row: 2/5;
     width: 100%;
     padding: 2vh 12vw ;
+  }
+
+  .description-projets{
+    font-size:1.2rem;
+  }
+
+  .outil-projets{
+    font-size:1rem;
+  }
+
+  .contexte-projets{
+    font-size:1.2rem;
+  }
+
+  .collab-projets{
+    font-size:1rem;
+  }
+
+  .liens-externes{
+    font-size:1.2rem;
+  }
+
+  .italique{
+      font-size:1.2rem;
+  }
+
+  #titre-Memoire{
+    font-size:2rem;
   }
 
   /*--------- SECTION SLIDES IMG --------*/
@@ -360,12 +401,7 @@
 }
 
 .lien-externe-texte{
-  color: #0f0c0c;
-}
-
-.lien-externe-texte:hover {
-  background-color: rgb(241, 242, 241, 0.2);
-  color: white /*var(--highlight-color);  ou white, ou autre */
+  display: none; /*le site du mémoire n'est pas responsive donc ne pas y donner accès sur mobile*/
 }
 
 
@@ -406,6 +442,96 @@
     margin-bottom: 2vh;
   }
 }
+
+
+/* MOBILE EN PAYSAGE */
+
+@media screen and (orientation: landscape) and (max-height: 1024px) {
+    html {
+      font-size: 2.25vh;
+    }
+
+
+    /*hover des menu*/
+     #nom-menu.hovered-focus .logo-menu {
+    background-color: var(--highlight-color);
+    transform: scale(1.5);
+    transform-origin: right;
+    border: none;
+  }
+
+  #nom-menu.hovered-focus #a-nom-menu {
+    transform: scale(1.1);
+    transform-origin: left;
+    color: var(--highlight-color);
+  }
+
+/* Variantes des couleurs hover du menu */
+
+.body-projets .hoverable.hovered-focus,
+.body-projets .hoverable.hovered-focus .a-menu {
+    transform: scale(1.1);
+    transform-origin: center;
+  }
+
+.body-projets .hoverable.hovered-focus.fleches-sections-projets{
+  font-size:4rem;
+  color: var(--highlight-color);
+  transform: scaleX(0.8) scaleY(1.6);
+}
+
+.body-projets .hovered.hoverable.fleches-sections-projets{
+  transform: scaleX(0.8) scaleY(1.6);
+}
+
+.body-projets .logo-menu.hovered {
+    margin-right: 0;
+    transform: scale(1.1);
+    border: solid 2px var(--highlight-color);
+  }
+
+.body-projets .hoverable.hovered,
+.body-projets .hoverable.hovered .a-menu {
+    transform: scale(1.03);
+  }
+
+
+  /* PAGE BIO */
+
+  #parcours,
+  #bloc-liste,
+  #img-bio img{
+    display: none;
+  }
+
+  .texte-mobile-paysage{
+    display: flex;
+    flex-direction: column;
+    gap:1.5rem;
+    grid-column: 4/7;
+    grid-row: 2/5;
+    /* width: 100%;
+    height: 100%; */
+    padding: 4.63vh 4.63vh 4.63vh 8.125vw;
+  }
+
+  #parcours-mobile-paysage{
+    font-size:1.85rem;
+    font-family: 'Switzer-Regular', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 400;
+    color: #0f0c0c;
+    margin: 0;
+  }
+/* 
+  #img-bio img {
+    box-sizing: border-box;
+    align-self: center;
+    justify-self: center;
+  } */
+  
+}
+
+
 
 /* ===== FORÇAGE PORTRAIT UNIVERSEL ===== */
 /* À inclure dans votre CSS principal ou dans un fichier séparé */

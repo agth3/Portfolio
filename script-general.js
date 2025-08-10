@@ -45,18 +45,45 @@ async function loadLang(lang) {
 
 document.addEventListener("DOMContentLoaded", function () {
   const hoverables = document.querySelectorAll('.hoverable');
+  let lastTouchedElement = null;
+  let touchTimeout = null;
 
   function applyHoverClasses(target) {
     hoverables.forEach(el => el.classList.remove('hovered-focus', 'hovered'));
     target.classList.add('hovered-focus');
+    
+    // Si l'élément touché est dans nom-menu, appliquer aussi à la div parent
+    const nomMenuDiv = document.getElementById('nom-menu');
+    if (nomMenuDiv && target.closest('#nom-menu')) {
+        nomMenuDiv.classList.add('hovered-focus');
+    }
+    
     hoverables.forEach(el => {
-      if (el !== target) el.classList.add('hovered');
+        if (el !== target) {
+            // Ne pas appliquer hovered aux éléments de nom-menu si on survole nom-menu
+            const skipNomMenu = target.closest('#nom-menu') && el.closest('#nom-menu');
+            if (!skipNomMenu) {
+            el.classList.add('hovered');
+            }
+        }
     });
-  }
+   }
 
   function resetHoverClasses() {
     hoverables.forEach(el => el.classList.remove('hovered-focus', 'hovered'));
-  }
+    
+    // Retirer aussi la classe de la div nom-menu
+    const nomMenuDiv = document.getElementById('nom-menu');
+    if (nomMenuDiv) {
+        nomMenuDiv.classList.remove('hovered-focus', 'hovered');
+    }
+    
+    lastTouchedElement = null;
+    if (touchTimeout) {
+        clearTimeout(touchTimeout);
+        touchTimeout = null;
+    }
+   }
 
   hoverables.forEach(el => {
     el.addEventListener('mouseenter', () => applyHoverClasses(el));
@@ -66,13 +93,37 @@ document.addEventListener("DOMContentLoaded", function () {
       applyHoverClasses(el);
     });
     el.addEventListener('touchstart', e => {
-      e.stopPropagation();
-      applyHoverClasses(el);
-    });
+    e.stopPropagation();
+    
+    // Déterminer l'élément à considérer (parent si dans nom-menu)
+    const targetElement = el.closest('#nom-menu') ? document.getElementById('nom-menu') : el;
+    
+    if (touchTimeout) {
+        clearTimeout(touchTimeout);
+        touchTimeout = null;
+    }
+    
+    if (lastTouchedElement !== targetElement) {
+        e.preventDefault();
+        applyHoverClasses(targetElement);
+        lastTouchedElement = targetElement;
+        
+        touchTimeout = setTimeout(() => {
+        resetHoverClasses();
+        lastTouchedElement = null;
+        }, 3000);
+    }
+   });
   });
 
   document.addEventListener('click', resetHoverClasses);
-  document.addEventListener('touchend', resetHoverClasses);
+  document.addEventListener('touchstart', e => {
+    // Si on touche en dehors des éléments hoverables
+    if (!e.target.closest('.hoverable')) {
+        resetHoverClasses();
+    }
+  });
+
 });
 
 

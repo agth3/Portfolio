@@ -148,7 +148,7 @@
 /*--------- COULEURS ---------*/
 
 :root {
-  --highlight-color: blue; /*couleur de highlight à appeler partout et que l'on peut faire varier localement dans les sections :width:
+  --highlight-color: rgb(119, 55, 222); /*couleur de highlight à appeler partout et que l'on peut faire varier localement dans les sections :width:
   .classe {
     --highlight-color: #cc33aa;
   };*/
@@ -664,7 +664,8 @@ html {
   grid-column: 2/4;
   grid-row: 2/5;
   padding: 0;
-  padding-right: calc(25% + 4.63vh);
+  padding-right: 20%;
+  /* padding-right: calc(25% + 4.63vh); */
   /* color: #0f0c0c; */
   text-align: left;
 }
@@ -1179,6 +1180,10 @@ video:focus, audio:focus {
   height: 100%;
   padding: 4.63vh 4.63vh 4.63vh 8.125vw;
   object-fit: cover;
+}
+
+.texte-mobile-paysage{
+  display: none;
 }
 
 /*----- MINI TABLEAU PARCOURS -----*/
