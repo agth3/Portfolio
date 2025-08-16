@@ -690,36 +690,36 @@ container.addEventListener("scroll", () => {
 window.addEventListener("resize", () => {
   const newIsMobile = window.innerWidth <= 1024;
   const newIsMobilePortrait = window.innerWidth <= 1024 && window.innerWidth <= window.innerHeight;
+  
   if (newIsMobile !== isMobile || newIsMobilePortrait !== isMobilePortrait) {
     isMobile = newIsMobile;
     isMobilePortrait = newIsMobilePortrait;
     updateButtons();
-  }
-// AJOUTER cette section pour mettre à jour les carrousels :
-// Mettre à jour TOUS les carrousels existants
-document.querySelectorAll('.carrousel-track').forEach(track => {
-  const carousel = track.carousel;
-  if (carousel) {
-    // Mettre à jour les variables du carrousel
-    carousel.isMobile = newIsMobile;
-    carousel.isMobilePortrait = newIsMobilePortrait;
     
-    // Recalculer les dimensions selon le nouveau mode
-    if (newIsMobilePortrait) {
-      carousel.slideWidth = window.innerWidth - 2 * (window.innerWidth * 0.095);
-      carousel.slideHeight = null;
-    } else {
-      carousel.slideHeight = window.innerHeight - 2 * carousel.getVh(16.667);
-      carousel.slideWidth = null;
-    }
-    
-    // Repositionner immédiatement
-    carousel.initWithRealFirstImage();
+    // CORRECTION : Mettre à jour TOUS les carrousels avec la nouvelle logique
+    document.querySelectorAll('.carrousel-track').forEach(track => {
+      const carousel = track.carousel;
+      if (carousel) {
+        carousel.isMobile = newIsMobile;
+        carousel.isMobilePortrait = newIsMobilePortrait;
+        carousel.isMobileLandscape = newIsMobile && !newIsMobilePortrait;
+        
+        // CORRECTION : Recalculer scrollDirection et dimensions
+        if (carousel.isMobilePortrait) {
+          carousel.scrollDirection = 'horizontal';
+          carousel.slideWidth = window.innerWidth - 2 * (window.innerWidth * 0.095);
+          carousel.slideHeight = null;
+        } else {
+          carousel.scrollDirection = 'vertical';
+          carousel.slideHeight = window.innerHeight - 2 * carousel.getVh(16.667);
+          carousel.slideWidth = null;
+        }
+        
+        carousel.initWithRealFirstImage();
+      }
+    });
   }
 });
-  
-});
-
 // Initialisation
 
 
@@ -939,6 +939,7 @@ class VerticalCarousel {
     this.slides = Array.from(trackElement.querySelectorAll('.carrousel-slide'));
     this.isMobile = window.innerWidth <= 1024;
     this.isMobilePortrait = window.innerWidth <= 1024 && window.innerWidth <= window.innerHeight;
+    this.isMobileLandscape = window.innerWidth <= 1024 && window.innerWidth > window.innerHeight;
     
     // Vérification de la structure
     // console.log(`Carousel init: total slides=${this.slides.length}, isMobile=${this.isMobile}`);
@@ -949,15 +950,19 @@ class VerticalCarousel {
 
     // Adaptation mobile/desktop
     if (this.isMobilePortrait) {
-      this.slideWidth = window.innerWidth - 2 * (window.innerWidth * 0.095); // Mobile portrait: largeur - marges
-      this.slideHeight = null; // Non utilisé en mobile portrait
-    } else {
-      this.slideHeight = window.innerHeight - 2 * this.getVh(16.667); // Desktop ET mobile paysage: hauteur - marges
-      this.slideWidth = null; // Non utilisé en desktop/mobile paysage
-    }
+    // Mobile portrait : carrousel horizontal
+    this.slideWidth = window.innerWidth - 2 * (window.innerWidth * 0.095);
+    this.slideHeight = null;
+    this.scrollDirection = 'horizontal';
+  } else {
+    // Desktop ET mobile paysage : carrousel vertical
+    this.slideHeight = window.innerHeight - 2 * this.getVh(16.667);
+    this.slideWidth = null;
+    this.scrollDirection = 'vertical';
+  }
     
     this.originalSlideCount = this.slides.length - 2; // Les 2 clones
-  this.totalSlides = this.slides.length;
+    this.totalSlides = this.slides.length;
   
   // console.log(`Slides count: original=${this.originalSlideCount}, total=${this.totalSlides}`);
  
@@ -1538,49 +1543,50 @@ preloadAdjacentImages() {
 }
 
 initWithRealFirstImage() {
-  this.currentIndex = 1; // Vraie première image
+  this.currentIndex = 1;
   
-  if (this.isMobilePortrait) {
-  // Mobile portrait : scroll horizontal
-  const focusFrameLeft = window.innerWidth * 0.095;
-  const gap = window.innerWidth * 0.04;
-  const slideWithGap = this.slideWidth + gap;
-  const targetPosition = focusFrameLeft - (this.currentIndex * slideWithGap);
-  this.track.style.transform = `translateX(${targetPosition}px)`;
-} else {
-  // Desktop ET mobile paysage : scroll vertical
-  const focusFrameOffset = this.getVh(16.667);
-  const gap = this.getVh(4.63);
-  const slideWithGap = this.slideHeight + gap;
-  const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
-  this.track.style.transform = `translateY(${targetPosition}px)`;
-}
+  // CORRECTION : Utiliser scrollDirection au lieu de isMobilePortrait
+  if (this.scrollDirection === 'horizontal') {
+    // Mobile portrait : scroll horizontal
+    const focusFrameLeft = window.innerWidth * 0.095;
+    const gap = window.innerWidth * 0.04;
+    const slideWithGap = this.slideWidth + gap;
+    const targetPosition = focusFrameLeft - (this.currentIndex * slideWithGap);
+    this.track.style.transform = `translateX(${targetPosition}px)`;
+  } else {
+    // Desktop ET mobile paysage : scroll vertical
+    const focusFrameOffset = this.getVh(16.667);
+    const gap = this.getVh(4.63);
+    const slideWithGap = this.slideHeight + gap;
+    const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
+    this.track.style.transform = `translateY(${targetPosition}px)`;
+  }
+
   
   // AJOUT : Pré-sizing initial pour mobile
-  if (this.isMobilePortrait) {
-    this.slides.forEach((slide) => {
-      const img = slide.querySelector('img');
-      const placeholder = slide.querySelector('.media-placeholder');
+  // if (this.isMobilePortrait) {
+  //   this.slides.forEach((slide) => {
+  //     const img = slide.querySelector('img');
+  //     const placeholder = slide.querySelector('.media-placeholder');
       
-      if (img && !img.dataset.sized) {
-        const currentSrc = img.getAttribute('src');
-        this.preloadAndSizeImage(img, currentSrc).then(() => {
-          img.dataset.sized = 'true';
-        });
-      }
+  //     if (img && !img.dataset.sized) {
+  //       const currentSrc = img.getAttribute('src');
+  //       this.preloadAndSizeImage(img, currentSrc).then(() => {
+  //         img.dataset.sized = 'true';
+  //       });
+  //     }
       
-      if (placeholder && !placeholder.dataset.sized) {
-        const currentSrc = placeholder.getAttribute('src');
-        this.preloadAndSizeImage(placeholder, currentSrc).then(() => {
-          placeholder.dataset.sized = 'true';
-        });
-      }
-    });
-  }
+  //     if (placeholder && !placeholder.dataset.sized) {
+  //       const currentSrc = placeholder.getAttribute('src');
+  //       this.preloadAndSizeImage(placeholder, currentSrc).then(() => {
+  //         placeholder.dataset.sized = 'true';
+  //       });
+  //     }
+  //   });
+  // }
   
   this.updateScrollIndicator();
   this.updateImageQuality();
-  
   setTimeout(() => this.preloadAdjacentImages(), 100);
 }
 
@@ -1615,86 +1621,63 @@ handleInfiniteLoop() {
   }
 }
 
-  scrollToSlide(direction, distance = 1) {
-  // console.log(`Mobile scroll: direction=${direction}, distance=${distance}, currentIndex=${this.currentIndex}`);
-  console.log(`Mobile portrait: ${this.isMobilePortrait}, Transform: ${this.isMobilePortrait ? 'translateX' : 'translateY'}`);
-
-  
-  if (this.isScrolling) {
-    return;
-  }
-  
-  // Validation du mouvement
+scrollToSlide(direction, distance = 1) {
+  if (this.isScrolling) return;
   if (!this.isValidMove(direction * distance)) return;
 
   this.isScrolling = true;
   this.currentIndex += direction * distance;
   
-  const focusFrameOffset = this.isMobile ? 
-    window.innerWidth * 0.095 : 
-    this.getVh(16.667);
-
-  const gap = this.isMobile ? 
-    window.innerWidth * 0.04 : 
-    this.getVh(4.63);
-
-  const slideWithGap = this.isMobile ? 
-    (this.slideWidth + gap) : 
-    (this.slideHeight + gap);
-    
-  const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
+  // CORRECTION : Calculer selon le mode de scroll
+  let focusFrameOffset, gap, slideWithGap, targetPosition;
+  
+  if (this.scrollDirection === 'horizontal') {
+    // Mobile portrait
+    focusFrameOffset = window.innerWidth * 0.095;
+    gap = window.innerWidth * 0.04;
+    slideWithGap = this.slideWidth + gap;
+    targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
+    this.track.style.transform = `translateX(${targetPosition}px)`;
+  } else {
+    // Desktop ET mobile paysage
+    focusFrameOffset = this.getVh(16.667);
+    gap = this.getVh(4.63);
+    slideWithGap = this.slideHeight + gap;
+    targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
+    this.track.style.transform = `translateY(${targetPosition}px)`;
+  }
 
   this.track.style.transition = 'transform 0.6s ease';
-  
-  this.track.style.transform = this.isMobilePortrait ?
-  `translateX(${targetPosition}px)` :
-  `translateY(${targetPosition}px)`;
 
   setTimeout(() => {
-  this.updateScrollIndicator();
-  
-  // Gérer la boucle infinie AVANT de mettre à jour les images
-  this.handleInfiniteLoop();
-  
-  // Puis mettre à jour les qualités d'image avec les bons indices
-  this.updateImageQuality();
-  
-  // Précharger la prochaine image probable
-  this.preloadAdjacentImages();
-  
-  this.isScrolling = false;
-}, 620);
+    this.updateScrollIndicator();
+    this.handleInfiniteLoop();
+    this.updateImageQuality();
+    this.preloadAdjacentImages();
+    this.isScrolling = false;
+  }, 620);
 }
 
-  repositionWithoutTransition() {
-  const focusFrameOffset = this.isMobile ? 
-    window.innerWidth * 0.095 : 
-    this.getVh(16.667);
-
-  const gap = this.isMobile ? 
-    window.innerWidth * 0.04 : 
-    this.getVh(4.63);
-
-  const slideWithGap = this.isMobile ? 
-    (this.slideWidth + gap) : 
-    (this.slideHeight + gap);
-    
-  const targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
+repositionWithoutTransition() {
+  let focusFrameOffset, gap, slideWithGap, targetPosition;
   
-  // console.log(`Reposition without transition: index=${this.currentIndex}, position=${targetPosition}`);
+  if (this.scrollDirection === 'horizontal') {
+    focusFrameOffset = window.innerWidth * 0.095;
+    gap = window.innerWidth * 0.04;
+    slideWithGap = this.slideWidth + gap;
+    targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
+    this.track.style.transform = `translateX(${targetPosition}px)`;
+  } else {
+    focusFrameOffset = this.getVh(16.667);
+    gap = this.getVh(4.63);
+    slideWithGap = this.slideHeight + gap;
+    targetPosition = focusFrameOffset - (this.currentIndex * slideWithGap);
+    this.track.style.transform = `translateY(${targetPosition}px)`;
+  }
   
   this.track.style.transition = 'none';
+  this.track.offsetHeight; // Force reflow
   
-  if (this.isMobilePortrait) {
-  this.track.style.transform = `translateX(${targetPosition}px)`;
-} else {
-  this.track.style.transform = `translateY(${targetPosition}px)`;
-}
-  
-  // Force le reflow pour appliquer immédiatement
-  this.track.offsetHeight;
-  
-  // Réactiver les transitions après un délai
   setTimeout(() => {
     this.track.style.transition = 'transform 0.6s ease';
   }, 50);
@@ -1728,20 +1711,15 @@ bindEvents() {
 
   // === GESTION WHEEL GLOBALE ===
   const globalWheelHandler = (e) => {
-    console.log('Wheel event detected on:', e.target.tagName, e.target.className);
+    if (this.isScrollingOnMediaControl(e)) return;
     
-    // Vérifier si on scrolle sur un contrôle de média
-    if (this.isScrollingOnMediaControl(e)) {
-      console.log('Scrolling on media control, allowing default behavior');
-      return; // Laisser le comportement normal
-    }
-    
-    console.log('Preventing default and handling scroll');
     e.preventDefault();
     e.stopPropagation();
     
     wheelCount++;
-    let deltaValue = this.isMobile ? 
+    
+    // CORRECTION : Adapter selon le mode de scroll
+    let deltaValue = this.scrollDirection === 'horizontal' ? 
       (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY) : 
       e.deltaY;
     
@@ -1772,32 +1750,28 @@ bindEvents() {
 
   // === GESTION TOUCH GLOBALE ===
   const globalTouchStartHandler = (e) => {
-    console.log('Touch start detected on:', e.target.tagName);
-    
-    if (this.isScrollingOnMediaControl(e)) {
-      console.log('Touch on media control');
-      return;
-    }
-    
-    startPos = this.isMobile ? e.touches[0].clientX : e.touches[0].clientY;
-    scrollPos = 0;
-    touchStartTime = Date.now();
-  };
+  if (this.isScrollingOnMediaControl(e)) return;
+  
+  // CORRECTION : Utiliser scrollDirection
+  startPos = this.scrollDirection === 'horizontal' ? 
+    e.touches[0].clientX : e.touches[0].clientY;
+  scrollPos = 0;
+  touchStartTime = Date.now();
+};
 
-  const globalTouchMoveHandler = (e) => {
-    if (this.isScrollingOnMediaControl(e)) {
-      return;
-    }
-    
-    const currentPos = this.isMobile ? e.touches[0].clientX : e.touches[0].clientY;
-    scrollPos = currentPos - startPos;
-    
-    if (Math.abs(scrollPos) > this.scrollThreshold) {
-      console.log('Touch move preventing default');
-      e.preventDefault();
-      e.stopPropagation();
-    }
-  };
+const globalTouchMoveHandler = (e) => {
+  if (this.isScrollingOnMediaControl(e)) return;
+  
+  // CORRECTION : Utiliser scrollDirection
+  const currentPos = this.scrollDirection === 'horizontal' ? 
+    e.touches[0].clientX : e.touches[0].clientY;
+  scrollPos = currentPos - startPos;
+  
+  if (Math.abs(scrollPos) > this.scrollThreshold) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+};
 
   const globalTouchEndHandler = (e) => {
     if (Math.abs(scrollPos) > this.scrollThreshold) {
