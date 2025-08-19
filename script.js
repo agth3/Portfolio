@@ -4,105 +4,105 @@ document.addEventListener("DOMContentLoaded", () => {
   // Configuration des images avec lazy-loading
   const imageConfig = [
     {
-      lowRes: 'asset/img/low/hack_1.jpg',
+      lowRes: 'asset/img/low-line/hack_1.png',
       highRes: 'asset/img/high/hack_1.jpg',
       link: 'projets.html#projet-Affiches-Animees',
       titleMobile:'Affiches Animées',
       titleDesktop:'Affiches Animées'
     },
     {
-      lowRes: 'asset/img/low/amasha_6.jpg',
+      lowRes: 'asset/img/low-line/amasha_6.png',
       highRes: 'asset/img/high/amasha_6.jpg',
       link: 'projets.html#projet-Stone-of-Amasha',
       titleMobile:'Amasha',
       titleDesktop:'The Stone of Amasha'
     },
     {
-      lowRes: 'asset/img/low/couv-AR.jpg',
+      lowRes: 'asset/img/low-line/couv-AR.png',
       highRes: 'asset/img/high/couv-AR.jpg',
       link: 'projets.html#projet-Entre-et-tenir-pt2',
       titleMobile:'Entre et tenir',
       titleDesktop:'Entre et tenir Pt.2'
     },
     {
-      lowRes: 'asset/img/low/brique-bloc_5.jpg',
+      lowRes: 'asset/img/low-line/brique-bloc_5.png',
       highRes: 'asset/img/high/brique-bloc_5.jpg',
       link: 'projets.html#projet-Brique-Bloc',
       titleMobile:'Brique Bloc',
       titleDesktop:'Brique Bloc'
     },
     {
-      lowRes: 'asset/img/low/catalogue-bouees_2.jpg',
+      lowRes: 'asset/img/low-line/catalogue-bouees_2.png',
       highRes: 'asset/img/high/catalogue-bouees_2.jpg',
       link: 'projets.html#projet-Catalogue-bouees',
       titleMobile:'Bouées',
       titleDesktop:'Catalogue de bouées'
     },
     {
-      lowRes: 'asset/img/low/cimes_1.jpg',
+      lowRes: 'asset/img/low-line/cimes_1.png',
       highRes: 'asset/img/high/cimes_1.jpg',
       link: 'projets.html#projet-Cimes',
       titleMobile:'Les Cimes',
       titleDesktop:'Les Cimes'
     },
     {
-      lowRes: 'asset/img/low/couv-HAL9000.jpg',
+      lowRes: 'asset/img/low-line/couv-HAL9000.png',
       highRes: 'asset/img/high/couv-HAL9000.jpg',
       link: 'projets.html#projet-HAL9000',
       titleMobile:'HAL9000/ES',
       titleDesktop:'HAL9000/ES'
     },
     {
-      lowRes: 'asset/img/low/just-click_2.jpg',
+      lowRes: 'asset/img/low-line/just-click_2.png',
       highRes: 'asset/img/high/just-click_2.jpg',
       link: 'projets.html#projet-Just-Click',
       titleMobile:'just-click',
       titleDesktop:'you-just-have-to-click'
     },
     {
-      lowRes: 'asset/img/low/kaleidoscope_1.jpg',
+      lowRes: 'asset/img/low-line/kaleidoscope_1.png',
       highRes: 'asset/img/high/kaleidoscope_1.jpg',
       link: 'projets.html#projet-Kaleidoscope',
       titleMobile:'Kaléidoscope musical',
       titleDesktop:'Kaléidoscope musical'
     },
     {
-      lowRes: 'asset/img/low/memoire_5.jpg',
+      lowRes: 'asset/img/low-line/memoire_5.png',
       highRes: 'asset/img/high/memoire_5.jpg',
       link: 'projets.html#projet-Memoire',
       titleMobile:'Conversations souterraines',
       titleDesktop:'Conversations souterraines'
     },
     {
-      lowRes: 'asset/img/low/offkey_3.jpg',
+      lowRes: 'asset/img/low-line/offkey_3.png',
       highRes: 'asset/img/high/offkey_3.jpg',
       link: 'projets.html#projet-OffKey',
       titleMobile:'OffKey',
       titleDesktop:'OffKey'
     },
     {
-      lowRes: 'asset/img/low/oursins_1.jpg',
+      lowRes: 'asset/img/low-line/oursins_1.png',
       highRes: 'asset/img/high/oursins_1.jpg',
       link: 'projets.html#projet-Oursins',
       titleMobile:'Les Oursins',
       titleDesktop:'Les Oursins'
     },
     {
-      lowRes: 'asset/img/low/phytom_6.jpg',
+      lowRes: 'asset/img/low-line/phytom_6.png',
       highRes: 'asset/img/high/phytom_6.jpg',
       link: 'projets.html#projet-Phytomorphose',
       titleMobile:'Phytomorphose',
       titleDesktop:'Phytomorphose'
     },
     {
-      lowRes: 'asset/img/low/tissage_1.jpg',
+      lowRes: 'asset/img/low-line/tissage_1.png',
       highRes: 'asset/img/high/tissage_1.jpg',
       link: 'projets.html#projet-Entre-et-tenir-pt1',
       titleMobile:'Entre et tenir',
       titleDesktop:'Entre et tenir Pt.1'
     },
     {
-      lowRes: 'asset/img/low/vitrine_7.jpg',
+      lowRes: 'asset/img/low-line/vitrine_7.png',
       highRes: 'asset/img/high/vitrine_7.jpg',
       link: 'projets.html#projet-Vitrine',
       titleMobile:'La Vitrine',

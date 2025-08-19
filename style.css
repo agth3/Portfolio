@@ -515,6 +515,17 @@ html {
     color: #0f0c0c;
     transform: scale(1.25);
     transform-origin: center;
+
+    /* -webkit-text-stroke: 0.02vh white; */
+  text-shadow:
+    -1px -1px 0 white,
+     1px -1px 0 white,
+    -1px  1px 0 white,
+     1px  1px 0 white/*,
+     0px -2px 0 white,
+     0px  2px 0 white,
+    -2px  0px 0 white,
+     2px  0px 0 white*/;
   }
 
 .body-projets .fleches-sections-projets{
@@ -1167,12 +1178,26 @@ video:focus, audio:focus {
   display: none;
 }
 
-#img-bio{
+#img-bio {
   grid-column: 4/7;
   grid-row: 2/5;
+
+  box-sizing: border-box;
+  align-self: center;
+  justify-self: center;
+
+  width: 100%;
+  height: 100%;
+  padding: 4.63vh 4.63vh 4.63vh 8.125vw;
+
+  background-color: #14b8a6; /* couleur appliquée */
+
+  /* masque + équivalent object-fit: cover */
+  -webkit-mask: url("asset/img/test-couleur.png") no-repeat center / contain;
+  mask: url("asset/img/test-couleur.png") no-repeat center / contain;
 }
 
-#img-bio img{
+/* #img-bio img{
   box-sizing: border-box;
   align-self:center;
   justify-self: center;
@@ -1180,7 +1205,7 @@ video:focus, audio:focus {
   height: 100%;
   padding: 4.63vh 4.63vh 4.63vh 8.125vw;
   object-fit: cover;
-}
+} */
 
 .texte-mobile-paysage{
   display: none;
