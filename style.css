@@ -148,7 +148,7 @@
 /*--------- COULEURS ---------*/
 
 :root {
-  --highlight-color: rgb(119, 55, 222); /*couleur de highlight à appeler partout et que l'on peut faire varier localement dans les sections :width:
+  --highlight-color: #adadac; /*couleur de highlight à appeler partout et que l'on peut faire varier localement dans les sections :width:
   .classe {
     --highlight-color: #cc33aa;
   };*/
@@ -511,21 +511,21 @@ html {
 .body-projets .hoverable.hovered-focus,
 .body-projets .hoverable.hovered-focus .a-menu {
     /* color: #adadac; */
-    /* color: var(--highlight-color); */
-    color: #0f0c0c;
+    color: var(--highlight-color);
+    /* color: white; */
     transform: scale(1.25);
     transform-origin: center;
 
     /* -webkit-text-stroke: 0.02vh white; */
-  text-shadow:
+  /*text-shadow:
     -1px -1px 0 white,
      1px -1px 0 white,
     -1px  1px 0 white,
-     1px  1px 0 white/*,
+     1px  1px 0 white*//*,
      0px -2px 0 white,
      0px  2px 0 white,
     -2px  0px 0 white,
-     2px  0px 0 white*/;
+     2px  0px 0 white*//*;*/
   }
 
 .body-projets .fleches-sections-projets{
@@ -551,8 +551,9 @@ html {
 .body-projets .hoverable.hovered .a-menu {
     /* color: #f1f2f1; */
     /* color: #0f0c0c; */
-    color: var(--highlight-color);
-    transform: scale(1.1);
+    /* color: var(--highlight-color); */
+    color:#adadac;
+    /* transform: scale(1.1); */
     transform-origin: center;
   }
 
@@ -562,19 +563,21 @@ html {
 
 .body-projets .logo-menu.hovered {
     /* background-color: #f1f2f1; */
-    border: solid 3px var(--highlight-color);
-    margin-right: 0.75dvh;
+    border: solid 3px #adadac;
+    /* margin-right: 0.75dvh; */
   }
 
 .body-projets #nom-menu:hover .logo-menu {
     /* background-color: #adadac; */
-    background-color: #0f0c0c;
+    /* background-color: #0f0c0c; */
+    background-color: var(--highlight-color);
     margin-right:0;
   }
 
 .body-projets #nom-menu:hover #a-nom-menu {
     /* color: #adadac; */
-    color: #0f0c0c;
+    /* color: #0f0c0c; */
+    color: var(--highlight-color);
   }
 
 .highlight-projet{
