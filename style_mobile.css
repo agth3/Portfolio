@@ -59,7 +59,7 @@
   /*--------- ELEMENTS MENU ---------*/
 
   .logo-menu{
-    border: solid 2px var(--highlight-color);
+    border: solid 1.25px var(--highlight-color);
     height:15%;
     aspect-ratio: 1 / 1;
     flex-shrink: 0;
@@ -97,6 +97,18 @@
     grid-row: 9/10;
   }
 
+  .elements-menu-haut{
+  font-size:1.25rem;
+  }
+
+  .elements-menu-bas{
+    font-size: 1rem;
+    padding-left: 1vw;
+  }
+
+  #mail-menu.elements-menu-bas{
+    padding-left:2vw;
+  }
 
   /*--------- IMAGES FLOTTANTES ---------*/
 
@@ -192,6 +204,18 @@
     color: white;
   }
 
+  .hoverable.hovered-focus,
+  .hoverable.hovered-focus .a-menu {
+    transform: scale(1.1);
+    transform-origin: center;
+  }
+
+  .logo-menu.hovered {
+    margin-right: 0;
+    transform: scale(1.1);
+    border: solid 1.5px var(--highlight-color);
+  }
+
   #nom-menu.hovered-focus .logo-menu {
     background-color: var(--highlight-color);
     transform: scale(1.5);
@@ -205,6 +229,7 @@
     color: var(--highlight-color);
   }
 
+  
 /* Variantes des couleurs hover du menu */
 
 .body-projets .hoverable.hovered-focus,
@@ -226,7 +251,7 @@
 .body-projets .logo-menu.hovered {
     margin-right: 0;
     transform: scale(1.1);
-    border: solid 2px #adadac;
+    border: solid 1.5px var(--highlight-color);
   }
 
 /* .body-projets .hoverable.hovered,

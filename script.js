@@ -17,13 +17,13 @@ document.addEventListener("DOMContentLoaded", () => {
       titleMobile:'Amasha',
       titleDesktop:'The Stone of Amasha'
     },
-    {
-      lowRes: 'asset/img/low-line/couv-AR.png',
-      highRes: 'asset/img/high/couv-AR.jpg',
-      link: 'projets.html#projet-Entre-et-tenir-pt2',
-      titleMobile:'Entre et tenir',
-      titleDesktop:'Entre et tenir Pt.2'
-    },
+    // {
+    //   lowRes: 'asset/img/low-line/couv-AR.png',
+    //   highRes: 'asset/img/high/couv-AR.jpg',
+    //   link: 'projets.html#projet-Entre-et-tenir-pt2',
+    //   titleMobile:'Entre et tenir',
+    //   titleDesktop:'Entre et tenir Pt.2'
+    // },
     {
       lowRes: 'asset/img/low-line/brique-bloc_5.png',
       highRes: 'asset/img/high/brique-bloc_5.jpg',

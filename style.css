@@ -152,7 +152,38 @@
   .classe {
     --highlight-color: #cc33aa;
   };*/
+  --highlight-color-2: #0f0c0c;
 }
+
+[data-page="home"] {
+    --highlight-color: #67792c;
+}
+
+[data-page="bio"] {
+    --highlight-color: #b1dac8;
+}
+
+[data-page="menu"] {
+    --highlight-color: #ef3407;
+}
+
+/*
+COULEURS DE PROJETS
+"#dd1031", // rouge,
+"#ab8b69",  // sable,
+"#f9b32d", //jaune,
+"#b1dac8", // cyan, 
+"#939997", //gris clair,
+"#004d76", //turquoise sombre, 
+"#67792c",  //vert,
+"#AA7145", // brun doré, 
+"#6328d0", //violet pétard, 
+"#83b8e4", // bleu clair,
+"#ffb47e", //orange, 
+"#7fa1a3",// turquoise,
+"#ef3407", //rouge,
+"#F6D74D", // jaune plus pétard,
+*/
 
 /*
 fond : #f1f2f1
@@ -276,7 +307,7 @@ html {
   height:calc(25%/2); /*27.778%*/
   aspect-ratio: 1 / 1;
   /* background-color: #0f0c0c; */
-  border: solid 3px var(--highlight-color);
+  border: solid 2px var(--highlight-color);
   z-index: 3;
   flex-shrink: 0;
   margin-left: calc((9.375vw - 2.083vh) / 2); /* calcul approximatif pour centrer le logo dans col 1 */
@@ -357,12 +388,13 @@ html {
 
 /*  STYLE DES HOVERS DU MENU  */
 
-
-.hoverable.hovered-focus {
+/*tous textes en hover focus*/
+.hoverable.hovered-focus,
+.hoverable.hovered-focus .a-menu {
   /* font-size: 1.5rem; */
-  transform: scale(1.25);
+  transform: scale(1.2);
   transform-origin: center;
-  color: var(--highlight-color);
+  color: var(--highlight-color-2);
   /* color: #0f0c0c; */
     font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
 
@@ -372,35 +404,40 @@ html {
   color: white;
 }
 
+/*tous textes lorsqu'un élément est en hover*/
 .hoverable.hovered,
 .hoverable.hovered .a-menu {
   /* color: #adadac; */
-  color: #0f0c0c;
+  /* color: #0f0c0c; */
+  color: var(--highlight-color);
   font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
 }
 
+/*logo menu quand autre élément en hover*/
 .logo-menu.hovered {
   transform-origin: center;
   /* background-color: #adadac; */
   /* background-color: #0f0c0c; */
-  border: solid 3px #0f0c0c;
+  border: solid 3px var(--highlight-color);
 }
 
+/*logo menu en hover*/
 #nom-menu:hover .logo-menu {
   /* background-color: #0f0c0c; */
-  background-color: var(--highlight-color);
+  background-color: var(--highlight-color-2);
   transform: scale(1.5);
   transform-origin: right;
   /* margin-right: 0.75dvh; */
   border: none;
 }
 
+/*nom menu en hover*/
 #nom-menu:hover #a-nom-menu {
   /* font-size: 1.5rem; */
     transform: scale(1.1);
     transform-origin: left;
   /* color: #0f0c0c; */
-  color: var(--highlight-color);
+  color: var(--highlight-color-2);
   font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
 
 }
@@ -513,11 +550,12 @@ html {
 
 /* Variantes des couleurs hover du menu */
 
+/*élément focus en hover*/
 .body-projets .hoverable.hovered-focus,
 .body-projets .hoverable.hovered-focus .a-menu {
     /* color: #adadac; */
-    color: var(--highlight-color);
-    /* color: white; */
+    /* color: var(--highlight-color); */
+    color: white;
     transform: scale(1.25);
     transform-origin: center;
 
@@ -533,31 +571,36 @@ html {
      2px  0px 0 white*//*;*/
   }
 
+  /*flèches*/
 .body-projets .fleches-sections-projets{
   color: #0f0c0c;
 }
 
+  /*flèches focus en hover*/
 .body-projets .hoverable.hovered-focus.fleches-sections-projets{
   font-size:4rem;
   color: var(--highlight-color);
   transform: scaleX(0.8) scaleY(1.6); /*applatir*/
 }
 
+  /*flèches lorsqu'un élément est en hover*/
 .body-projets .hovered.hoverable.fleches-sections-projets{
   transform: scaleX(0.8) scaleY(1.6); /*applatir*/
-  color: #0f0c0c;
+  /* color: #0f0c0c; */
+    color: var(--highlight-color);
 }
 
 .body-projets .hoverable.hovered-focus:active{
   color: white;
 }
 
+/*tous textes lorsqu'un élément est en hover*/
 .body-projets .hoverable.hovered,
 .body-projets .hoverable.hovered .a-menu {
     /* color: #f1f2f1; */
     /* color: #0f0c0c; */
-    /* color: var(--highlight-color); */
-    color:#adadac;
+    color: var(--highlight-color);
+    /* color:#adadac; */
     /* transform: scale(1.1); */
     transform-origin: center;
   }
@@ -566,9 +609,10 @@ html {
   transform-origin: left !important;
 } */
 
+  /*logo lorsqu'un élément est en hover*/
 .body-projets .logo-menu.hovered {
     /* background-color: #f1f2f1; */
-    border: solid 3px #adadac;
+    border: solid 3px var(--highlight-color);
     /* margin-right: 0.75dvh; */
   }
 
