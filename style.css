@@ -392,7 +392,7 @@ html {
 .hoverable.hovered-focus,
 .hoverable.hovered-focus .a-menu {
   /* font-size: 1.5rem; */
-  transform: scale(1.2);
+  transform: scale(1.15);
   transform-origin: center;
   color: var(--highlight-color-2);
   /* color: #0f0c0c; */
@@ -556,7 +556,7 @@ html {
     /* color: #adadac; */
     /* color: var(--highlight-color); */
     color: white;
-    transform: scale(1.25);
+    transform: scale(1.15);
     transform-origin: center;
 
     /* -webkit-text-stroke: 0.02vh white; */
@@ -802,6 +802,20 @@ html {
     font-size:1.1rem;
 }
 
+.description-2-Entre-et-tenir-pt1{
+    font-size: 1.1rem;
+    font-family: 'Switzer-Light', 'Helvetica Neue', Arial, sans-serif;
+  }
+
+#annonce-entre-et-tenir-pt2{
+   font-size: 1rem;
+   font-family: 'Switzer-ExtralightItalic', 'Helvetica Neue', Arial, sans-serif;
+}
+
+#titre-Memoire{
+    font-size:1.9rem;
+  }
+
 /*--------- SECTION SLIDES IMG --------*/
 
 .section-slide {
@@ -993,22 +1007,82 @@ html {
 #audio-HAL9000-4 .audio-container{background-image: url(asset/img/high/HAL9000-thumbnail_4.jpg);}
 
 
+/*  ASPECT CONTROLES AUDIO  */
+
 .carrousel-slide audio {
-  max-width: 60%;
-  width:40%;
-  margin: 0;
-  margin-right: calc(33.333vh - 20%); /* soit calc(66.666vh / 2) - width/2 ;*/
-  position: relative; /* Ajouté pour s'assurer du positionnement */
-  background-color: #f1f2f1;
-  accent-color: var(--highlight-color); /*(sur navigateurs qui le supportent)*/
-  border-radius: 8px;
-  padding: 8px;
-  /* Filtres pour changer les couleurs globalement
-  filter: saturate(2) hue-rotate(50deg) brightness(0.9) contrast(1.1);*/
+    max-width: 60%;
+    width: 40%;
+    margin: 0;
+    margin-right: calc(33.333vh - 20%);
+    position: relative;
+    background-color: #f1f2f1;
+    border-radius: 8px;
+    padding: 8px;
+    
+    /* Support Safari pour accent-color */
+    -webkit-appearance: none;
+    accent-color: #f1f2f1;
+    
+    /* Fallback pour Safari si accent-color ne fonctionne pas */
+    color: #f1f2f1;
+}
+
+/* Styles spécifiques pour WebKit (Safari/Chrome) */
+.carrousel-slide audio::-webkit-media-controls-panel {
+    background-color: #f1f2f1;
+    border-radius: 4px;
+}
+
+.carrousel-slide audio::-webkit-media-controls-play-button {
+    background-color: var(--highlight-color);
+    color:#f1f2f1;
+    border-radius: 50%;
+}
+
+.carrousel-slide audio::-webkit-media-controls-timeline {
+    background-color: #ddd;
+    border-radius: 2px;
+}
+
+.carrousel-slide audio::-webkit-media-controls-current-time-display,
+.carrousel-slide audio::-webkit-media-controls-time-remaining-display {
+    color: #0f0c0c;
+}
+
+/* Alternative avec custom controls si les contrôles natifs posent problème */
+.carrousel-slide audio.custom-controls {
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(to right, var(--highlight-color) 0%, #ddd 0%);
+    height: 40px;
+    border-radius: 8px;
+    outline: none;
+    border: none;
+}
+
+/* Media query spécifique pour Safari */
+@supports (-webkit-appearance: none) and (not (appearance: none)) {
+    .carrousel-slide audio {
+        /* Styles spécifiques à Safari */
+        -webkit-border-radius: 8px;
+        -webkit-background-clip: padding-box;
+    }
+}
+
+/* Détection Safari via media query */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+    _::-webkit-full-page-media, _:future, :root .carrousel-slide audio {
+        /* Styles Safari uniquement */
+        border: 1px solid #e0e0e0;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
 }
 
 
+
+
 /* Iframe */
+
 .carrousel-slide iframe {
   width:100%;
   height:100%;

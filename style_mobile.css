@@ -285,6 +285,10 @@
     flex: none;
   }
 
+  .titre-projets{
+    font-size:2rem;
+  }
+
   .zone-texte-projets{
     grid-column: 1/7; /*ou 1/7 avec margin sur cotés*/
     grid-row: 2/5;
@@ -293,7 +297,8 @@
   }
 
   .description-projets{
-    font-size:1.2rem;
+    font-size:1.15rem;
+    /* text-align: justify; */
   }
 
   .outil-projets{
@@ -301,7 +306,7 @@
   }
 
   .contexte-projets{
-    font-size:1.2rem;
+    font-size:1rem;
   }
 
   .collab-projets{
@@ -313,11 +318,39 @@
   }
 
   .italique{
-      font-size:1.2rem;
+    font-size:1.2rem;
+  }
+
+  #titre-HAL9000{
+    font-size:1.75rem;
+  }
+
+  .description-HAL9000{
+  font-size:1.1rem;
+  }
+
+  #contexte-HAL9000{
+  font-size: 0.95rem;
+  }
+
+  #titre-Entre-et-tenir-pt1{
+    font-size:1.75rem;
+  }
+
+  .description-Entre-et-tenir-pt1{
+    font-size: 1.1rem;
+  }
+
+  .description-2-Entre-et-tenir-pt1{
+    font-size: 1rem;
+  }
+
+  #annonce-entre-et-tenir-pt2{
+    font-size: 0.95rem;
   }
 
   #titre-Memoire{
-    font-size:2rem;
+    font-size:1.75rem;
   }
 
   /*--------- SECTION SLIDES IMG --------*/
@@ -417,7 +450,7 @@
   width: 90%;
   max-width: 300px;
   margin: 0;
-  filter: sepia(1) saturate(2) hue-rotate(0deg); /* Style personnalisé */
+  /* filter: sepia(1) saturate(2) hue-rotate(0deg);  */
 }
 
 
