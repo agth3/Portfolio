@@ -448,8 +448,9 @@
 
 .carrousel-slide audio {
   width: 90%;
-  max-width: 300px;
+  max-width: 90%;
   margin: 0;
+  margin-right:5%;
   /* filter: sepia(1) saturate(2) hue-rotate(0deg);  */
 }
 
