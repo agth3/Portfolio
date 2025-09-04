@@ -214,7 +214,7 @@ noir-éclairci : #adadac
 
 /*recherche*/
 .zone-texte-projets{color:#0f0c0c;} /*ou complètement var*/
-.section-slide{background-color: #0f0c0c;}
+.section-slide{background-color: #0f0c0c;} /*#f1f2f1*/
 .grid-projets{background-color: #f1f2f1;}
 /*aggrémenter d'un tritre coloré ?*/
 .hoverable{color:var(--highlight-color);}
@@ -424,7 +424,7 @@ html {
 /*logo menu en hover*/
 #nom-menu:hover .logo-menu {
   /* background-color: #0f0c0c; */
-  background-color: var(--highlight-color-2);
+  background-color: var(--highlight-color);
   transform: scale(1.5);
   transform-origin: right;
   /* margin-right: 0.75dvh; */
@@ -437,7 +437,7 @@ html {
     transform: scale(1.1);
     transform-origin: left;
   /* color: #0f0c0c; */
-  color: var(--highlight-color-2);
+  color: var(--highlight-color);
   font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
 
 }
