@@ -74,7 +74,7 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
                     <div class="next-frame"></div>
-                    <!-- <div class="scroll-indicator"></div> -->
+                    <div class="scroll-indicator"></div>
                   </div>
                 </div>
             </section>
@@ -109,7 +109,7 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
                     <div class="next-frame"></div>
-                    <!-- <div class="scroll-indicator"></div> -->
+                    <div class="scroll-indicator"></div>
                   </div>
                 </div>
             </section>
@@ -157,7 +157,7 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
                     <div class="next-frame"></div>
-                    <!-- <div class="scroll-indicator"></div> -->
+                    <div class="scroll-indicator"></div>
                   </div>
                 </div>
             </section>
@@ -193,7 +193,7 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
                     <div class="next-frame"></div>
-                    <!-- <div class="scroll-indicator"></div> -->
+                    <div class="scroll-indicator"></div>
                   </div>
                 </div>
             </section>
@@ -226,7 +226,7 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
                     <div class="next-frame"></div>
-                    <!-- <div class="scroll-indicator"></div> -->
+                    <div class="scroll-indicator"></div>
                   </div>
                 </div>
             </section>
@@ -248,6 +248,7 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
                     <div class="next-frame"></div>
+                    <div class="scroll-indicator"></div>
                   </div>
                 </div>
             </section> -->
@@ -276,7 +277,7 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
                     <div class="next-frame"></div>
-                    <!-- <div class="scroll-indicator"></div> -->
+                    <div class="scroll-indicator"></div>
                   </div>
                 </div>
             </section>
@@ -308,7 +309,7 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
                     <div class="next-frame"></div>
-                    <!-- <div class="scroll-indicator"></div> -->
+                    <div class="scroll-indicator"></div>
                   </div>
                 </div>
             </section>
@@ -346,7 +347,7 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
                     <div class="next-frame"></div>
-                    <!-- <div class="scroll-indicator"></div> -->
+                    <div class="scroll-indicator"></div>
                   </div>
                 </div>
             </section>
@@ -376,7 +377,7 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
                     <div class="next-frame"></div>
-                    <!-- <div class="scroll-indicator"></div> -->
+                    <div class="scroll-indicator"></div>
                   </div>
                 </div>
             </section>
@@ -405,7 +406,7 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
                     <div class="next-frame"></div>
-                    <!-- <div class="scroll-indicator"></div> -->
+                    <div class="scroll-indicator"></div>
                   </div>
                 </div>
             </section>
@@ -430,7 +431,7 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
                     <div class="next-frame"></div>
-                    <!-- <div class="scroll-indicator"></div> -->
+                    <div class="scroll-indicator"></div>
                   </div>
                 </div>
             </section>
@@ -460,7 +461,7 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
                     <div class="next-frame"></div>
-                    <!-- <div class="scroll-indicator"></div> -->
+                    <div class="scroll-indicator"></div>
                   </div>
                 </div>
             </section>
@@ -486,6 +487,7 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
                     <div class="next-frame"></div>
+                    <div class="scroll-indicator"></div>
                   </div>
                 </div>
             </section>
@@ -514,7 +516,7 @@ Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produit
                     <div class="previous-frame"></div>
                     <div class="focus-frame"></div>
                     <div class="next-frame"></div>
-                    <!-- <div class="scroll-indicator"></div> -->
+                    <div class="scroll-indicator"></div>
                   </div>
                 </div>
             </section>
@@ -1676,14 +1678,35 @@ repositionWithoutTransition() {
 }
 
   updateScrollIndicator() {
-    const indicator = this.track.closest('.carrousel-container').querySelector('.scroll-indicator');
-    if (!indicator) return;
+  const indicator = this.track.closest('.carrousel-container').querySelector('.scroll-indicator');
+  if (!indicator) {
+    console.log('Indicator not found!');
+    return;
+  }
 
-    // Utiliser currentIndex - 1 pour exclure le clone du début
-    const realIndex = this.currentIndex - 1;
-    const progress = (realIndex / (this.originalSlideCount - 1)) * (100 - 20);
+  const realIndex = this.currentIndex - 1;
+  console.log(`Updating indicator: realIndex=${realIndex}, scrollDirection=${this.scrollDirection}`);
+  
+  if (this.scrollDirection === 'horizontal') {
+    const maxWidth = indicator.offsetWidth - 20;
+    const progress = (realIndex / (this.originalSlideCount - 1)) * maxWidth;
+    console.log(`Mobile horizontal: progress=${progress}px`);
+    indicator.style.setProperty('--scroll-progress', `${progress}px`);
+const rect = indicator.getBoundingClientRect();
+console.log('Indicator position:', {
+  left: rect.left,
+  top: rect.top,
+  width: rect.width,
+  height: rect.height,
+  visible: rect.width > 0 && rect.height > 0
+});
+  } else {
+    const maxHeight = indicator.offsetHeight - 20;
+    const progress = (realIndex / (this.originalSlideCount - 1)) * maxHeight;
+    console.log(`Desktop vertical: progress=${progress}px`);
     indicator.style.setProperty('--scroll-progress', `${progress}px`);
   }
+}
 
 bindEvents() {
   // Attacher les événements directement au conteneur carrousel

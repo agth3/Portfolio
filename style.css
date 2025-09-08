@@ -845,17 +845,6 @@ html {
   overflow: hidden;
 }
 
-/* .scroll-capture {
-  position: absolute;
-  top: 10vh;  un peu plus long que focus-frame 
-  left: 0;
-  width: 100%;
-  height: calc(100% - 2 * 10vh);
-  z-index: 15;  supérieur à .focus-frame (z-index: 5) 
-  background: transparent;
-  pointer-events:auto; ne pas désactiver car les z-index élevés des media va rendre le scroll du carrousel indetectable
-} */
-
 /* La "piste" de slides verticales */
 .carrousel-track {
   position: absolute;
@@ -935,13 +924,13 @@ html {
 }
 
 /* Barre de scroll sur le côté */
-/* .scroll-indicator {
+.scroll-indicator {
   position: absolute;
   right: 1vh;
   top: 16.667vh;
-  width: 4px;
+  width: 5px;
   height: calc(100% - 2 * 16.667vh);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.25);
   border-radius: 2px;
   z-index: 5;
   overflow: hidden;
@@ -956,7 +945,8 @@ html {
   height: 20px;
   background: var(--highlight-color);
   border-radius: 2px;
-} */
+  transition: top 0.6s ease;
+}
 
 /* STYLES PAR MÉDIAS */
 

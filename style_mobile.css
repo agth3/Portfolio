@@ -428,6 +428,25 @@
   }
 
 
+  .section-slide .carrousel-container .scroll-indicator { /*beaucoup de précision sinon conflits avec le scroll-indicator version desktop*/
+    left: 9.5vw;
+    bottom: 2vh;
+    right: auto;
+    top: auto;
+    width: calc(100vw - 2 * 9.5vw);
+    height: 4px;
+  }
+  
+  .section-slide .carrousel-container .scroll-indicator::after {
+    left: var(--scroll-progress, 0px);
+    top: 0;
+    width: 20px;
+    height: 100%;
+    transition: left 0.6s ease;
+  }
+
+
+
 /* STYLES par types de MÉDIAS */
 
 .carrousel-slide video,
