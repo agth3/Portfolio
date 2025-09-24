@@ -1,941 +1,634 @@
-<!DOCTYPE html>
-<html lang="fr">
+  <!DOCTYPE html>
+  <html lang="fr">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Projets – Agathe Cotton</title>
-        <link rel="icon" type="image/x-icon" href="asset/favicon.ico">
-        <link rel="stylesheet" href="style.css">
-        <link rel="stylesheet" href="style_mobile.css">
-        <!-- <link rel="preload" href="/fonts/myfont.woff2" as="font" type="font/woff2" crossorigin="anonymous"> -->
-        <script src="script-general.js"></script>
-        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-    </head>
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Projets – Agathe Cotton</title>
+          <link rel="icon" type="image/x-icon" href="asset/favicon.ico">
+          <link rel="stylesheet" href="style.css">
+          <link rel="stylesheet" href="style_mobile.css">
+          <!-- <link rel="preload" href="/fonts/myfont.woff2" as="font" type="font/woff2" crossorigin="anonymous"> -->
+          <script src="script-general.js"></script>
+          <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+      </head>
 
-    <body data-page="projets" class="body-projets">
-        <div class="container-menu-projets">
+      <body data-page="projets" class="body-projets">
+          <div class="container-menu-projets">
 
-                  <div class="elements-menu-haut" id="nom-menu">
-                        <a class="a-menu logo-menu hoverable" href="index.html"></a>
-                        <a class="a-menu hoverable" id="a-nom-menu" href="index.html">Agathe Cotton</a></div>
-                    <div class="elements-menu-haut hoverable" id="bio-menu"><a class="a-menu" href="bio.html" data-i18n="menu-bio">Bio</a></div>
-                    <div class="elements-menu-haut hoverable" id="projet-menu"><a class="a-menu" href="mosaique.html">Menu</a></div>
-                    <div class="elements-menu-haut hoverable" id="lang-menu"><a class="a-menu" href="#" data-i18n="menu-lang">FR / ENG</a></div>
-                    <div class="elements-menu-bas hoverable" id="tel-menu" data-i18n="menu-tel">06 89 32 68 76</div>
-                    <div class="elements-menu-bas hoverable" id="mail-menu">agathe.cotton@gmail.com</div>
-                    <div class="elements-menu-bas hoverable" id="insta-menu"><a class="a-menu" href="https://www.instagram.com/happy_factoryy/?hl=fr" target="_blank">@happy_factoryy</a></div>
-                
-                    <!-- caracteres de fleches : ᐸᐳᐱᐯ ˂˃˄˅  🢒🢑🢓  ᐊᐅᐃᐁ -->
-                    <button class="fleches-sections-projets hoverable" id="fleche-gauche-projets">ᐸ</button>
-                    <button class="fleches-sections-projets hoverable" id="fleche-droite-projets">ᐳ</button>
-                    <button class="fleches-sections-projets" id="fleche-haut-projets">ᐱ</button>
-                    <button class="fleches-sections-projets" id="fleche-bas-projets">ᐯ</button>
+                    <div class="elements-menu-haut" id="nom-menu">
+                          <a class="a-menu logo-menu hoverable" href="index.html"></a>
+                          <a class="a-menu hoverable" id="a-nom-menu" href="index.html">Agathe Cotton</a></div>
+                      <div class="elements-menu-haut hoverable" id="bio-menu"><a class="a-menu" href="bio.html" data-i18n="menu-bio">Bio</a></div>
+                      <div class="elements-menu-haut hoverable" id="projet-menu"><a class="a-menu" href="mosaique.html">Menu</a></div>
+                      <div class="elements-menu-haut hoverable" id="lang-menu"><a class="a-menu" href="#" data-i18n="menu-lang">FR / ENG</a></div>
+                      <div class="elements-menu-bas hoverable" id="tel-menu" data-i18n="menu-tel">06 89 32 68 76</div>
+                      <div class="elements-menu-bas hoverable" id="mail-menu">agathe.cotton@gmail.com</div>
+                      <div class="elements-menu-bas hoverable" id="insta-menu"><a class="a-menu" href="https://www.instagram.com/happy_factoryy/?hl=fr" target="_blank">@happy_factoryy</a></div>
+                  
+                      <!-- caracteres de fleches : ᐸᐳᐱᐯ ˂˃˄˅  🢒🢑🢓  ᐊᐅᐃᐁ -->
+                      <button class="fleches-sections-projets hoverable" id="fleche-gauche-projets">ᐸ</button>
+                      <button class="fleches-sections-projets hoverable" id="fleche-droite-projets">ᐳ</button>
+                      <button class="fleches-sections-projets" id="fleche-haut-projets">ᐱ</button>
+                      <button class="fleches-sections-projets" id="fleche-bas-projets">ᐯ</button>
 
-        </div>
+          </div>
 
-        <div class="container-projets" id="container-projets">   
+          <div class="container-projets" id="container-projets">   
 
-            <section class="grid-projets" id="projet-OffKey">
-                <div class="zone-texte-projets" id="texte-OffKey">
-                    <h2 class="titre-projets" id="titre-OffKey">OffKey</h2>
-                    <span class="date-projets">2024</span>
-                    <span class="description-projets" data-i18n="projet-offkey-1">Identité visuelle générative d’un festival fictif de musique techno basée sur des visuels génératifs programmés en p5.js<br>
-Esthétique glauque, organique et rythmique incarnée par le mille-pattes<br>
-Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produits dérivés...)</span>
-                    <span class="contexte-projets" data-i18n="projet-offkey-2">Projet réalisé lors d’un semestre erasmus à Politecnico di Milano</span>
-                    <!-- <span class="collab-projets" data-i18n="projet-offkey-3">avec Luca SCHARRENBACH</span> -->
-                </div>
-                <div class="section-slide">
-                  <div class="carrousel-container">
-                    <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/offkey_7.png" alt="Clone Image OffKey 7"></div>
-                      <!-- Vidéo avec placeholder -->
-                      <div class="carrousel-slide" id="vid-offkey-1" data-media-type="video" data-video-src="asset/media/offkey-vid_1.mp4" data-poster="asset/img/high/offkey_1-thumbnail.jpg">
-                        <img src="asset/img/low-line-transp/offkey_1-thumbnail.png" alt="Vidéo OffKey 1" class="media-placeholder"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/offkey_1.png" alt="Image OffKey 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/offkey_2.png" alt="Image OffKey 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/offkey_3.png" alt="Image OffKey 3"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/offkey_4.png" alt="Image OffKey 4"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/offkey_5.png" alt="Image OffKey 5"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/offkey_6.png" alt="Image OffKey 6"></div>          
-          <!-- Audio avec placeholder 
-          <div class="carrousel-slide" id="audio-HAL9000-1" data-media-type="audio" data-audio-src="asset/media/audio-1_pride.mp3" data-poster="asset/img/low/offkey_4-thumbnail.jpg">
-            <img src="asset/img/low/offkey_4-thumbnail.jpg" alt="Audio OffKey" class="media-placeholder">
-          </div>-->
-          
-          <!-- Page web intégrée avec placeholder 
-          <div class="carrousel-slide" id="iframe-just-click" data-media-type="iframe" data-iframe-src="https://agth3.github.io/just-click/" data-poster="asset/img/low/just-click_3-thumbnail.jpg">
-            <img src="asset/img/low/just-click_3-thumbnail.jpg" alt="Site web OffKey" class="media-placeholder">
-          </div>-->
-          <div class="carrousel-slide"><img src="asset/img/low-line-transp/offkey_7.png" alt="Image OffKey 7"></div>
-          <div class="carrousel-slide"><img src="asset/img/low-line-transp/offkey_1-thumbnail.png" alt="Clone Thumbnail Vidéo OffKey 1"></div>
-                    </div>
-                    <div class="previous-frame"></div>
-                    <div class="focus-frame"></div>
-                    <div class="next-frame"></div>
-                    <div class="scroll-indicator"></div>
+              <section class="grid-projets" id="projet-OffKey">
+                  <div class="zone-texte-projets" id="texte-OffKey">
+                      <h2 class="titre-projets" id="titre-OffKey">OffKey</h2>
+                      <span class="date-projets">2024</span>
+                      <span class="description-projets" data-i18n="projet-offkey-1">Identité visuelle générative d’un festival fictif de musique techno basée sur des visuels génératifs programmés en p5.js<br>
+  Esthétique glauque, organique et rythmique incarnée par le mille-pattes<br>
+  Déclinaison sur multiples supports (affiches, réseaux sociaux, badges, produits dérivés...)</span>
+                      <span class="contexte-projets" data-i18n="projet-offkey-2">Projet réalisé lors d’un semestre erasmus à Politecnico di Milano</span>
+                      <!-- <span class="collab-projets" data-i18n="projet-offkey-3">avec Luca SCHARRENBACH</span> -->
                   </div>
-                </div>
-            </section>
+                  <div class="section-clic"></div>
+              </section>
 
-            <section class="grid-projets" id="projet-Cimes">
-                <div class="zone-texte-projets" id="texte-Cimes">
-                    <h2 class="titre-projets" id="titre-Cimes">Les Cimes</h2>
-                    <span class="date-projets">2023</span>
-                    <p class="p-projets">
-                      <span class="description-projets" data-i18n="projet-cimes-1">Design éditorial d’une maison d’édition fictive spécialisée sur les arbres </span>
-                      <span class="italique" data-i18n="projet-cimes-2">(Les Cimes)</span>
-                      <span class="description-projets" data-i18n="projet-cimes-3">, proposant diverses collections (encyclopédie des arbres, littérature sur les arbres, herbiers et guides techniques sur le bois)<br>Conception d’une collection de guides de randonnée thématique </span>
-                      <span class="italique" data-i18n="projet-cimes-4">(Les Sentiers de l’Arbre)</span>
-                      <span class="description-projets" data-i18n="projet-cimes-5"> proposant des sentiers d'observation d’essences locales et mise en page d’une édition sur le chêne pédonculé en région Centre-Val de Loire</span>
-                    </p>
-                </div>
-                <div class="section-slide">
-                  <div class="carrousel-container">
-                    <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/cimes_7.png" alt="Clone Image Cimes 9"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/cimes_1.png" alt="Image Cimes 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/cimes_2.png" alt="Image Cimes 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/cimes_3.png" alt="Image Cimes 3"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/cimes_4.png" alt="Image Cimes 4"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/cimes_5.png" alt="Image Cimes 5"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/cimes_6.png" alt="Image Cimes 6"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/cimes_7.png" alt="Image Cimes 7"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/cimes_8.png" alt="Image Cimes 8"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/cimes_9.png" alt="Image Cimes 9"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/cimes_1.png" alt="Clone Image Cimes 1"></div>
-                    </div>
-                    <div class="previous-frame"></div>
-                    <div class="focus-frame"></div>
-                    <div class="next-frame"></div>
-                    <div class="scroll-indicator"></div>
+              <section class="grid-projets" id="projet-Cimes">
+                  <div class="zone-texte-projets" id="texte-Cimes">
+                      <h2 class="titre-projets" id="titre-Cimes">Les Cimes</h2>
+                      <span class="date-projets">2023</span>
+                      <p class="p-projets">
+                        <span class="description-projets" data-i18n="projet-cimes-1">Design éditorial d’une maison d’édition fictive spécialisée sur les arbres </span>
+                        <span class="italique" data-i18n="projet-cimes-2">(Les Cimes)</span>
+                        <span class="description-projets" data-i18n="projet-cimes-3">, proposant diverses collections (encyclopédie des arbres, littérature sur les arbres, herbiers et guides techniques sur le bois)<br>Conception d’une collection de guides de randonnée thématique </span>
+                        <span class="italique" data-i18n="projet-cimes-4">(Les Sentiers de l’Arbre)</span>
+                        <span class="description-projets" data-i18n="projet-cimes-5"> proposant des sentiers d'observation d’essences locales et mise en page d’une édition sur le chêne pédonculé en région Centre-Val de Loire</span>
+                      </p>
                   </div>
-                </div>
-            </section>
-            
-            <section class="grid-projets" id="projet-HAL9000">
-                <div class="zone-texte-projets" id="texte-HAL9000">
-                    <h2 class="titre-projets" id="titre-HAL9000">HAL9000/ES</h2>
-                    <span class="date-projets">2024</span>
-                    <p class="p-projets">
-                      <span class="description-projets description-HAL9000" data-i18n="projet-HAL9000-1">Jeu vidéo thématique sur les intelligences artificielles questionnant leur capacité de reconnaissance et de compréhension des émotions humaines au travers de l’IA HAL9000 du film </span>
-                      <span class="italique description-HAL9000" data-i18n="projet-HAL9000-2">2001 : l’Odyssée de l’espace</span>
-                      <span class="description-projets description-HAL9000" data-i18n="projet-HAL9000-3"> (Stanley Kubrick, 1968)<br>Walking simulator immersif explorant le système émotionnel de HAL, où chaque pièce incarne une émotion simulée par l’IA du film (fierté, doute, dédain et peur)<br>Textures visuelles générées par IA (DALL-E 2), modélisation 3D des pièces, design sonore et programmation des interactions et des mécaniques de jeu, déclinaison des visuels sur affiches, dépliant et carte gravée</span>
-                    </p>
-                    <span id="contexte-HAL9000" class="contexte-projets" data-i18n="projet-HAL9000-4">Projet réalisé au sein du programme de recherche Édition Média Design de l’ESAD Orléans</span>
-                    <!-- <span class="collab-projets" data-i18n="projet-HAL9000-5">avec Matis ARVIEU, Lisa ALÉGOT, Seona LIM, Vaiana Massonaud, Monika ŠKODOVÁ, Jade ROCHER</span>       -->
-                </div>
-                <div class="section-slide">
-                  <div class="carrousel-container">
-                    <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/HAL9000_5.png" alt="Clone Image HAL900/ES 5"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/HAL9000-screen_1.png" alt="Image screenshot HAL900/ES 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/HAL9000-screen_2.png" alt="Image screenshot HAL900/ES 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/HAL9000-screen_3.png" alt="Image screenshot HAL900/ES 3"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/HAL9000-screen_4.png" alt="Image screenshot HAL900/ES 4"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/HAL9000-screen_5.png" alt="Image screenshot HAL900/ES 5"></div>
-                        <!--Audios-->
-                      <div class="carrousel-slide" id="audio-HAL9000-1" data-media-type="audio" data-audio-src="asset/media/audio-1_pride.mp3" data-poster="asset/img/high/HAL9000-thumbnail_1.jpg">
-                        <img src="asset/img/low-line-transp/HAL9000-thumbnail_1.png" alt="Audio HAL9000 pride" class="media-placeholder"></div>
-                      <div class="carrousel-slide" id="audio-HAL9000-2" data-media-type="audio" data-audio-src="asset/media/audio-2_doubt.mp3" data-poster="asset/img/high/HAL9000-thumbnail_2.jpg">
-                        <img src="asset/img/low-line-transp/HAL9000-thumbnail_2.png" alt="Audio HAL9000 doubt" class="media-placeholder"></div>
-                      <div class="carrousel-slide" id="audio-HAL9000-3" data-media-type="audio" data-audio-src="asset/media/audio-3_disdain.mp3" data-poster="asset/img/high/HAL9000-thumbnail_3.jpg">
-                        <img src="asset/img/low-line-transp/HAL9000-thumbnail_3.png" alt="Audio HAL9000 disdain" class="media-placeholder"></div>
-                      <div class="carrousel-slide" id="audio-HAL9000-4" data-media-type="audio" data-audio-src="asset/media/audio-4_fear.mp3" data-poster="asset/img/high/HAL9000-thumbnail_4.jpg">
-                        <img src="asset/img/low-line-transp/HAL9000-thumbnail_4.png" alt="Audio HAL9000 fear" class="media-placeholder"></div>
-                      
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/HAL9000_1.png" alt="Image HAL900/ES 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/HAL9000_2.png" alt="Image HAL900/ES 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/HAL9000_3.png" alt="Image HAL900/ES 3"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/HAL9000_4.png" alt="Image HAL900/ES 4"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/HAL9000_5.png" alt="Image HAL900/ES 5"></div>
-                      
+                  <div class="section-clic"></div>
 
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/HAL9000-screen_1.png" alt="Clone Image screenshot HAL900/ES 1"></div>
-                    </div>
-                    <div class="previous-frame"></div>
-                    <div class="focus-frame"></div>
-                    <div class="next-frame"></div>
-                    <div class="scroll-indicator"></div>
+              </section>
+              
+              <section class="grid-projets" id="projet-HAL9000">
+                  <div class="zone-texte-projets" id="texte-HAL9000">
+                      <h2 class="titre-projets" id="titre-HAL9000">HAL9000/ES</h2>
+                      <span class="date-projets">2024</span>
+                      <p class="p-projets">
+                        <span class="description-projets description-HAL9000" data-i18n="projet-HAL9000-1">Jeu vidéo thématique sur les intelligences artificielles questionnant leur capacité de reconnaissance et de compréhension des émotions humaines au travers de l’IA HAL9000 du film </span>
+                        <span class="italique description-HAL9000" data-i18n="projet-HAL9000-2">2001 : l’Odyssée de l’espace</span>
+                        <span class="description-projets description-HAL9000" data-i18n="projet-HAL9000-3"> (Stanley Kubrick, 1968)<br>Walking simulator immersif explorant le système émotionnel de HAL, où chaque pièce incarne une émotion simulée par l’IA du film (fierté, doute, dédain et peur)<br>Textures visuelles générées par IA (DALL-E 2), modélisation 3D des pièces, design sonore et programmation des interactions et des mécaniques de jeu, déclinaison des visuels sur affiches, dépliant et carte gravée</span>
+                      </p>
+                      <span id="contexte-HAL9000" class="contexte-projets" data-i18n="projet-HAL9000-4">Projet réalisé au sein du programme de recherche Édition Média Design de l’ESAD Orléans</span>
+                      <!-- <span class="collab-projets" data-i18n="projet-HAL9000-5">avec Matis ARVIEU, Lisa ALÉGOT, Seona LIM, Vaiana Massonaud, Monika ŠKODOVÁ, Jade ROCHER</span>       -->
                   </div>
-                </div>
-            </section>
+                  <div class="section-clic"></div>
 
-            <section class="grid-projets" id="projet-Oursins">
-                <div class="zone-texte-projets" id="texte-Oursins">
-                    <h2 class="titre-projets" id="titre-Oursins">Les Oursins</h2>
-                    <span class="date-projets">2023</span>
-                    <p class="p-projets">
-                      <span class="description-projets" data-i18n="projet-oursins-1">Identité visuelle d’un groupe activiste écologique fictif </span>
-                      <span class="italique" data-i18n="projet-oursins-2">(Les Oursins)</span>
-                      <span class="description-projets" data-i18n="projet-oursins-3"> luttant contre la pollution plastique dont le symbole est à l’image de leur mode d’action non-violent mais irritant<br>Déclinaison sur affiches, cartes de visite, maquette de site web et produits dérivés<br>Conception d’un catalogue satirique vendant la beauté des déchets plastiques</span>
-                    </p>
-                </div>
-                <div class="section-slide">
-                  <div class="carrousel-container">
-                    <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/oursins-edition_6.png" alt="Clone Image Oursins édition 6"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/oursins_1.png" alt="Image Oursins 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/oursins_2.png" alt="Image Oursins 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/oursins_3.png" alt="Image Oursins 3"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/oursins_4.png" alt="Image Oursins 4"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/oursins_5.png" alt="Image Oursins 5"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/oursins_6.png" alt="Image Oursins 6"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/oursins-edition_1.png" alt="Image Oursins édition 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/oursins-edition_2.png" alt="Image Oursins édition 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/oursins-edition_3.png" alt="Image Oursins édition 3"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/oursins-edition_4.png" alt="Image Oursins édition 4"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/oursins-edition_5.png" alt="Image Oursins édition 5"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/oursins-edition_6.png" alt="Image Oursins édition 6"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/oursins_1.png" alt="Clone Image Oursins 1"></div>
-                    </div>
-                    <div class="previous-frame"></div>
-                    <div class="focus-frame"></div>
-                    <div class="next-frame"></div>
-                    <div class="scroll-indicator"></div>
+              </section>
+
+              <section class="grid-projets" id="projet-Oursins">
+                  <div class="zone-texte-projets" id="texte-Oursins">
+                      <h2 class="titre-projets" id="titre-Oursins">Les Oursins</h2>
+                      <span class="date-projets">2023</span>
+                      <p class="p-projets">
+                        <span class="description-projets" data-i18n="projet-oursins-1">Identité visuelle d’un groupe activiste écologique fictif </span>
+                        <span class="italique" data-i18n="projet-oursins-2">(Les Oursins)</span>
+                        <span class="description-projets" data-i18n="projet-oursins-3"> luttant contre la pollution plastique dont le symbole est à l’image de leur mode d’action non-violent mais irritant<br>Déclinaison sur affiches, cartes de visite, maquette de site web et produits dérivés<br>Conception d’un catalogue satirique vendant la beauté des déchets plastiques</span>
+                      </p>
                   </div>
-                </div>
-            </section>
+                  <div class="section-clic"></div>
 
-            <section class="grid-projets" id="projet-Entre-et-tenir-pt1">
-                <div class="zone-texte-projets" id="texte-Entre-et-tenir-pt1">
-                    <h2 class="titre-projets" id="titre-Entre-et-tenir-pt1">Entre et tenir</h2>
-                    <span class="date-projets">2025</span>
-                    <span class="description-projets description-Entre-et-tenir-pt1" data-i18n="projet-entre-pt1-1">Projet plastique du DNSEP constitué d'un ensemble varié multimédia de dispositifs cherchant à repenser le rapport de l'Homme à la nature. Il vise à trouver les moyens plastique pour représenter l’interconnexion globale des vivants en mobilisant l'édition et l’installation comme des espaces d’expérimentation de cet écosystème.</span>
-                    <!-- <div class="sous-titre-projets" data-i18n="projet-entre-pt1-2">Série d’éditions</div> -->
-                    <span class="description-projets description-2-Entre-et-tenir-pt1" data-i18n="projet-entre-pt1-3">Variation d'éditions papier explorant le motif du réseau et des racines</span>
-                    <span class="description-projets" data-i18n="projet-entre-pt1-annonce" id="annonce-entre-et-tenir-pt2">Annonce</span>
-                    <!-- <span class="description-projets description-Entre-et-tenir-pt1" data-i18n="projet-entre-pt1-5">Installation à partir de frottages en grand format de racines, créant un espace de découverte et d’immersion au sein du réseau</span>
-                    <span class="description-projets description-Entre-et-tenir-pt1" data-i18n="projet-entre-pt1-7">Exploration du tissage de photographie comme représentation symbolique de la connexion</span> -->
-                </div>
-                <div class="section-slide">
-                  <div class="carrousel-container">
-                    <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/entre-et-tenir_7.png" alt="Clone Image Entre et tenir pt.1 8"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/entre-et-tenir_1.png" alt="Image Entre et tenir pt.1 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/entre-et-tenir_2.png" alt="Image Entre et tenir pt.1 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/entre-et-tenir_3.png" alt="Image Entre et tenir pt.1 3"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/entre-et-tenir_4.png" alt="Image Entre et tenir pt.1 4"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/entre-et-tenir_5.png" alt="Image Entre et tenir pt.1 5"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/entre-et-tenir_6.png" alt="Image Entre et tenir pt.1 6"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/entre-et-tenir_7.png" alt="Image Entre et tenir pt.1 7"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/entre-et-tenir_8.png" alt="Image Entre et tenir pt.1 8"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/entre-et-tenir_1.png" alt="Clone Image Entre et tenir pt.1 1"></div>
-                    </div>
-                    <div class="previous-frame"></div>
-                    <div class="focus-frame"></div>
-                    <div class="next-frame"></div>
-                    <div class="scroll-indicator"></div>
+              </section>
+
+              <section class="grid-projets" id="projet-Entre-et-tenir-pt1">
+                  <div class="zone-texte-projets" id="texte-Entre-et-tenir-pt1">
+                      <h2 class="titre-projets" id="titre-Entre-et-tenir-pt1">Entre et tenir</h2>
+                      <span class="date-projets">2025</span>
+                      <span class="description-projets description-Entre-et-tenir-pt1" data-i18n="projet-entre-pt1-1">Projet plastique du DNSEP constitué d'un ensemble varié multimédia de dispositifs cherchant à repenser le rapport de l'Homme à la nature. Il vise à trouver les moyens plastique pour représenter l’interconnexion globale des vivants en mobilisant l'édition et l’installation comme des espaces d’expérimentation de cet écosystème.</span>
+                      <!-- <div class="sous-titre-projets" data-i18n="projet-entre-pt1-2">Série d’éditions</div> -->
+                      <span class="description-projets description-2-Entre-et-tenir-pt1" data-i18n="projet-entre-pt1-3">Variation d'éditions papier explorant le motif du réseau et des racines</span>
+                      <span class="description-projets" data-i18n="projet-entre-pt1-annonce" id="annonce-entre-et-tenir-pt2">Annonce</span>
+                      <!-- <span class="description-projets description-Entre-et-tenir-pt1" data-i18n="projet-entre-pt1-5">Installation à partir de frottages en grand format de racines, créant un espace de découverte et d’immersion au sein du réseau</span>
+                      <span class="description-projets description-Entre-et-tenir-pt1" data-i18n="projet-entre-pt1-7">Exploration du tissage de photographie comme représentation symbolique de la connexion</span> -->
                   </div>
-                </div>
-            </section>
+                  <div class="section-clic"></div>
 
-            <!--<section class="grid-projets" id="projet-Entre-et-tenir-pt2">
-                <div class="zone-texte-projets" id="texte-Entre-et-tenir-pt2">
-                    <h2 class="titre-projets" id="titre-Entre-et-tenir-pt2">Entre et tenir - Suite</h2>
-                    <span class="date-projets">2025</span>
-                    <span class="description-projets" data-i18n="projet-entre-pt2-1">Projet plastique du DNSEP constitué d'un ensemble varié multimédia de dispositifs cherchant à repenser le rapport de l'Homme à la nature. Il vise à trouver les moyens plastique pour représenter l’interconnexion globale des vivants en mobilisant l'édition et l’installation comme des espaces d’expérimentation de cet écosystème.</span>
-                </div>
-                <div class="section-slide">
-                  <div class="carrousel-container">
-                    <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/entre-et-tenir-2_2.png" alt="Clone Image Entre et tenir pt.2 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/entre-et-tenir-2_1.png" alt="Image Entre et tenir pt.2 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/entre-et-tenir-2_2.png" alt="Image Entre et tenir pt.2 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/entre-et-tenir-2_1.png" alt="Clone Image Entre et tenir pt.2 1"></div>
-                    </div>
-                    <div class="previous-frame"></div>
-                    <div class="focus-frame"></div>
-                    <div class="next-frame"></div>
-                    <div class="scroll-indicator"></div>
+              </section>
+
+              <!--<section class="grid-projets" id="projet-Entre-et-tenir-pt2">
+                  <div class="zone-texte-projets" id="texte-Entre-et-tenir-pt2">
+                      <h2 class="titre-projets" id="titre-Entre-et-tenir-pt2">Entre et tenir - Suite</h2>
+                      <span class="date-projets">2025</span>
+                      <span class="description-projets" data-i18n="projet-entre-pt2-1">Projet plastique du DNSEP constitué d'un ensemble varié multimédia de dispositifs cherchant à repenser le rapport de l'Homme à la nature. Il vise à trouver les moyens plastique pour représenter l’interconnexion globale des vivants en mobilisant l'édition et l’installation comme des espaces d’expérimentation de cet écosystème.</span>
                   </div>
-                </div>
-            </section> -->
+                  <div class="section-clic"></div>
+              </section> -->
 
-            <section class="grid-projets" id="projet-Memoire">
-                <div class="zone-texte-projets" id="texte-Memoire">
-                    <h2 class="titre-projets" id="titre-Memoire">Conversations souterraines&nbsp;: communication entre&nbsp;vivants humains et&nbsp;non-humains</h2>
-                    <span class="date-projets">2025</span>
-                    <span class="description-projets" data-i18n="memoire-1">Mémoire de DNSEP interrogeant l’émergence d’un rapport sensible de l’homme à l’arbre à travers une représentation multidimensionnelle et dynamique des réseaux racinaires, révélant l'arbre comme une entité intelligente et communicante.<br>Exploration de la page web comme support d’édition, mettant en pratique la question des réseaux.</span>
-                </div>
-                <div class="section-slide">
-                  <div class="carrousel-container">
-                    <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/memoire_7.png" alt="Clone Image Mémoire 7"></div>
-                      <!-- <div class="carrousel-slide" id="iframe-memoire" data-media-type="iframe" data-iframe-src="https://agth3.github.io/Memoire/" data-poster="asset/img/low/memoire_1.jpg">
-                        <img src="asset/img/low/memoire_1.jpg" alt="Site web Mémoire" class="media-placeholder"></div> -->
-                      <div class="carrousel-slide lien-externe-slide"><a href="https://agth3.github.io/Memoire/" target="_blank" rel="noopener noreferrer" class="lien-externe-texte">Voir le site</a><img src="asset/img/low-line-transp/memoire_1.png" alt="Image Mémoire 1"></div>
-                      <div class="carrousel-slide"><!--<a href="https://agth3.github.io/Memoire/" target="_blank" rel="noopener noreferrer" class="lien-externe-texte">Voir le site</a>--><img src="asset/img/low-line-transp/memoire_2.png" alt="Image Mémoire 2"></div>
-                      <div class="carrousel-slide"><!--<a href="https://agth3.github.io/Memoire/" target="_blank" rel="noopener noreferrer" class="lien-externe-texte">Voir le site</a>--><img src="asset/img/low-line-transp/memoire_3.png" alt="Image Mémoire 3"></div>
-                      <div class="carrousel-slide"><!--<a href="https://agth3.github.io/Memoire/" target="_blank" rel="noopener noreferrer" class="lien-externe-texte">Voir le site</a>--><img src="asset/img/low-line-transp/memoire_4.png" alt="Image Mémoire 4"></div>
-                      <div class="carrousel-slide"><!--<a href="https://agth3.github.io/Memoire/" target="_blank" rel="noopener noreferrer" class="lien-externe-texte">Voir le site</a>--><img src="asset/img/low-line-transp/memoire_5.png" alt="Image Mémoire 5"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/memoire_6.png" alt="Image Mémoire 6"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/memoire_7.png" alt="Image Mémoire 7"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/memoire_1.png" alt="Clone Image Mémoire 1"></div>
-                    </div>
-                    <div class="previous-frame"></div>
-                    <div class="focus-frame"></div>
-                    <div class="next-frame"></div>
-                    <div class="scroll-indicator"></div>
+              <section class="grid-projets" id="projet-Memoire">
+                  <div class="zone-texte-projets" id="texte-Memoire">
+                      <h2 class="titre-projets" id="titre-Memoire">Conversations souterraines&nbsp;: communication entre&nbsp;vivants humains et&nbsp;non-humains</h2>
+                      <span class="date-projets">2025</span>
+                      <span class="description-projets" data-i18n="memoire-1">Mémoire de DNSEP interrogeant l’émergence d’un rapport sensible de l’homme à l’arbre à travers une représentation multidimensionnelle et dynamique des réseaux racinaires, révélant l'arbre comme une entité intelligente et communicante.<br>Exploration de la page web comme support d’édition, mettant en pratique la question des réseaux.</span>
                   </div>
-                </div>
-            </section>
+                  <div class="section-clic"></div>
+              </section>
 
-            <section class="grid-projets" id="projet-Vitrine">
-                <div class="zone-texte-projets" id="texte-Vitrine">
-                    <h2 class="titre-projets" id="titre-Vitrine">La Vitrine</h2>
-                    <span class="date-projets">2022</span>
-                    <p class="p-projets">
-                      <span class="description-projets" data-i18n="projet-vitrine-1">Identité visuelle d’une galerie d’art contemporain fictive </span>
-                      <span class="italique" data-i18n="projet-vitrine-2">(La Vitrine)</span>
-                      <span class="description-projets" data-i18n="projet-vitrine-3"> basée sur un logo déclinable reprenant l’aspect d’un projecteur lumineux.<br>Déclinaison sur affiches et dépliant</span>
-                    </p>
-                </div>
-                <div class="section-slide">
-                  <div class="carrousel-container">
-                    <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/vitrine_7.png" alt="Clone Image Vitrine 8"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/vitrine_1.png" alt="Image Vitrine 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/vitrine_2.png" alt="Image Vitrine 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/vitrine_3.png" alt="Image Vitrine 3"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/vitrine_4.png" alt="Image Vitrine 4"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/vitrine_5.png" alt="Image Vitrine 5"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/vitrine_6.png" alt="Image Vitrine 6"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/vitrine_7.png" alt="Image Vitrine 7"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/vitrine_8.png" alt="Image Vitrine 8"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/vitrine_1.png" alt="Clone Image Vitrine 1"></div>
-                    </div>
-                    <div class="previous-frame"></div>
-                    <div class="focus-frame"></div>
-                    <div class="next-frame"></div>
-                    <div class="scroll-indicator"></div>
+              <section class="grid-projets" id="projet-Vitrine">
+                  <div class="zone-texte-projets" id="texte-Vitrine">
+                      <h2 class="titre-projets" id="titre-Vitrine">La Vitrine</h2>
+                      <span class="date-projets">2022</span>
+                      <p class="p-projets">
+                        <span class="description-projets" data-i18n="projet-vitrine-1">Identité visuelle d’une galerie d’art contemporain fictive </span>
+                        <span class="italique" data-i18n="projet-vitrine-2">(La Vitrine)</span>
+                        <span class="description-projets" data-i18n="projet-vitrine-3"> basée sur un logo déclinable reprenant l’aspect d’un projecteur lumineux.<br>Déclinaison sur affiches et dépliant</span>
+                      </p>
                   </div>
-                </div>
-            </section>
+                  <div class="section-clic"></div>
+              </section>
 
-            <section class="grid-projets" id="projet-Stone-of-Amasha">
-                <div class="zone-texte-projets" id="texte-Stone-of-Amasha">
-                    <h2 class="titre-projets" id="titre-Stone-of-Amasha">The Stone of Amasha</h2>
-                    <span class="date-projets">2024</span>
-                    <span class="description-projets" data-i18n="projet-amasha-1">Narration interactive abordant les dynamiques de pouvoir et marginalisations fondées sur l'âge à travers un monde fantastique où règnent complots, crise politique et religieuse<br>Storyworld, design de personnages et écriture de scenario</span>
-                    <p class="p-projets">
-                      <span class="description-projets" data-i18n="projet-amasha-2">Lecture du premier chapitre sur </span>
-                      <a class="liens-externes" href="https://arcweave.com/app/project/nwEp2mP04a/play" target="_blank">Arcweave</a>
-                    </p>
-                    <span class="contexte-projets" data-i18n="projet-amasha-3">Projet réalisé lors d’un semestre erasmus à Politecnico di Milano</span>
-                    <!-- <span class="collab-projets" data-i18n="projet-amasha-4">avec Giuseppe CRITONE, Natalie ILLE, Nataliá KRAJCZÁR, Luca SCHARRENBACH et Marta ZILIOLI</span> -->
-                </div>
-                <div class="section-slide">
-                  <div class="carrousel-container">
-                    <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/amasha_7.png" alt="Clone Image Amasha 7"></div>
-                      <!-- Vidéo avec placeholder -->
-                      <!-- <div class="carrousel-slide" id="vid-offkey-1" data-media-type="video" data-video-src="asset/media/amasha-vid_1.mp4" data-poster="asset/img/low/amasha_1.jpg">
-                        <img src="asset/img/low/amasha_1.jpg" alt="Vidéo Stone of Amasha 1" class="media-placeholder">
-                      </div> -->
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/amasha_1.png" alt="Image Amasha 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/amasha_2.png" alt="Image Amasha 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/amasha_3.png" alt="Image Amasha 3"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/amasha_4.png" alt="Image Amasha 4"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/amasha_5.png" alt="Image Amasha 5"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/amasha_8.png" alt="Image Amasha 8"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/amasha_6.png" alt="Image Amasha 6"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/amasha_7.png" alt="Image Amasha 7"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/amasha_1.png" alt="Clone Image Amasha 1"></div>
-                    </div>
-                    <div class="previous-frame"></div>
-                    <div class="focus-frame"></div>
-                    <div class="next-frame"></div>
-                    <div class="scroll-indicator"></div>
+              <section class="grid-projets" id="projet-Stone-of-Amasha">
+                  <div class="zone-texte-projets" id="texte-Stone-of-Amasha">
+                      <h2 class="titre-projets" id="titre-Stone-of-Amasha">The Stone of Amasha</h2>
+                      <span class="date-projets">2024</span>
+                      <span class="description-projets" data-i18n="projet-amasha-1">Narration interactive abordant les dynamiques de pouvoir et marginalisations fondées sur l'âge à travers un monde fantastique où règnent complots, crise politique et religieuse<br>Storyworld, design de personnages et écriture de scenario</span>
+                      <p class="p-projets">
+                        <span class="description-projets" data-i18n="projet-amasha-2">Lecture du premier chapitre sur </span>
+                        <a class="liens-externes" href="https://arcweave.com/app/project/nwEp2mP04a/play" target="_blank">Arcweave</a>
+                      </p>
+                      <span class="contexte-projets" data-i18n="projet-amasha-3">Projet réalisé lors d’un semestre erasmus à Politecnico di Milano</span>
+                      <!-- <span class="collab-projets" data-i18n="projet-amasha-4">avec Giuseppe CRITONE, Natalie ILLE, Nataliá KRAJCZÁR, Luca SCHARRENBACH et Marta ZILIOLI</span> -->
                   </div>
-                </div>
-            </section>
+                  <div class="section-clic"></div>
+              </section>
 
-            <section class="grid-projets" id="projet-Kaleidoscope">
-                <div class="zone-texte-projets" id="texte-Kaleidoscope">
-                    <h2 class="titre-projets" id="titre-Kaleidoscope">Kaléidoscope musical</h2>
-                    <span class="date-projets">2022</span>
-                    <span class="description-projets" data-i18n="projet-kaleidoscope-1">Photomontage de l’Orchestre Symphonique d’Orléans réalisé à l’occasion de son centenaire et exposé au théâtre d’Orléans.<br>Répétition de fragments photographiques créant un chaos organisé rappelant les mouvements de la musique</span>
-                </div>
-                <div class="section-slide">
-                  <div class="carrousel-container">
-                    <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/kaleidoscope-zoom_4.png" alt="Clone Image Kaléidoscope musical zoom 4"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/kaleidoscope_1.png" alt="Image Kaléidoscope musical 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/kaleidoscope_2.png" alt="Image Kaléidoscope musical 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/kaleidoscope_3.png" alt="Image Kaléidoscope musical 3"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/kaleidoscope_4.png" alt="Image Kaléidoscope musical 4"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/kaleidoscope_5.png" alt="Image Kaléidoscope musical 5"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/kaleidoscope_6.png" alt="Image Kaléidoscope musical 6"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/kaleidoscope-zoom_1.png" alt="Image Kaléidoscope musical zoom 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/kaleidoscope-zoom_2.png" alt="Image Kaléidoscope musical zoom 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/kaleidoscope-zoom_3.png" alt="Image Kaléidoscope musical zoom 3"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/kaleidoscope-zoom_4.png" alt="Image Kaléidoscope musical zoom 4"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/kaleidoscope_1.png" alt="Clone Image Kaléidoscope musical 1"></div>
-                    </div>
-                    <div class="previous-frame"></div>
-                    <div class="focus-frame"></div>
-                    <div class="next-frame"></div>
-                    <div class="scroll-indicator"></div>
+              <section class="grid-projets" id="projet-Kaleidoscope">
+                  <div class="zone-texte-projets" id="texte-Kaleidoscope">
+                      <h2 class="titre-projets" id="titre-Kaleidoscope">Kaléidoscope musical</h2>
+                      <span class="date-projets">2022</span>
+                      <span class="description-projets" data-i18n="projet-kaleidoscope-1">Photomontage de l’Orchestre Symphonique d’Orléans réalisé à l’occasion de son centenaire et exposé au théâtre d’Orléans.<br>Répétition de fragments photographiques créant un chaos organisé rappelant les mouvements de la musique</span>
                   </div>
-                </div>
-            </section>
+                  <div class="section-clic"></div>
+              </section>
 
-            <section class="grid-projets" id="projet-Affiches-Animees">
-                <div class="zone-texte-projets" id="texte-Affiches-Animees">
-                    <h2 class="titre-projets" id="titre-Affiches-Animees">Affiches animées</h2>
-                    <span class="date-projets">2023</span>
-                    <span class="description-projets" data-i18n="projet-hack-1">Affiches animées sur la thématique du piratage informatique, présentées sur les panneaux publicitaires d’Orléans dans le cadre d’un partenariat avec la ville.</span>
-                </div>
-                <div class="section-slide">
-                  <div class="carrousel-container">
-                    <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/hack_3.png" alt="Clone Image Affiches animées 3"></div>
-                      <div class="carrousel-slide" id="vid-hack-1" data-media-type="video" data-video-src="asset/media/hack-vid_1.mp4" data-poster="asset/img/high/hack-thumbnail_1.jpg">
-                        <img src="asset/img/low-line-transp/hack-thumbnail_1.png" alt="Vidéo hack 1" class="media-placeholder"></div>
-                      <div class="carrousel-slide" id="vid-hack-2" data-media-type="video" data-video-src="asset/media/hack-vid_2.mp4" data-poster="asset/img/high/hack-thumbnail_2.jpg">
-                        <img src="asset/img/low-line-transp/hack-thumbnail_2.png" alt="Vidéo hack 2" class="media-placeholder"></div>
-                      <div class="carrousel-slide" id="vid-hack-3" data-media-type="video" data-video-src="asset/media/hack-vid_3.mp4" data-poster="asset/img/high/hack-thumbnail_3.jpg">
-                        <img src="asset/img/low-line-transp/hack-thumbnail_3.png" alt="Vidéo hack 3" class="media-placeholder"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/hack_1.png" alt="Image Affiches animées 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/hack_2.png" alt="Image Affiches animées 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/hack_3.png" alt="Image Affiches animées 3"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/hack_1.png" alt="Clone Image Affiches animées 1"></div>
-                    </div>
-                    <div class="previous-frame"></div>
-                    <div class="focus-frame"></div>
-                    <div class="next-frame"></div>
-                    <div class="scroll-indicator"></div>
+              <section class="grid-projets" id="projet-Affiches-Animees">
+                  <div class="zone-texte-projets" id="texte-Affiches-Animees">
+                      <h2 class="titre-projets" id="titre-Affiches-Animees">Affiches animées</h2>
+                      <span class="date-projets">2023</span>
+                      <span class="description-projets" data-i18n="projet-hack-1">Affiches animées sur la thématique du piratage informatique, présentées sur les panneaux publicitaires d’Orléans dans le cadre d’un partenariat avec la ville.</span>
                   </div>
-                </div>
-            </section>
+                  <div class="section-clic"></div>
+              </section>
 
-            <section class="grid-projets" id="projet-Brique-Bloc">
-                <div class="zone-texte-projets" id="texte-Brique-Bloc">
-                    <h2 class="titre-projets" id="titre-Brique-Bloc">Brique Bloc</h2>
-                    <span class="date-projets">2022</span>
-                    <span class="description-projets" data-i18n="projet-brique-bloc-1">Typographie enfantine inspirée des typographies modulaires et des jeux de construction.</span>
-                </div>
-                <div class="section-slide">
-                  <div class="carrousel-container">
-                    <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/brique-bloc_5.png" alt="Clone Image Brique-bloc 5"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/brique-bloc_1.png" alt="Image Brique-bloc 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/brique-bloc_2.png" alt="Image Brique-bloc 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/brique-bloc_3.png" alt="Image Brique-bloc 3"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/brique-bloc_4.png" alt="Image Brique-bloc 4"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/brique-bloc_5.png" alt="Image Brique-bloc 5"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/brique-bloc_1.png" alt="Clone Image Brique-bloc 1"></div>
-                    </div>
-                    <div class="previous-frame"></div>
-                    <div class="focus-frame"></div>
-                    <div class="next-frame"></div>
-                    <div class="scroll-indicator"></div>
+              <section class="grid-projets" id="projet-Brique-Bloc">
+                  <div class="zone-texte-projets" id="texte-Brique-Bloc">
+                      <h2 class="titre-projets" id="titre-Brique-Bloc">Brique Bloc</h2>
+                      <span class="date-projets">2022</span>
+                      <span class="description-projets" data-i18n="projet-brique-bloc-1">Typographie enfantine inspirée des typographies modulaires et des jeux de construction.</span>
                   </div>
-                </div>
-            </section>
+                  <div class="section-clic"></div>
+              </section>
 
-            <section class="grid-projets" id="projet-Phytomorphose">
-                <div class="zone-texte-projets" id="texte-Phytomorphose">
-                    <h2 class="titre-projets" id="titre-Phytomorphose">Phytomorphose</h2>
-                    <span class="date-projets">2024</span>
-                    <p class="p-projets">
-                      <span class="description-projets" data-i18n="phytom-1">Animation en réalité augmentée proposant une deuxième lecture du </span>
-                      <span class="italique" data-i18n="phytom-2">Portrait du peintre Gabriel Deschamps</span>
-                      <span class="description-projets" data-i18n="phytom-1">, profil sculpté en bronze par Auguste Prérault (1809-1879) présent au Musée des Beaux-Arts d’Orléans<br>Ce projet aborde l’opposition nature/culture en transformant la chevelure et la barbe du profil en éléments végétaux se déployant dans l’espace muséal</span>
-                    </p>
-                </div>
-                <div class="section-slide">
-                  <div class="carrousel-container">
-                    <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/phytom_6.png" alt="Clone Image Phytomorphose 6"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/phytom_1.png" alt="Image Phytomorphose 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/phytom_2.png" alt="Image Phytomorphose 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/phytom_3.png" alt="Image Phytomorphose 3"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/phytom_4.png" alt="Image Phytomorphose 4"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/phytom_5.png" alt="Image Phytomorphose 5"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/phytom_6.png" alt="Image Phytomorphose 6"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/phytom_1.png" alt="Clone Image Phytomorphose 1"></div>
-                    </div>
-                    <div class="previous-frame"></div>
-                    <div class="focus-frame"></div>
-                    <div class="next-frame"></div>
-                    <div class="scroll-indicator"></div>
+              <section class="grid-projets" id="projet-Phytomorphose">
+                  <div class="zone-texte-projets" id="texte-Phytomorphose">
+                      <h2 class="titre-projets" id="titre-Phytomorphose">Phytomorphose</h2>
+                      <span class="date-projets">2024</span>
+                      <p class="p-projets">
+                        <span class="description-projets" data-i18n="phytom-1">Animation en réalité augmentée proposant une deuxième lecture du </span>
+                        <span class="italique" data-i18n="phytom-2">Portrait du peintre Gabriel Deschamps</span>
+                        <span class="description-projets" data-i18n="phytom-1">, profil sculpté en bronze par Auguste Prérault (1809-1879) présent au Musée des Beaux-Arts d’Orléans<br>Ce projet aborde l’opposition nature/culture en transformant la chevelure et la barbe du profil en éléments végétaux se déployant dans l’espace muséal</span>
+                      </p>
                   </div>
-                </div>
-            </section>
+                  <div class="section-clic"></div>
+              </section>
 
-            <section class="grid-projets" id="projet-Just-Click">
-                <div class="zone-texte-projets" id="texte-Just-Click">
-                    <h2 class="titre-projets" id="titre-Just-Click">You Just Have To&nbsp;click</h2>
-                    <span class="date-projets">2022</span>
-                    <span class="description-projets" data-i18n="just-click-1">Webdesign expérimental d'un site web inutile testant la patience de l’utilisateur pour interroger la valeur que ce dernier accorde à son propre temps.</span>
-                </div>
-                <div class="section-slide">
-                  <div class="carrousel-container">
-                    <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/just-click_4.png" alt="Clone Image Just-Click 4"></div>
-                      <div class="carrousel-slide" id="iframe-just-click" data-media-type="iframe" data-iframe-src="https://agth3.github.io/just-click/" data-poster="asset/img/low-line-transp/just-click_3.png">
-                        <img src="asset/img/low-line-transp/just-click_3.png" alt="Site web Just click" class="media-placeholder"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/just-click_1.png" alt="Image Just-Click 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/just-click_2.png" alt="Image Just-Click 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/just-click_3.png" alt="Image Just-Click 3"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/just-click_4.png" alt="Image Just-Click 4"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/just-click_1.png" alt="Clone Image Just-Click 1"></div>
-                    </div>
-                    <div class="previous-frame"></div>
-                    <div class="focus-frame"></div>
-                    <div class="next-frame"></div>
-                    <div class="scroll-indicator"></div>
+              <section class="grid-projets" id="projet-Just-Click">
+                  <div class="zone-texte-projets" id="texte-Just-Click">
+                      <h2 class="titre-projets" id="titre-Just-Click">You Just Have To&nbsp;click</h2>
+                      <span class="date-projets">2022</span>
+                      <span class="description-projets" data-i18n="just-click-1">Webdesign expérimental d'un site web inutile testant la patience de l’utilisateur pour interroger la valeur que ce dernier accorde à son propre temps.</span>
                   </div>
-                </div>
-            </section>
+                  <div class="section-clic"></div>
+              </section>
 
-            <section class="grid-projets" id="projet-Catalogue-bouees">
-                <div class="zone-texte-projets" id="texte-Catalogue-bouees">
-                    <h2 class="titre-projets" id="titre-Catalogue-bouees">Catalogue de bouées</h2>
-                    <span class="date-projets">2022</span>
-                    <span class="description-projets" data-i18n="bouees-1">Catalogue satirique de bouées gonflables interrogeant la surconsommation au travers de l’esthétique excentrique du kitsch.</span>
-                </div>
-                <div class="section-slide">
-                  <div class="carrousel-container">
-                    <div class="carrousel-track">
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/catalogue-bouees_7.png" alt="Clone Image Catalogue de bouées 9"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/catalogue-bouees_1.png" alt="Image Catalogue de bouées 1"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/catalogue-bouees_2.png" alt="Image Catalogue de bouées 2"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/catalogue-bouees_3.png" alt="Image Catalogue de bouées 3"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/catalogue-bouees_4.png" alt="Image Catalogue de bouées 4"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/catalogue-bouees_5.png" alt="Image Catalogue de bouées 5"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/catalogue-bouees_6.png" alt="Image Catalogue de bouées 6"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/catalogue-bouees_7.png" alt="Image Catalogue de bouées 7"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/catalogue-bouees_8.png" alt="Image Catalogue de bouées 8"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/catalogue-bouees_9.png" alt="Image Catalogue de bouées 9"></div>
-                      <div class="carrousel-slide"><img src="asset/img/low-line-transp/catalogue-bouees_1.png" alt="Clone Image Catalogue de bouées 1"></div>
-                    </div>
-                    <div class="previous-frame"></div>
-                    <div class="focus-frame"></div>
-                    <div class="next-frame"></div>
-                    <div class="scroll-indicator"></div>
+              <section class="grid-projets" id="projet-Catalogue-bouees">
+                  <div class="zone-texte-projets" id="texte-Catalogue-bouees">
+                      <h2 class="titre-projets" id="titre-Catalogue-bouees">Catalogue de bouées</h2>
+                      <span class="date-projets">2022</span>
+                      <span class="description-projets" data-i18n="bouees-1">Catalogue satirique de bouées gonflables interrogeant la surconsommation au travers de l’esthétique excentrique du kitsch.</span>
                   </div>
-                </div>
-            </section>
-        </div>
+                  <div class="section-clic"></div>
+              </section>
+          </div>
 
-    </body>
-<script>
-//    GESTION DES SLIDES AVEC FLECHES ET CLAVIER
-const container = document.getElementById("container-projets");
-const btnLeft = document.getElementById("fleche-gauche-projets");
-const btnRight = document.getElementById("fleche-droite-projets");
-const btnUp = document.getElementById("fleche-haut-projets");
-const btnDown = document.getElementById("fleche-bas-projets");
-const sections = document.querySelectorAll(".grid-projets");
+      </body>
+  <script>
+  //    GESTION DES SLIDES AVEC FLECHES ET CLAVIER
+  const container = document.getElementById("container-projets");
+  const btnLeft = document.getElementById("fleche-gauche-projets");
+  const btnRight = document.getElementById("fleche-droite-projets");
+  const btnUp = document.getElementById("fleche-haut-projets");
+  const btnDown = document.getElementById("fleche-bas-projets");
+  const sections = document.querySelectorAll(".grid-projets");
 
-const sectionWidth = window.innerWidth;
-let currentIndex = 0;
-let isMobile = window.innerWidth <= 1024;
-let isMobilePortrait = window.innerWidth <= 1024 && window.innerWidth <= window.innerHeight;
+  const sectionWidth = window.innerWidth;
+  let currentIndex = 0;
+  let isMobile = window.innerWidth <= 1024;
+  let isMobilePortrait = window.innerWidth <= 1024 && window.innerWidth <= window.innerHeight;
 
-// FONCTION DE DEBUG - À RETIRER PLUS TARD
-// function debugScroll() {
-//   console.log(`Current state:
-//     isMobile: ${isMobile}
-//     currentIndex: ${currentIndex}
-//     container scrollTop: ${container.scrollTop}
-//     container scrollLeft: ${container.scrollLeft}
-//     window height: ${window.innerHeight}
-//     window width: ${window.innerWidth}
-//     sections length: ${sections.length}`);
-// }
+  // FONCTION DE DEBUG - À RETIRER PLUS TARD
+  // function debugScroll() {
+  //   console.log(`Current state:
+  //     isMobile: ${isMobile}
+  //     currentIndex: ${currentIndex}
+  //     container scrollTop: ${container.scrollTop}
+  //     container scrollLeft: ${container.scrollLeft}
+  //     window height: ${window.innerHeight}
+  //     window width: ${window.innerWidth}
+  //     sections length: ${sections.length}`);
+  // }
 
-function updateButtons() {
-  if (isMobilePortrait) {
-    // Mobile portrait : navigation verticale des sections
-    btnUp.disabled = currentIndex === 0;
-    btnDown.disabled = currentIndex === sections.length - 1;
-    btnLeft.disabled = true;
-    btnRight.disabled = true;
-  } else {
-    // Desktop ET mobile paysage : navigation horizontale des sections
-    btnLeft.disabled = currentIndex === 0;
-    btnRight.disabled = currentIndex === sections.length - 1;
-    btnUp.disabled = true;
-    btnDown.disabled = true;
+  function updateButtons() {
+    if (isMobilePortrait) {
+      // Mobile portrait : navigation verticale des sections
+      btnUp.disabled = currentIndex === 0;
+      btnDown.disabled = currentIndex === sections.length - 1;
+      btnLeft.disabled = true;
+      btnRight.disabled = true;
+    } else {
+      // Desktop ET mobile paysage : navigation horizontale des sections
+      btnLeft.disabled = currentIndex === 0;
+      btnRight.disabled = currentIndex === sections.length - 1;
+      btnUp.disabled = true;
+      btnDown.disabled = true;
+    }
   }
-}
 
-function scrollToIndex(index) {
-  // console.log(`ScrollToIndex called: index=${index}, isMobile=${isMobile}, currentIndex=${currentIndex}`);
-  
-  if (isMobilePortrait) {
-  // Mobile portrait : scroll vertical
-  const height = window.visualViewport?.height || window.innerHeight;
-  const scrollY = index * height;
-  container.scrollTo({ 
-    top: scrollY, 
-    behavior: "smooth" 
-  });
-} else {
-  // Desktop ET mobile paysage : scroll horizontal
-  const scrollX = index * sectionWidth;
-  container.scrollTo({ 
-    left: scrollX, 
-    behavior: "smooth" 
-  });
-}
-  
-  currentIndex = index;
-  updateButtons();
-}
-
-// Fonction utilitaire pour les événements tactiles
-function addTouchSupport(element, callback) {
-  // Support tactile
-  element.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    callback();
-  }, { passive: false });
-  
-  // Support souris (pour dev)
-  element.addEventListener('click', callback);
-}
-
-// Remplacer les addEventListener existants par :
-addTouchSupport(btnLeft, () => {
-  if (!isMobilePortrait && currentIndex > 0) {
-    scrollToIndex(currentIndex - 1);
-  }
-});
-
-addTouchSupport(btnRight, () => {
-  if (!isMobilePortrait && currentIndex < sections.length - 1) {
-    scrollToIndex(currentIndex + 1);
-  }
-});
-
-addTouchSupport(btnUp, () => {
-  if (isMobilePortrait && currentIndex > 0) {
-    scrollToIndex(currentIndex - 1);
-  }
-});
-
-addTouchSupport(btnDown, () => {
-  if (isMobilePortrait && currentIndex < sections.length - 1) {
-    scrollToIndex(currentIndex + 1);
-  }
-});
-
-// Support des touches fléchées du clavier
-document.addEventListener("keydown", (event) => {
-  // Vérifier si aucun champ de saisie n'est actif
-  const activeElement = document.activeElement;
-  const isInputFocused = activeElement && (
-    activeElement.tagName === 'INPUT' || 
-    activeElement.tagName === 'TEXTAREA' || 
-    activeElement.contentEditable === 'true'
-  );
-  
-  // Ne pas intercepter les touches si un champ de saisie est actif
-  if (isInputFocused) return;
-  
-  if (isMobilePortrait) {
-  // Mobile portrait : seules les flèches haut/bas pour les sections
-  if (event.key === "ArrowUp" && currentIndex > 0) {
-    event.preventDefault();
-    scrollToIndex(currentIndex - 1);
-  } else if (event.key === "ArrowDown" && currentIndex < sections.length - 1) {
-    event.preventDefault();
-    scrollToIndex(currentIndex + 1);
-  }
-} else {
-  // Desktop ET mobile paysage : flèches gauche/droite pour les sections
-  if (event.key === "ArrowLeft" && currentIndex > 0) {
-    event.preventDefault();
-    scrollToIndex(currentIndex - 1);
-  } else if (event.key === "ArrowRight" && currentIndex < sections.length - 1) {
-    event.preventDefault();
-    scrollToIndex(currentIndex + 1);
-  } else if (event.key === "ArrowUp" && currentIndex > 0) {
-    event.preventDefault();
-    scrollToIndex(currentIndex - 1);
-  } else if (event.key === "ArrowDown" && currentIndex < sections.length - 1) {
-    event.preventDefault();
-    scrollToIndex(currentIndex + 1);
-  }
-}  
-});
-
-// Auto-calcule la section visible au scroll manuel
-container.addEventListener("scroll", () => {
-  let newIndex;
-  if (isMobilePortrait) {
-  const height = window.visualViewport?.height || window.innerHeight;
-  newIndex = Math.round(container.scrollTop / height);
-} else {
-  newIndex = Math.round(container.scrollLeft / sectionWidth);
-}
-  
-  if (newIndex !== currentIndex && newIndex >= 0 && newIndex < sections.length) {
-    currentIndex = newIndex;
-    updateButtons();
-  }
-});
-
-window.addEventListener("resize", () => {
-  const newIsMobile = window.innerWidth <= 1024;
-  const newIsMobilePortrait = window.innerWidth <= 1024 && window.innerWidth <= window.innerHeight;
-  
-  if (newIsMobile !== isMobile || newIsMobilePortrait !== isMobilePortrait) {
-    isMobile = newIsMobile;
-    isMobilePortrait = newIsMobilePortrait;
-    updateButtons();
+  function scrollToIndex(index) {
+    // console.log(`ScrollToIndex called: index=${index}, isMobile=${isMobile}, currentIndex=${currentIndex}`);
     
-    // CORRECTION : Mettre à jour TOUS les carrousels avec la nouvelle logique
-    document.querySelectorAll('.carrousel-track').forEach(track => {
-      const carousel = track.carousel;
-      if (carousel) {
-        carousel.isMobile = newIsMobile;
-        carousel.isMobilePortrait = newIsMobilePortrait;
-        carousel.isMobileLandscape = newIsMobile && !newIsMobilePortrait;
-        
-        // CORRECTION : Recalculer scrollDirection et dimensions
-        if (carousel.isMobilePortrait) {
-          carousel.scrollDirection = 'horizontal';
-          carousel.slideWidth = window.innerWidth - 2 * (window.innerWidth * 0.095);
-          carousel.slideHeight = null;
-        } else {
-          carousel.scrollDirection = 'vertical';
-          carousel.slideHeight = window.innerHeight - 2 * carousel.getVh(16.667);
-          carousel.slideWidth = null;
+    if (isMobilePortrait) {
+    // Mobile portrait : scroll vertical
+    const height = window.visualViewport?.height || window.innerHeight;
+    const scrollY = index * height;
+    container.scrollTo({ 
+      top: scrollY, 
+      behavior: "smooth" 
+    });
+  } else {
+    // Desktop ET mobile paysage : scroll horizontal
+    const scrollX = index * sectionWidth;
+    container.scrollTo({ 
+      left: scrollX, 
+      behavior: "smooth" 
+    });
+  }
+    
+    currentIndex = index;
+    updateButtons();
+  }
+
+  // Fonction utilitaire pour les événements tactiles
+  function addTouchSupport(element, callback) {
+    // Support tactile
+    element.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      callback();
+    }, { passive: false });
+    
+    // Support souris (pour dev)
+    element.addEventListener('click', callback);
+  }
+
+  // Remplacer les addEventListener existants par :
+  addTouchSupport(btnLeft, () => {
+    if (!isMobilePortrait && currentIndex > 0) {
+      scrollToIndex(currentIndex - 1);
+    }
+  });
+
+  addTouchSupport(btnRight, () => {
+    if (!isMobilePortrait && currentIndex < sections.length - 1) {
+      scrollToIndex(currentIndex + 1);
+    }
+  });
+
+  addTouchSupport(btnUp, () => {
+    if (isMobilePortrait && currentIndex > 0) {
+      scrollToIndex(currentIndex - 1);
+    }
+  });
+
+  addTouchSupport(btnDown, () => {
+    if (isMobilePortrait && currentIndex < sections.length - 1) {
+      scrollToIndex(currentIndex + 1);
+    }
+  });
+
+  // Support des touches fléchées du clavier
+  document.addEventListener("keydown", (event) => {
+    // Vérifier si aucun champ de saisie n'est actif
+    const activeElement = document.activeElement;
+    const isInputFocused = activeElement && (
+      activeElement.tagName === 'INPUT' || 
+      activeElement.tagName === 'TEXTAREA' || 
+      activeElement.contentEditable === 'true'
+    );
+    
+    // Ne pas intercepter les touches si un champ de saisie est actif
+    if (isInputFocused) return;
+    
+    if (isMobilePortrait) {
+    // Mobile portrait : seules les flèches haut/bas pour les sections
+    if (event.key === "ArrowUp" && currentIndex > 0) {
+      event.preventDefault();
+      scrollToIndex(currentIndex - 1);
+    } else if (event.key === "ArrowDown" && currentIndex < sections.length - 1) {
+      event.preventDefault();
+      scrollToIndex(currentIndex + 1);
+    }
+  } else {
+    // Desktop ET mobile paysage : flèches gauche/droite pour les sections
+    if (event.key === "ArrowLeft" && currentIndex > 0) {
+      event.preventDefault();
+      scrollToIndex(currentIndex - 1);
+    } else if (event.key === "ArrowRight" && currentIndex < sections.length - 1) {
+      event.preventDefault();
+      scrollToIndex(currentIndex + 1);
+    } else if (event.key === "ArrowUp" && currentIndex > 0) {
+      event.preventDefault();
+      scrollToIndex(currentIndex - 1);
+    } else if (event.key === "ArrowDown" && currentIndex < sections.length - 1) {
+      event.preventDefault();
+      scrollToIndex(currentIndex + 1);
+    }
+  }  
+  });
+
+  // Auto-calcule la section visible au scroll manuel
+  container.addEventListener("scroll", () => {
+    let newIndex;
+    if (isMobilePortrait) {
+    const height = window.visualViewport?.height || window.innerHeight;
+    newIndex = Math.round(container.scrollTop / height);
+  } else {
+    newIndex = Math.round(container.scrollLeft / sectionWidth);
+  }
+    
+    if (newIndex !== currentIndex && newIndex >= 0 && newIndex < sections.length) {
+      currentIndex = newIndex;
+      updateButtons();
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    const newIsMobile = window.innerWidth <= 1024;
+    const newIsMobilePortrait = window.innerWidth <= 1024 && window.innerWidth <= window.innerHeight;
+    
+    if (newIsMobile !== isMobile || newIsMobilePortrait !== isMobilePortrait) {
+      isMobile = newIsMobile;
+      isMobilePortrait = newIsMobilePortrait;
+      updateButtons();
+      
+      // CORRECTION : Mettre à jour TOUS les carrousels avec la nouvelle logique
+      document.querySelectorAll('.carrousel-track').forEach(track => {
+        const carousel = track.carousel;
+        if (carousel) {
+          carousel.isMobile = newIsMobile;
+          carousel.isMobilePortrait = newIsMobilePortrait;
+          carousel.isMobileLandscape = newIsMobile && !newIsMobilePortrait;
+          
+          // CORRECTION : Recalculer scrollDirection et dimensions
+          if (carousel.isMobilePortrait) {
+            carousel.scrollDirection = 'horizontal';
+            carousel.slideWidth = window.innerWidth - 2 * (window.innerWidth * 0.095);
+            carousel.slideHeight = null;
+          } else {
+            carousel.scrollDirection = 'vertical';
+            carousel.slideHeight = window.innerHeight - 2 * carousel.getVh(16.667);
+            carousel.slideWidth = null;
+          }
+          
+          carousel.initWithRealFirstImage();
         }
-        
-        carousel.initWithRealFirstImage();
+      });
+    }
+  });
+  // Initialisation
+
+
+
+  //    ADAPTATION DES TEINTES DE HIGHLIGHT PAR SECTION AFFICHEE
+
+  // Associe chaque ID de section à une couleur
+  const sectionColors = {
+  "projet-OffKey": "#dd1031", // rouge, "#aedfb3" cyan, "daff1c" citron
+  "projet-Stone-of-Amasha": "#ab8b69",  // sable, "#6d5452" violet chaud, "#a07a58" sable sombre, "#b69973" sable clair
+  "projet-Brique-Bloc": "#f9b32d", //jaune, "#005596" bleu, "#e94d1c"rouge
+  "projet-Affiches-Animees": "#b1dac8", // cyan, "#f9d738" orange, 
+  "projet-Vitrine": "#939997", //gris clair, "#3b3b39" gris foncé, "#938c82" gris sable
+  "projet-Oursins": "#004d76", //turquoise sombre, "#e00c1a" rouge, "#4b4b4e" gris chaud
+  "projet-Cimes": "#67792c",  //vert, "#4a582f" kaki terne, "#2a3725" vert sombre, "#42452c" kaki sombre
+  "projet-Kaleidoscope": "#AA7145", // brun doré, "#41150a", brun rouge,  "#53110f" bordeau sombre
+  "projet-HAL9000": "#6328d0", //violet pétard, "#4f428a" violet, "#110F13" noir riche,  "#320d96" violet sombre, "#f73d56" fuscia, "#d748e2" rose pétard, "#01c6e9" bleu pétard
+  "projet-Entre-et-tenir-pt1": "#83b8e4", // bleu clair, "#FFFAF1" blanc crème, "#f8f8f1" crème plus clair, "#575f30" vert terne, "#524f29" kaki, "#576051" turquoise sombre, "#cba689" rose sablé
+  //"projet-Entre-et-tenir-pt2": "#79634f",  marron clair, "#C7CEE8", gris lavandé, "#6c635b" gris, "#464646" blender, "#3a2c22" marron sombre, "#4f3c2b" marron 
+  "projet-Memoire": "#ffb47e", //orange, "#e9e4d8" oeuf, "#d8b1ed" lavande, "#faadde" rose, "#004b81" bleu, "#274e12" vert
+  "projet-Phytomorphose": "#7fa1a3",// turquoise, "#606062" gris violet, "#e4e0dd" blanc crème gris, "#514b45" gris chaud sombre, "#7c7066" gris chaud clair, "#a4947b" sable
+  "projet-Just-Click": "#ef3407", //rouge, "#06a7ef" bleu, "#63503f" marron, "ffe4c9" beige
+  "projet-Catalogue-bouees": "#F6D74D", // jaune plus pétard, "#d0b03f" jaune, "#272763" bleu, "#b71d1b"rouge
+  };
+
+
+  // Fonction appelée à chaque changement de visibilité
+  function handleIntersection(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const sectionId = entry.target.id;
+        const color = sectionColors[sectionId];
+
+        if (color) {
+          document.documentElement.style.setProperty('--highlight-color', color);
+        }
       }
     });
   }
-});
-// Initialisation
 
-
-
-//    ADAPTATION DES TEINTES DE HIGHLIGHT PAR SECTION AFFICHEE
-
-// Associe chaque ID de section à une couleur
-const sectionColors = {
-"projet-OffKey": "#dd1031", // rouge, "#aedfb3" cyan, "daff1c" citron
-"projet-Stone-of-Amasha": "#ab8b69",  // sable, "#6d5452" violet chaud, "#a07a58" sable sombre, "#b69973" sable clair
-"projet-Brique-Bloc": "#f9b32d", //jaune, "#005596" bleu, "#e94d1c"rouge
-"projet-Affiches-Animees": "#b1dac8", // cyan, "#f9d738" orange, 
-"projet-Vitrine": "#939997", //gris clair, "#3b3b39" gris foncé, "#938c82" gris sable
-"projet-Oursins": "#004d76", //turquoise sombre, "#e00c1a" rouge, "#4b4b4e" gris chaud
-"projet-Cimes": "#67792c",  //vert, "#4a582f" kaki terne, "#2a3725" vert sombre, "#42452c" kaki sombre
-"projet-Kaleidoscope": "#AA7145", // brun doré, "#41150a", brun rouge,  "#53110f" bordeau sombre
-"projet-HAL9000": "#6328d0", //violet pétard, "#4f428a" violet, "#110F13" noir riche,  "#320d96" violet sombre, "#f73d56" fuscia, "#d748e2" rose pétard, "#01c6e9" bleu pétard
-"projet-Entre-et-tenir-pt1": "#83b8e4", // bleu clair, "#FFFAF1" blanc crème, "#f8f8f1" crème plus clair, "#575f30" vert terne, "#524f29" kaki, "#576051" turquoise sombre, "#cba689" rose sablé
-//"projet-Entre-et-tenir-pt2": "#79634f",  marron clair, "#C7CEE8", gris lavandé, "#6c635b" gris, "#464646" blender, "#3a2c22" marron sombre, "#4f3c2b" marron 
-"projet-Memoire": "#ffb47e", //orange, "#e9e4d8" oeuf, "#d8b1ed" lavande, "#faadde" rose, "#004b81" bleu, "#274e12" vert
-"projet-Phytomorphose": "#7fa1a3",// turquoise, "#606062" gris violet, "#e4e0dd" blanc crème gris, "#514b45" gris chaud sombre, "#7c7066" gris chaud clair, "#a4947b" sable
-"projet-Just-Click": "#ef3407", //rouge, "#06a7ef" bleu, "#63503f" marron, "ffe4c9" beige
-"projet-Catalogue-bouees": "#F6D74D", // jaune plus pétard, "#d0b03f" jaune, "#272763" bleu, "#b71d1b"rouge
-};
-
-
-// Fonction appelée à chaque changement de visibilité
-function handleIntersection(entries) {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const sectionId = entry.target.id;
-      const color = sectionColors[sectionId];
-
-      if (color) {
-        document.documentElement.style.setProperty('--highlight-color', color);
-      }
-    }
+  // Crée l'observer
+  const observer = new IntersectionObserver(handleIntersection, {
+    root: document.querySelector('#container-projets'), // scrolling container
+    rootMargin: '0px',
+    threshold: 0.6, // 60% visible dans le viewport
   });
-}
 
-// Crée l'observer
-const observer = new IntersectionObserver(handleIntersection, {
-  root: document.querySelector('#container-projets'), // scrolling container
-  rootMargin: '0px',
-  threshold: 0.6, // 60% visible dans le viewport
-});
-
-// Observe chaque section
-sections.forEach(section => observer.observe(section));
+  // Observe chaque section
+  sections.forEach(section => observer.observe(section));
 
 
 
-  document.addEventListener("DOMContentLoaded", () => {
-  // Configuration des images par projet
-  const projectImages = {
-  'projet-Amasha': [
-    { lowRes: 'asset/img/low-line-transp/amasha_1.png', highRes: 'asset/img/high/amasha_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/amasha_2.png', highRes: 'asset/img/high/amasha_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/amasha_3.png', highRes: 'asset/img/high/amasha_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/amasha_4.png', highRes: 'asset/img/high/amasha_4.jpg' },
-    { lowRes: 'asset/img/low-line-transp/amasha_5.png', highRes: 'asset/img/high/amasha_5.jpg' },
-    { lowRes: 'asset/img/low-line-transp/amasha_6.png', highRes: 'asset/img/high/amasha_6.jpg' },
-    { lowRes: 'asset/img/low-line-transp/amasha_7.png', highRes: 'asset/img/high/amasha_7.jpg' },
-    { lowRes: 'asset/img/low-line-transp/amasha_8.png', highRes: 'asset/img/high/amasha_8.jpg' }
-  ],
+    document.addEventListener("DOMContentLoaded", () => {
+    // Configuration des images par projet
+    const projectImages = {
+    'projet-Amasha': [
+      { lowRes: 'asset/img/low-line-transp/amasha_1.png', highRes: 'asset/img/high/amasha_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/amasha_2.png', highRes: 'asset/img/high/amasha_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/amasha_3.png', highRes: 'asset/img/high/amasha_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/amasha_4.png', highRes: 'asset/img/high/amasha_4.jpg' },
+      { lowRes: 'asset/img/low-line-transp/amasha_5.png', highRes: 'asset/img/high/amasha_5.jpg' },
+      { lowRes: 'asset/img/low-line-transp/amasha_6.png', highRes: 'asset/img/high/amasha_6.jpg' },
+      { lowRes: 'asset/img/low-line-transp/amasha_7.png', highRes: 'asset/img/high/amasha_7.jpg' },
+      { lowRes: 'asset/img/low-line-transp/amasha_8.png', highRes: 'asset/img/high/amasha_8.jpg' }
+    ],
 
-  'projet-BriqueBloc': [
-    { lowRes: 'asset/img/low-line-transp/brique-bloc_1.png', highRes: 'asset/img/high/brique-bloc_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/brique-bloc_2.png', highRes: 'asset/img/high/brique-bloc_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/brique-bloc_3.png', highRes: 'asset/img/high/brique-bloc_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/brique-bloc_4.png', highRes: 'asset/img/high/brique-bloc_4.jpg' },
-    { lowRes: 'asset/img/low-line-transp/brique-bloc_5.png', highRes: 'asset/img/high/brique-bloc_5.jpg' }
-  ],
+    'projet-BriqueBloc': [
+      { lowRes: 'asset/img/low-line-transp/brique-bloc_1.png', highRes: 'asset/img/high/brique-bloc_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/brique-bloc_2.png', highRes: 'asset/img/high/brique-bloc_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/brique-bloc_3.png', highRes: 'asset/img/high/brique-bloc_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/brique-bloc_4.png', highRes: 'asset/img/high/brique-bloc_4.jpg' },
+      { lowRes: 'asset/img/low-line-transp/brique-bloc_5.png', highRes: 'asset/img/high/brique-bloc_5.jpg' }
+    ],
 
-  'projet-CatalogueBouees': [
-    { lowRes: 'asset/img/low-line-transp/catalogue-bouees_1.png', highRes: 'asset/img/high/catalogue-bouees_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/catalogue-bouees_2.png', highRes: 'asset/img/high/catalogue-bouees_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/catalogue-bouees_3.png', highRes: 'asset/img/high/catalogue-bouees_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/catalogue-bouees_4.png', highRes: 'asset/img/high/catalogue-bouees_4.jpg' },
-    { lowRes: 'asset/img/low-line-transp/catalogue-bouees_5.png', highRes: 'asset/img/high/catalogue-bouees_5.jpg' },
-    { lowRes: 'asset/img/low-line-transp/catalogue-bouees_6.png', highRes: 'asset/img/high/catalogue-bouees_6.jpg' },
-    { lowRes: 'asset/img/low-line-transp/catalogue-bouees_7.png', highRes: 'asset/img/high/catalogue-bouees_7.jpg' },
-    { lowRes: 'asset/img/low-line-transp/catalogue-bouees_8.png', highRes: 'asset/img/high/catalogue-bouees_8.jpg' },
-    { lowRes: 'asset/img/low-line-transp/catalogue-bouees_9.png', highRes: 'asset/img/high/catalogue-bouees_9.jpg' }
-  ],
+    'projet-CatalogueBouees': [
+      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_1.png', highRes: 'asset/img/high/catalogue-bouees_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_2.png', highRes: 'asset/img/high/catalogue-bouees_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_3.png', highRes: 'asset/img/high/catalogue-bouees_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_4.png', highRes: 'asset/img/high/catalogue-bouees_4.jpg' },
+      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_5.png', highRes: 'asset/img/high/catalogue-bouees_5.jpg' },
+      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_6.png', highRes: 'asset/img/high/catalogue-bouees_6.jpg' },
+      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_7.png', highRes: 'asset/img/high/catalogue-bouees_7.jpg' },
+      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_8.png', highRes: 'asset/img/high/catalogue-bouees_8.jpg' },
+      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_9.png', highRes: 'asset/img/high/catalogue-bouees_9.jpg' }
+    ],
 
-  'projet-Cimes': [
-    { lowRes: 'asset/img/low-line-transp/cimes_1.png', highRes: 'asset/img/high/cimes_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/cimes_2.png', highRes: 'asset/img/high/cimes_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/cimes_3.png', highRes: 'asset/img/high/cimes_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/cimes_4.png', highRes: 'asset/img/high/cimes_4.jpg' },
-    { lowRes: 'asset/img/low-line-transp/cimes_5.png', highRes: 'asset/img/high/cimes_5.jpg' },
-    { lowRes: 'asset/img/low-line-transp/cimes_6.png', highRes: 'asset/img/high/cimes_6.jpg' },
-    { lowRes: 'asset/img/low-line-transp/cimes_7.png', highRes: 'asset/img/high/cimes_7.jpg' },
-    { lowRes: 'asset/img/low-line-transp/cimes_8.png', highRes: 'asset/img/high/cimes_8.jpg' },
-    { lowRes: 'asset/img/low-line-transp/cimes_9.png', highRes: 'asset/img/high/cimes_9.jpg' }
-  ],
+    'projet-Cimes': [
+      { lowRes: 'asset/img/low-line-transp/cimes_1.png', highRes: 'asset/img/high/cimes_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/cimes_2.png', highRes: 'asset/img/high/cimes_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/cimes_3.png', highRes: 'asset/img/high/cimes_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/cimes_4.png', highRes: 'asset/img/high/cimes_4.jpg' },
+      { lowRes: 'asset/img/low-line-transp/cimes_5.png', highRes: 'asset/img/high/cimes_5.jpg' },
+      { lowRes: 'asset/img/low-line-transp/cimes_6.png', highRes: 'asset/img/high/cimes_6.jpg' },
+      { lowRes: 'asset/img/low-line-transp/cimes_7.png', highRes: 'asset/img/high/cimes_7.jpg' },
+      { lowRes: 'asset/img/low-line-transp/cimes_8.png', highRes: 'asset/img/high/cimes_8.jpg' },
+      { lowRes: 'asset/img/low-line-transp/cimes_9.png', highRes: 'asset/img/high/cimes_9.jpg' }
+    ],
 
-  'projet-EntreEtTenir': [
-    { lowRes: 'asset/img/low-line-transp/entre-et-tenir_1.png', highRes: 'asset/img/high/entre-et-tenir_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/entre-et-tenir_2.png', highRes: 'asset/img/high/entre-et-tenir_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/entre-et-tenir_3.png', highRes: 'asset/img/high/entre-et-tenir_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/entre-et-tenir_4.png', highRes: 'asset/img/high/entre-et-tenir_4.jpg' },
-    { lowRes: 'asset/img/low-line-transp/entre-et-tenir_5.png', highRes: 'asset/img/high/entre-et-tenir_5.jpg' },
-    { lowRes: 'asset/img/low-line-transp/entre-et-tenir_6.png', highRes: 'asset/img/high/entre-et-tenir_6.jpg' },
-    { lowRes: 'asset/img/low-line-transp/entre-et-tenir_7.png', highRes: 'asset/img/high/entre-et-tenir_7.jpg' },
-    { lowRes: 'asset/img/low-line-transp/entre-et-tenir_8.png', highRes: 'asset/img/high/entre-et-tenir_8.jpg' }
-  ],
+    'projet-EntreEtTenir': [
+      { lowRes: 'asset/img/low-line-transp/entre-et-tenir_1.png', highRes: 'asset/img/high/entre-et-tenir_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/entre-et-tenir_2.png', highRes: 'asset/img/high/entre-et-tenir_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/entre-et-tenir_3.png', highRes: 'asset/img/high/entre-et-tenir_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/entre-et-tenir_4.png', highRes: 'asset/img/high/entre-et-tenir_4.jpg' },
+      { lowRes: 'asset/img/low-line-transp/entre-et-tenir_5.png', highRes: 'asset/img/high/entre-et-tenir_5.jpg' },
+      { lowRes: 'asset/img/low-line-transp/entre-et-tenir_6.png', highRes: 'asset/img/high/entre-et-tenir_6.jpg' },
+      { lowRes: 'asset/img/low-line-transp/entre-et-tenir_7.png', highRes: 'asset/img/high/entre-et-tenir_7.jpg' },
+      { lowRes: 'asset/img/low-line-transp/entre-et-tenir_8.png', highRes: 'asset/img/high/entre-et-tenir_8.jpg' }
+    ],
 
-  'projet-EntreEtTenir2': [
-    { lowRes: 'asset/img/low-line-transp/entre-et-tenir-2_1.png', highRes: 'asset/img/high/entre-et-tenir-2_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/entre-et-tenir-2_2.png', highRes: 'asset/img/high/entre-et-tenir-2_2.jpg' }
-  ],
+    'projet-EntreEtTenir2': [
+      { lowRes: 'asset/img/low-line-transp/entre-et-tenir-2_1.png', highRes: 'asset/img/high/entre-et-tenir-2_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/entre-et-tenir-2_2.png', highRes: 'asset/img/high/entre-et-tenir-2_2.jpg' }
+    ],
 
-  'projet-Hack': [
-    { lowRes: 'asset/img/low-line-transp/hack_1.png', highRes: 'asset/img/high/hack_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/hack_2.png', highRes: 'asset/img/high/hack_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/hack_3.png', highRes: 'asset/img/high/hack_3.jpg' }
-  ],
+    'projet-Hack': [
+      { lowRes: 'asset/img/low-line-transp/hack_1.png', highRes: 'asset/img/high/hack_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/hack_2.png', highRes: 'asset/img/high/hack_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/hack_3.png', highRes: 'asset/img/high/hack_3.jpg' }
+    ],
 
-  'projet-HAL9000': [
-    { lowRes: 'asset/img/low-line-transp/HAL9000-screen_1.png', highRes: 'asset/img/high/HAL9000-screen_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/HAL9000-screen_2.png', highRes: 'asset/img/high/HAL9000-screen_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/HAL9000-screen_3.png', highRes: 'asset/img/high/HAL9000-screen_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/HAL9000-screen_4.png', highRes: 'asset/img/high/HAL9000-screen_4.jpg' },
-    { lowRes: 'asset/img/low-line-transp/HAL9000-screen_5.png', highRes: 'asset/img/high/HAL9000-screen_5.jpg' },
-    { lowRes: 'asset/img/low-line-transp/HAL9000_1.png', highRes: 'asset/img/high/HAL9000_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/HAL9000_2.png', highRes: 'asset/img/high/HAL9000_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/HAL9000_3.png', highRes: 'asset/img/high/HAL9000_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/HAL9000_4.png', highRes: 'asset/img/high/HAL9000_4.jpg' },
-    { lowRes: 'asset/img/low-line-transp/HAL9000_5.png', highRes: 'asset/img/high/HAL9000_5.jpg' }
-  ],
+    'projet-HAL9000': [
+      { lowRes: 'asset/img/low-line-transp/HAL9000-screen_1.png', highRes: 'asset/img/high/HAL9000-screen_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/HAL9000-screen_2.png', highRes: 'asset/img/high/HAL9000-screen_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/HAL9000-screen_3.png', highRes: 'asset/img/high/HAL9000-screen_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/HAL9000-screen_4.png', highRes: 'asset/img/high/HAL9000-screen_4.jpg' },
+      { lowRes: 'asset/img/low-line-transp/HAL9000-screen_5.png', highRes: 'asset/img/high/HAL9000-screen_5.jpg' },
+      { lowRes: 'asset/img/low-line-transp/HAL9000_1.png', highRes: 'asset/img/high/HAL9000_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/HAL9000_2.png', highRes: 'asset/img/high/HAL9000_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/HAL9000_3.png', highRes: 'asset/img/high/HAL9000_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/HAL9000_4.png', highRes: 'asset/img/high/HAL9000_4.jpg' },
+      { lowRes: 'asset/img/low-line-transp/HAL9000_5.png', highRes: 'asset/img/high/HAL9000_5.jpg' }
+    ],
 
-  'projet-JustClick': [
-    { lowRes: 'asset/img/low-line-transp/just-click_1.png', highRes: 'asset/img/high/just-click_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/just-click_2.png', highRes: 'asset/img/high/just-click_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/just-click_3.png', highRes: 'asset/img/high/just-click_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/just-click_4.png', highRes: 'asset/img/high/just-click_4.jpg' }
-  ],
+    'projet-JustClick': [
+      { lowRes: 'asset/img/low-line-transp/just-click_1.png', highRes: 'asset/img/high/just-click_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/just-click_2.png', highRes: 'asset/img/high/just-click_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/just-click_3.png', highRes: 'asset/img/high/just-click_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/just-click_4.png', highRes: 'asset/img/high/just-click_4.jpg' }
+    ],
 
-  'projet-Kaleidoscope': [
-    { lowRes: 'asset/img/low-line-transp/kaleidoscope_1.png', highRes: 'asset/img/high/kaleidoscope_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/kaleidoscope_2.png', highRes: 'asset/img/high/kaleidoscope_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/kaleidoscope_3.png', highRes: 'asset/img/high/kaleidoscope_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/kaleidoscope_4.png', highRes: 'asset/img/high/kaleidoscope_4.jpg' },
-    { lowRes: 'asset/img/low-line-transp/kaleidoscope_5.png', highRes: 'asset/img/high/kaleidoscope_5.jpg' },
-    { lowRes: 'asset/img/low-line-transp/kaleidoscope_6.png', highRes: 'asset/img/high/kaleidoscope_6.jpg' },
-    { lowRes: 'asset/img/low-line-transp/kaleidoscope-zoom_1.png', highRes: 'asset/img/high/kaleidoscope-zoom_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/kaleidoscope-zoom_2.png', highRes: 'asset/img/high/kaleidoscope-zoom_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/kaleidoscope-zoom_3.png', highRes: 'asset/img/high/kaleidoscope-zoom_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/kaleidoscope-zoom_4.png', highRes: 'asset/img/high/kaleidoscope-zoom_4.jpg' }
-  ],
+    'projet-Kaleidoscope': [
+      { lowRes: 'asset/img/low-line-transp/kaleidoscope_1.png', highRes: 'asset/img/high/kaleidoscope_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/kaleidoscope_2.png', highRes: 'asset/img/high/kaleidoscope_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/kaleidoscope_3.png', highRes: 'asset/img/high/kaleidoscope_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/kaleidoscope_4.png', highRes: 'asset/img/high/kaleidoscope_4.jpg' },
+      { lowRes: 'asset/img/low-line-transp/kaleidoscope_5.png', highRes: 'asset/img/high/kaleidoscope_5.jpg' },
+      { lowRes: 'asset/img/low-line-transp/kaleidoscope_6.png', highRes: 'asset/img/high/kaleidoscope_6.jpg' },
+      { lowRes: 'asset/img/low-line-transp/kaleidoscope-zoom_1.png', highRes: 'asset/img/high/kaleidoscope-zoom_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/kaleidoscope-zoom_2.png', highRes: 'asset/img/high/kaleidoscope-zoom_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/kaleidoscope-zoom_3.png', highRes: 'asset/img/high/kaleidoscope-zoom_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/kaleidoscope-zoom_4.png', highRes: 'asset/img/high/kaleidoscope-zoom_4.jpg' }
+    ],
 
-  'projet-Memoire': [
-    { lowRes: 'asset/img/low-line-transp/memoire_1.png', highRes: 'asset/img/high/memoire_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/memoire_2.png', highRes: 'asset/img/high/memoire_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/memoire_3.png', highRes: 'asset/img/high/memoire_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/memoire_4.png', highRes: 'asset/img/high/memoire_4.jpg' },
-    { lowRes: 'asset/img/low-line-transp/memoire_5.png', highRes: 'asset/img/high/memoire_5.jpg' },
-    { lowRes: 'asset/img/low-line-transp/memoire_6.png', highRes: 'asset/img/high/memoire_6.jpg' },
-    { lowRes: 'asset/img/low-line-transp/memoire_7.png', highRes: 'asset/img/high/memoire_7.jpg' }
-  ],
+    'projet-Memoire': [
+      { lowRes: 'asset/img/low-line-transp/memoire_1.png', highRes: 'asset/img/high/memoire_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/memoire_2.png', highRes: 'asset/img/high/memoire_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/memoire_3.png', highRes: 'asset/img/high/memoire_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/memoire_4.png', highRes: 'asset/img/high/memoire_4.jpg' },
+      { lowRes: 'asset/img/low-line-transp/memoire_5.png', highRes: 'asset/img/high/memoire_5.jpg' },
+      { lowRes: 'asset/img/low-line-transp/memoire_6.png', highRes: 'asset/img/high/memoire_6.jpg' },
+      { lowRes: 'asset/img/low-line-transp/memoire_7.png', highRes: 'asset/img/high/memoire_7.jpg' }
+    ],
 
-  'projet-OffKey': [
-    { lowRes: 'asset/img/low-line-transp/offkey_1.png', highRes: 'asset/img/high/offkey_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/offkey_2.png', highRes: 'asset/img/high/offkey_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/offkey_3.png', highRes: 'asset/img/high/offkey_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/offkey_4.png', highRes: 'asset/img/high/offkey_4.jpg' },
-    { lowRes: 'asset/img/low-line-transp/offkey_5.png', highRes: 'asset/img/high/offkey_5.jpg' },
-    { lowRes: 'asset/img/low-line-transp/offkey_6.png', highRes: 'asset/img/high/offkey_6.jpg' },
-    { lowRes: 'asset/img/low-line-transp/offkey_7.png', highRes: 'asset/img/high/offkey_7.jpg' },
-    { lowRes: 'asset/img/low-line-transp/offkey_8.png', highRes: 'asset/img/high/offkey_8.jpg' },
-    { lowRes: 'asset/img/low-line-transp/offkey_9.png', highRes: 'asset/img/high/offkey_9.jpg' }
-  ],
+    'projet-OffKey': [
+      { lowRes: 'asset/img/low-line-transp/offkey_1.png', highRes: 'asset/img/high/offkey_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/offkey_2.png', highRes: 'asset/img/high/offkey_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/offkey_3.png', highRes: 'asset/img/high/offkey_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/offkey_4.png', highRes: 'asset/img/high/offkey_4.jpg' },
+      { lowRes: 'asset/img/low-line-transp/offkey_5.png', highRes: 'asset/img/high/offkey_5.jpg' },
+      { lowRes: 'asset/img/low-line-transp/offkey_6.png', highRes: 'asset/img/high/offkey_6.jpg' },
+      { lowRes: 'asset/img/low-line-transp/offkey_7.png', highRes: 'asset/img/high/offkey_7.jpg' },
+      { lowRes: 'asset/img/low-line-transp/offkey_8.png', highRes: 'asset/img/high/offkey_8.jpg' },
+      { lowRes: 'asset/img/low-line-transp/offkey_9.png', highRes: 'asset/img/high/offkey_9.jpg' }
+    ],
 
-  'projet-Oursins': [
-    { lowRes: 'asset/img/low-line-transp/oursins_1.png', highRes: 'asset/img/high/oursins_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/oursins_2.png', highRes: 'asset/img/high/oursins_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/oursins_3.png', highRes: 'asset/img/high/oursins_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/oursins_4.png', highRes: 'asset/img/high/oursins_4.jpg' },
-    { lowRes: 'asset/img/low-line-transp/oursins_5.png', highRes: 'asset/img/high/oursins_5.jpg' },
-    { lowRes: 'asset/img/low-line-transp/oursins_6.png', highRes: 'asset/img/high/oursins_6.jpg' },
-    { lowRes: 'asset/img/low-line-transp/oursins-edition_1.png', highRes: 'asset/img/high/oursins-edition_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/oursins-edition_2.png', highRes: 'asset/img/high/oursins-edition_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/oursins-edition_3.png', highRes: 'asset/img/high/oursins-edition_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/oursins-edition_4.png', highRes: 'asset/img/high/oursins-edition_4.jpg' },
-    { lowRes: 'asset/img/low-line-transp/oursins-edition_5.png', highRes: 'asset/img/high/oursins-edition_5.jpg' },
-    { lowRes: 'asset/img/low-line-transp/oursins-edition_6.png', highRes: 'asset/img/high/oursins-edition_6.jpg' }
-  ],
+    'projet-Oursins': [
+      { lowRes: 'asset/img/low-line-transp/oursins_1.png', highRes: 'asset/img/high/oursins_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/oursins_2.png', highRes: 'asset/img/high/oursins_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/oursins_3.png', highRes: 'asset/img/high/oursins_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/oursins_4.png', highRes: 'asset/img/high/oursins_4.jpg' },
+      { lowRes: 'asset/img/low-line-transp/oursins_5.png', highRes: 'asset/img/high/oursins_5.jpg' },
+      { lowRes: 'asset/img/low-line-transp/oursins_6.png', highRes: 'asset/img/high/oursins_6.jpg' },
+      { lowRes: 'asset/img/low-line-transp/oursins-edition_1.png', highRes: 'asset/img/high/oursins-edition_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/oursins-edition_2.png', highRes: 'asset/img/high/oursins-edition_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/oursins-edition_3.png', highRes: 'asset/img/high/oursins-edition_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/oursins-edition_4.png', highRes: 'asset/img/high/oursins-edition_4.jpg' },
+      { lowRes: 'asset/img/low-line-transp/oursins-edition_5.png', highRes: 'asset/img/high/oursins-edition_5.jpg' },
+      { lowRes: 'asset/img/low-line-transp/oursins-edition_6.png', highRes: 'asset/img/high/oursins-edition_6.jpg' }
+    ],
 
-  'projet-Phytomorphose': [
-    { lowRes: 'asset/img/low-line-transp/phytom_1.png', highRes: 'asset/img/high/phytom_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/phytom_2.png', highRes: 'asset/img/high/phytom_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/phytom_3.png', highRes: 'asset/img/high/phytom_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/phytom_4.png', highRes: 'asset/img/high/phytom_4.jpg' },
-    { lowRes: 'asset/img/low-line-transp/phytom_5.png', highRes: 'asset/img/high/phytom_5.jpg' },
-    { lowRes: 'asset/img/low-line-transp/phytom_6.png', highRes: 'asset/img/high/phytom_6.jpg' }
-  ],
+    'projet-Phytomorphose': [
+      { lowRes: 'asset/img/low-line-transp/phytom_1.png', highRes: 'asset/img/high/phytom_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/phytom_2.png', highRes: 'asset/img/high/phytom_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/phytom_3.png', highRes: 'asset/img/high/phytom_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/phytom_4.png', highRes: 'asset/img/high/phytom_4.jpg' },
+      { lowRes: 'asset/img/low-line-transp/phytom_5.png', highRes: 'asset/img/high/phytom_5.jpg' },
+      { lowRes: 'asset/img/low-line-transp/phytom_6.png', highRes: 'asset/img/high/phytom_6.jpg' }
+    ],
 
-  'projet-Vitrine': [
-    { lowRes: 'asset/img/low-line-transp/vitrine_1.png', highRes: 'asset/img/high/vitrine_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/vitrine_2.png', highRes: 'asset/img/high/vitrine_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/vitrine_3.png', highRes: 'asset/img/high/vitrine_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/vitrine_4.png', highRes: 'asset/img/high/vitrine_4.jpg' },
-    { lowRes: 'asset/img/low-line-transp/vitrine_5.png', highRes: 'asset/img/high/vitrine_5.jpg' },
-    { lowRes: 'asset/img/low-line-transp/vitrine_6.png', highRes: 'asset/img/high/vitrine_6.jpg' },
-    { lowRes: 'asset/img/low-line-transp/vitrine_7.png', highRes: 'asset/img/high/vitrine_7.jpg' },
-    { lowRes: 'asset/img/low-line-transp/vitrine_8.png', highRes: 'asset/img/high/vitrine_8.jpg' }
-  ],
+    'projet-Vitrine': [
+      { lowRes: 'asset/img/low-line-transp/vitrine_1.png', highRes: 'asset/img/high/vitrine_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/vitrine_2.png', highRes: 'asset/img/high/vitrine_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/vitrine_3.png', highRes: 'asset/img/high/vitrine_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/vitrine_4.png', highRes: 'asset/img/high/vitrine_4.jpg' },
+      { lowRes: 'asset/img/low-line-transp/vitrine_5.png', highRes: 'asset/img/high/vitrine_5.jpg' },
+      { lowRes: 'asset/img/low-line-transp/vitrine_6.png', highRes: 'asset/img/high/vitrine_6.jpg' },
+      { lowRes: 'asset/img/low-line-transp/vitrine_7.png', highRes: 'asset/img/high/vitrine_7.jpg' },
+      { lowRes: 'asset/img/low-line-transp/vitrine_8.png', highRes: 'asset/img/high/vitrine_8.jpg' }
+    ],
 
-  'thumbnails': [
-    { lowRes: 'asset/img/low-line-transp/hack-thumbnail_1.png', highRes: 'asset/img/high/hack-thumbnail_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/hack-thumbnail_2.png', highRes: 'asset/img/high/hack-thumbnail_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/hack-thumbnail_3.png', highRes: 'asset/img/high/hack-thumbnail_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/HAL9000-thumbnail_1.png', highRes: 'asset/img/high/HAL9000-thumbnail_1.jpg' },
-    { lowRes: 'asset/img/low-line-transp/HAL9000-thumbnail_2.png', highRes: 'asset/img/high/HAL9000-thumbnail_2.jpg' },
-    { lowRes: 'asset/img/low-line-transp/HAL9000-thumbnail_3.png', highRes: 'asset/img/high/HAL9000-thumbnail_3.jpg' },
-    { lowRes: 'asset/img/low-line-transp/HAL9000-thumbnail_4.png', highRes: 'asset/img/high/HAL9000-thumbnail_4.jpg' },
-    { lowRes: 'asset/img/low-line-transp/offkey_1-thumbnail.png', highRes: 'asset/img/high/offkey_1-thumbnail.jpg' }
-  ]
-  };
+    'thumbnails': [
+      { lowRes: 'asset/img/low-line-transp/hack-thumbnail_1.png', highRes: 'asset/img/high/hack-thumbnail_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/hack-thumbnail_2.png', highRes: 'asset/img/high/hack-thumbnail_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/hack-thumbnail_3.png', highRes: 'asset/img/high/hack-thumbnail_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/HAL9000-thumbnail_1.png', highRes: 'asset/img/high/HAL9000-thumbnail_1.jpg' },
+      { lowRes: 'asset/img/low-line-transp/HAL9000-thumbnail_2.png', highRes: 'asset/img/high/HAL9000-thumbnail_2.jpg' },
+      { lowRes: 'asset/img/low-line-transp/HAL9000-thumbnail_3.png', highRes: 'asset/img/high/HAL9000-thumbnail_3.jpg' },
+      { lowRes: 'asset/img/low-line-transp/HAL9000-thumbnail_4.png', highRes: 'asset/img/high/HAL9000-thumbnail_4.jpg' },
+      { lowRes: 'asset/img/low-line-transp/offkey_1-thumbnail.png', highRes: 'asset/img/high/offkey_1-thumbnail.jpg' }
+    ]
+    };
 
   // Détection du mode d'interaction
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
@@ -992,8 +685,8 @@ sections.forEach(section => observer.observe(section));
   // Fonction pour dimensionner l'image
   function calculateImageDimensions(naturalWidth, naturalHeight, container) {
     const rect = container.getBoundingClientRect();
-    const maxWidth = rect.width * (isMobile ? 0.4 : 0.3);
-    const maxHeight = rect.height * (isMobile ? 0.4 : 0.3);
+    const maxWidth = rect.width * (isMobile ? 0.45 : 0.35);
+    const maxHeight = rect.height * (isMobile ? 0.45 : 0.35);
     
     let finalWidth = naturalWidth;
     let finalHeight = naturalHeight;
@@ -1011,17 +704,20 @@ sections.forEach(section => observer.observe(section));
   }
 
   // Fonction pour créer une image dans un projet
-  function createProjectImage(projectId, imageConfig, imageIndex, container, zIndex) {
+  function createProjectImage(projectId, imageConfig, imageIndex, container) {
+    const state = projectStates.get(projectId);
+    if (!state) return null;
+
     const img = document.createElement('img');
-    img.src = imageConfig.lowRes;
     img.className = 'project-image';
     img.style.position = 'absolute';
-    img.style.zIndex = zIndex;
-    img.style.cursor = 'pointer';
-    img.style.transition = 'opacity 0.2s ease-out';
+    img.style.cursor = 'grab';
+    img.style.transition = 'transform 0.2s ease-out, opacity 0.15s ease-out';
+    img.style.transform = 'scale(1)';
+    img.style.opacity = '0';
     img.loading = 'lazy';
 
-    // Données attachées à l'image
+    // Données attachées à l'image avec chronologie
     img.projectData = {
       projectId,
       imageIndex,
@@ -1029,136 +725,295 @@ sections.forEach(section => observer.observe(section));
       highRes: imageConfig.highRes,
       isHighRes: false,
       isActive: false,
-      highResTimer: null
+      isDragging: false,
+      wasDragged: false,
+      highResTimer: null,
+      creationTime: Date.now(), // NOUVEAU: timestamp de création
+      activationTime: null,     // NOUVEAU: timestamp d'activation
+      tapCount: shouldUseTouchMode ? 0 : undefined
     };
 
-    // Dimensionnement et positionnement
+    // Calculer le z-index initial basé sur la chronologie
+    const nextZIndex = state.getNextZIndex();
+    img.style.zIndex = nextZIndex;
+
+    // Dimensionnement avant ajout au DOM
     const dimensionImg = new Image();
     dimensionImg.onload = () => {
-      if (img.parentNode) {
-        const { width, height } = calculateImageDimensions(
-          dimensionImg.naturalWidth, 
-          dimensionImg.naturalHeight, 
-          container
-        );
-        
-        img.style.width = width + 'px';
-        img.style.height = height + 'px';
-        img.style.objectFit = 'cover';
-        
-        const { x, y } = getRandomPosition(container, width, height);
-        img.style.left = x + 'px';
-        img.style.top = y + 'px';
-        
-        // Précharger l'image HD après le positionnement
-        preloadHighResImage(imageConfig.highRes);
-      }
+      const { width, height } = calculateImageDimensions(
+        dimensionImg.naturalWidth, 
+        dimensionImg.naturalHeight, 
+        container
+      );
+      
+      img.style.width = width + 'px';
+      img.style.height = height + 'px';
+      img.style.objectFit = 'cover';
+      
+      const { x, y } = getRandomPosition(container, width, height);
+      img.style.left = x + 'px';
+      img.style.top = y + 'px';
+      
+      img.src = imageConfig.lowRes;
+      img.style.opacity = '1';
+      
+      // Précharger l'image HD
+      preloadHighResImage(imageConfig.highRes);
     };
     dimensionImg.src = imageConfig.highRes;
 
-    // Gestion des interactions
+    // Gestion des interactions et drag & drop
     setupImageInteractions(img);
+    setupDragAndDrop(img, container);
 
     container.appendChild(img);
+    state.addImage(img);
+    
     return img;
   }
 
-  // Configuration des interactions pour les images
-  function setupImageInteractions(img) {
-    const activateImage = () => {
-      if (img.projectData.isActive) return;
-      
-      img.projectData.isActive = true;
-      
-      // Nettoyer le timer existant
-      if (img.projectData.highResTimer) {
-        clearTimeout(img.projectData.highResTimer);
-        img.projectData.highResTimer = null;
-      }
-
-      // Passer en HD si disponible
-      if (!img.projectData.isHighRes) {
-        if (preloadedImages.has(img.projectData.highRes)) {
-          img.src = img.projectData.highRes;
-          img.projectData.isHighRes = true;
-        } else {
-          preloadHighResImage(img.projectData.highRes).then(highResSrc => {
-            if (img.projectData.isActive && img.parentNode) {
-              img.src = highResSrc;
-              img.projectData.isHighRes = true;
-            }
-          }).catch(console.error);
-        }
-      }
-    };
-
-    const deactivateImage = () => {
-      img.projectData.isActive = false;
-      
-      // Retour vers low-res avec délai
-      if (img.projectData.isHighRes) {
-        img.projectData.highResTimer = setTimeout(() => {
-          if (!img.projectData.isActive && img.parentNode) {
-            img.src = img.projectData.lowRes;
-            img.projectData.isHighRes = false;
-          }
-          img.projectData.highResTimer = null;
-        }, 150);
-      }
-    };
-
-    if (shouldUseTouchMode) {
-      // Mode tactile
-      img.addEventListener('touchstart', activateImage);
-      img.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        moveImageToTop(img);
-      });
-      
-      // Support dev tools mobile
-      if (isDevToolsMobile) {
-        img.addEventListener('click', (e) => {
-          e.stopPropagation();
-          moveImageToTop(img);
-        });
-      }
-    } else {
-      // Mode desktop
-      img.addEventListener('mouseenter', activateImage);
-      img.addEventListener('mouseleave', deactivateImage);
-      img.addEventListener('click', (e) => {
-        e.stopPropagation();
-        moveImageToTop(img);
-      });
-    }
-  }
-
-  // Fonction pour remettre une image au top (comme si elle venait d'apparaître)
-  function moveImageToTop(img) {
+  // Fonction pour activer une image
+  function activateImage(img) {
     const projectId = img.projectData.projectId;
     const state = projectStates.get(projectId);
     if (!state) return;
 
-    const container = state.container;
-    const images = Array.from(container.querySelectorAll('.project-image'));
-    
-    // Réorganiser les z-index
-    images.forEach((image, index) => {
-      if (image === img) {
-        image.style.zIndex = 100; // Plus haut z-index
-      } else {
-        const currentZ = parseInt(image.style.zIndex) || 50;
-        image.style.zIndex = Math.max(10, currentZ - 1);
-      }
-    });
+    if (img.projectData.isActive) return;
 
-    // Activer l'image si elle ne l'est pas déjà
-    if (!img.projectData.isActive) {
-      img.projectData.isActive = true;
-      if (!img.projectData.isHighRes && preloadedImages.has(img.projectData.highRes)) {
+    // Désactiver toutes les autres images du projet
+    state.deactivateAllImages();
+
+    // Activer cette image
+    img.projectData.isActive = true;
+    img.projectData.activationTime = Date.now();
+    
+    // Effet visuel
+    img.style.transform = 'scale(1.05)';
+    
+    // Mettre au premier plan
+    const topZIndex = state.getTopZIndex();
+    img.style.zIndex = topZIndex;
+
+    // Nettoyer le timer existant
+    if (img.projectData.highResTimer) {
+      clearTimeout(img.projectData.highResTimer);
+      img.projectData.highResTimer = null;
+    }
+
+    // Passer en HD
+    if (!img.projectData.isHighRes) {
+      if (preloadedImages.has(img.projectData.highRes)) {
         img.src = img.projectData.highRes;
         img.projectData.isHighRes = true;
+      } else {
+        preloadHighResImage(img.projectData.highRes).then(highResSrc => {
+          if (img.projectData.isActive && img.parentNode) {
+            img.src = highResSrc;
+            img.projectData.isHighRes = true;
+          }
+        }).catch(console.error);
       }
+    }
+
+    console.log(`Image ${img.projectData.imageIndex} activated in project ${projectId}`);
+  }
+
+  // Fonction pour désactiver une image
+  function deactivateImage(img) {
+    if (!img.projectData.isActive) return;
+    
+    img.projectData.isActive = false;
+    img.projectData.activationTime = null;
+    
+    // Effet visuel
+    img.style.transform = 'scale(1)';
+    
+    // Retour au z-index basé sur la chronologie
+    const state = projectStates.get(img.projectData.projectId);
+    if (state) {
+      const chronologicalZIndex = state.getChronologicalZIndex(img);
+      img.style.zIndex = chronologicalZIndex;
+    }
+
+    // Retour vers low-res avec délai
+    if (img.projectData.isHighRes) {
+      img.projectData.highResTimer = setTimeout(() => {
+        if (!img.projectData.isActive && img.parentNode) {
+          img.src = img.projectData.lowRes;
+          img.projectData.isHighRes = false;
+        }
+        img.projectData.highResTimer = null;
+      }, 200);
+    }
+
+    console.log(`Image ${img.projectData.imageIndex} deactivated`);
+  }
+
+  // Configuration des interactions pour les images (inspiré du premier script)
+  function setupImageInteractions(img) {
+    if (shouldUseTouchMode) {
+      // Mode tactile : système de double tap
+      img.addEventListener('touchstart', e => {
+        if (img.projectData.isDragging) return;
+        img.projectData.touchStartTime = Date.now();
+      });
+      
+      img.addEventListener('touchend', e => {
+        if (img.projectData.isDragging || img.projectData.wasDragged) return;
+        e.preventDefault();
+        
+        const touchDuration = Date.now() - (img.projectData.touchStartTime || 0);
+        if (touchDuration < 300) { // Tap rapide
+          handleTouchInteraction(img);
+        }
+      });
+      
+      // Support dev tools mobile
+      if (isDevToolsMobile) {
+        img.addEventListener('click', e => {
+          if (!img.projectData.isDragging && !img.projectData.wasDragged) {
+            e.stopPropagation();
+            handleTouchInteraction(img);
+          }
+        });
+      }
+    } else {
+      // Mode desktop : hover + click
+      img.addEventListener('mouseenter', () => {
+        if (!img.projectData.isDragging) {
+          activateImage(img);
+        }
+      });
+
+      img.addEventListener('click', e => {
+        if (!img.projectData.isDragging && !img.projectData.wasDragged) {
+          e.stopPropagation();
+          activateImage(img);
+        }
+      });
+    }
+  }
+
+  // Gestion des interactions tactiles
+  function handleTouchInteraction(img) {
+    const d = img.projectData;
+    
+    if (d.isActive && d.tapCount === 1) {
+      // Deuxième tap sur image active : ne rien faire (ou action spéciale)
+      d.tapCount = 0;
+    } else {
+      // Premier tap : activer
+      d.tapCount = 1;
+      activateImage(img);
+    }
+  }
+
+  // Configuration du drag & drop (basé sur le premier script)
+  function setupDragAndDrop(img, container) {
+    img.style.cursor = 'grab';
+
+    let newX = 0, newY = 0, startX = 0, startY = 0;
+    let isDragging = false;
+    let dragStartTime = 0;
+
+    img.addEventListener('mousedown', mouseDown);
+
+    if (shouldUseTouchMode) {
+      img.addEventListener('touchstart', e => {
+        e.preventDefault();
+        const t = e.touches[0];
+        mouseDown({ 
+          clientX: t.clientX, 
+          clientY: t.clientY,
+          preventDefault: () => {}
+        });
+      }, { passive: false });
+    }
+
+    function mouseDown(e) {
+      if (e.preventDefault) e.preventDefault();
+      isDragging = true;
+      dragStartTime = Date.now();
+      const d = img.projectData;
+      d.isDragging = true;
+      
+      // Activer immédiatement l'image si pas déjà active
+      if (!d.isActive) {
+        activateImage(img);
+      }
+      
+      startX = e.clientX;
+      startY = e.clientY;
+      
+      img.style.cursor = 'grabbing';
+      
+      document.addEventListener('mousemove', mouseMove);
+      document.addEventListener('mouseup', mouseUp);
+      
+      if (shouldUseTouchMode) {
+        const touchMoveHandler = (touchEvent) => {
+          if (touchEvent.touches && touchEvent.touches[0]) {
+            touchEvent.preventDefault();
+            mouseMove({ 
+              clientX: touchEvent.touches[0].clientX, 
+              clientY: touchEvent.touches[0].clientY,
+              preventDefault: () => {}
+            });
+          }
+        };
+        
+        document.addEventListener('touchmove', touchMoveHandler, { passive: false });
+        document.addEventListener('touchend', (touchEvent) => {
+          document.removeEventListener('touchmove', touchMoveHandler);
+          mouseUp(touchEvent);
+        });
+      }
+    }
+
+    function mouseMove(e) {
+      if (!isDragging) return;
+      if (e.preventDefault) e.preventDefault();
+      
+      newX = startX - e.clientX;
+      newY = startY - e.clientY;
+      
+      startX = e.clientX;
+      startY = e.clientY;
+      
+      const newLeft = img.offsetLeft - newX;
+      const newTop = img.offsetTop - newY;
+      
+      // Garder l'image dans les limites du conteneur
+      const rect = container.getBoundingClientRect();
+      const imgRect = img.getBoundingClientRect();
+      
+      const maxLeft = rect.width - imgRect.width;
+      const maxTop = rect.height - imgRect.height;
+      
+      img.style.left = Math.max(0, Math.min(maxLeft, newLeft)) + 'px';
+      img.style.top = Math.max(0, Math.min(maxTop, newTop)) + 'px';
+    }
+
+    function mouseUp(e) {
+      if (!isDragging) return;
+      
+      const dragDuration = Date.now() - dragStartTime;
+      const d = img.projectData;
+      
+      const wasDragOperation = dragDuration > 150;
+      
+      isDragging = false;
+      d.isDragging = false;
+      d.wasDragged = wasDragOperation;
+
+      setTimeout(() => {
+        d.wasDragged = false;
+      }, 50);
+      
+      img.style.cursor = 'grab';
+      
+      document.removeEventListener('mousemove', mouseMove);
+      document.removeEventListener('mouseup', mouseUp);
     }
   }
 
@@ -1168,70 +1023,98 @@ sections.forEach(section => observer.observe(section));
     const state = projectStates.get(projectId);
     if (!images || !state) return;
 
-    const container = state.container;
-    const currentImages = Array.from(container.querySelectorAll('.project-image'));
+    // Désactiver toutes les images existantes
+    state.deactivateAllImages();
     
-    // Limiter à 4 images maximum
-    if (currentImages.length >= 4) {
-      // Supprimer la plus ancienne (z-index le plus bas)
-      const oldestImage = currentImages.reduce((oldest, current) => {
-        const oldestZ = parseInt(oldest.style.zIndex) || 50;
-        const currentZ = parseInt(current.style.zIndex) || 50;
-        return currentZ < oldestZ ? current : oldest;
-      });
-      
-      // Nettoyage
-      if (oldestImage.projectData.highResTimer) {
-        clearTimeout(oldestImage.projectData.highResTimer);
-      }
-      container.removeChild(oldestImage);
-    }
-
     // Calculer le prochain index
     state.currentIndex = (state.currentIndex + 1) % images.length;
     const nextImageConfig = images[state.currentIndex];
     
-    // Calculer le nouveau z-index (plus élevé que tous les existants)
-    const existingImages = Array.from(container.querySelectorAll('.project-image'));
-    const maxZ = existingImages.reduce((max, img) => {
-      const z = parseInt(img.style.zIndex) || 50;
-      return Math.max(max, z);
-    }, 50);
-
     // Créer et afficher la nouvelle image
     const newImage = createProjectImage(
       projectId, 
       nextImageConfig, 
       state.currentIndex, 
-      container, 
-      maxZ + 1
+      state.container
     );
 
-    // Activer immédiatement la nouvelle image
-    newImage.projectData.isActive = true;
-    
-    // Décaler les z-index des autres images
-    existingImages.forEach(img => {
-      const currentZ = parseInt(img.style.zIndex) || 50;
-      img.style.zIndex = Math.max(10, currentZ - 1);
-      
-      // Désactiver les autres images
-      if (img.projectData.isActive) {
-        img.projectData.isActive = false;
-        if (img.projectData.isHighRes) {
-          img.projectData.highResTimer = setTimeout(() => {
-            if (!img.projectData.isActive && img.parentNode) {
-              img.src = img.projectData.lowRes;
-              img.projectData.isHighRes = false;
-            }
-          }, 200);
-        }
-      }
-    });
+    if (newImage) {
+      // Nouvelle image = active automatiquement
+      setTimeout(() => {
+        activateImage(newImage);
+      }, 100);
+    }
 
     // Nettoyage périodique du cache
-    if (Math.random() < 0.1) { // 10% de chance à chaque nouvelle image
+    if (Math.random() < 0.1) {
       cleanupImageCache();
+    }
+  }
+
+  // Classe pour gérer l'état d'un projet
+  class ProjectState {
+    constructor(projectId, container, images) {
+      this.projectId = projectId;
+      this.container = container;
+      this.images = images;
+      this.currentIndex = 0;
+      this.imageList = []; // Liste des images dans l'ordre chronologique
+      this.maxImages = 4;
+      this.baseZIndex = 50;
+    }
+
+    addImage(img) {
+      // Ajouter à la fin de la liste (plus récent)
+      this.imageList.push(img);
+      
+      // Si on dépasse 4 images, supprimer la plus ancienne
+      if (this.imageList.length > this.maxImages) {
+        const oldestImage = this.imageList.shift();
+        this.removeImage(oldestImage);
+      }
+    }
+
+    removeImage(img) {
+      // Nettoyage
+      if (img.projectData.highResTimer) {
+        clearTimeout(img.projectData.highResTimer);
+      }
+      
+      // Supprimer de la liste
+      const index = this.imageList.indexOf(img);
+      if (index > -1) {
+        this.imageList.splice(index, 1);
+      }
+      
+      // Supprimer du DOM
+      if (img.parentNode) {
+        this.container.removeChild(img);
+      }
+      
+      console.log(`Removed oldest image from project ${this.projectId}`);
+    }
+
+    deactivateAllImages() {
+      this.imageList.forEach(img => {
+        if (img.projectData.isActive) {
+          deactivateImage(img);
+        }
+      });
+    }
+
+    getNextZIndex() {
+      // Le z-index est basé sur l'ordre chronologique
+      return this.baseZIndex + this.imageList.length;
+    }
+
+    getTopZIndex() {
+      // Z-index le plus élevé pour l'image active
+      return this.baseZIndex + this.maxImages + 10;
+    }
+
+    getChronologicalZIndex(img) {
+      const index = this.imageList.indexOf(img);
+      return this.baseZIndex + index;
     }
   }
 
@@ -1241,38 +1124,36 @@ sections.forEach(section => observer.observe(section));
     const images = projectImages[projectId];
     if (!images || images.length === 0) return;
 
-    const container = projectElement.querySelector('.section-slide');
+    const container = projectElement.querySelector('.section-clic');
     if (!container) return;
 
-    // Nettoyer le contenu existant du carrousel
-    const existingCarrousel = container.querySelector('.carrousel-container');
-    if (existingCarrousel) {
-      container.removeChild(existingCarrousel);
-    }
-
-    // Configurer le container pour les nouvelles images
+    // Nettoyer le contenu existant
+    container.innerHTML = '';
+    
+    // Configurer le container
     container.style.position = 'relative';
     container.style.overflow = 'hidden';
 
     // Initialiser l'état du projet
-    projectStates.set(projectId, {
-      container,
-      currentIndex: 0,
-      images
-    });
+    const state = new ProjectState(projectId, container, images);
+    projectStates.set(projectId, state);
 
     // Afficher la première image
-    const firstImage = createProjectImage(projectId, images[0], 0, container, 50);
-    firstImage.projectData.isActive = true;
+    const firstImage = createProjectImage(projectId, images[0], 0, container);
+    
+    if (firstImage) {
+      // Première image = active automatiquement après un court délai
+      setTimeout(() => {
+        activateImage(firstImage);
+      }, 100);
+    }
 
     // Gérer les clics sur la section (mais pas sur les images)
     projectElement.addEventListener('click', (e) => {
-      // Ignorer si le clic est sur une image
       if (e.target.classList.contains('project-image')) {
         return;
       }
       
-      // Afficher l'image suivante
       showNextImage(projectId);
     });
 
@@ -1285,6 +1166,24 @@ sections.forEach(section => observer.observe(section));
         }
       });
     }
+
+    console.log(`Project ${projectId} initialized with ${images.length} images`);
+  }
+
+  // Désactivation globale au clic ailleurs (mode tactile)
+  if (shouldUseTouchMode) {
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+      const isImage = target.classList.contains('project-image');
+      const isProjectSection = target.closest('.grid-projets');
+
+      if (!isImage && !isProjectSection) {
+        // Clic en dehors de tout projet : désactiver toutes les images
+        projectStates.forEach(state => {
+          state.deactivateAllImages();
+        });
+      }
+    });
   }
 
   // Initialiser tous les projets disponibles
@@ -1295,7 +1194,7 @@ sections.forEach(section => observer.observe(section));
     }
   });
 
-  console.log('Projet image system initialized');
+  console.log('Enhanced project image system initialized');
 });
-</script>
-</html>
+  </script>
+  </html>

@@ -2,9 +2,12 @@
 
 TO DO :
 
-_sélectionner ordre des projets (stratégie de présentation: ordre chronologique dans la mosaique, par ordre d'intérêt dans le défilement)
-
-_rajouter un indicateur de scroll pour les projets (soit "il faut scroller" soit barre d'indication de défilement)
+_page de projets bis :
+    - scale-up des photos activées
+    - photos plus grandes
+    - bien délimiter zone des photos (row:2/5, column:4/7) -> dépend de la taille du conteneur des images, ici section-slide/clic
+    - drag&drop des images + déplacements dans la zone ?
+    - images qui apparaissent en mode "actif" donc high-res (jusqu'à ce qu'on interagisse pour afficher une autre), pareil pour celle affichée d'office sur les sections
 
 _adapter à tous navigateurs (controles natifs safari/mozilla)
     - controles audio à pimper pour safari

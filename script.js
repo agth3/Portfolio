@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const baseSpeed = isMobile ? 0.5 : 0.7; // Plus lent sur mobile
   const fixedSpeeds = isMobile ? 
   [1.25, 2, 2.75, 2.75,] :      // Vitesses mobile (que trois vitesse en réalité car trois images max)
-  [2.25, 3, 3.75, 4.5];       // Vitesses desktop
+  [1.5, 2.25, 3, 3.75];       // Vitesses desktop  [2.25, 2.75, 3.25, 3.75]
   //[1.5, 2.25, 3, 3.75] :      // Vitesses d'origine
 
   const speedPool = [...fixedSpeeds];
