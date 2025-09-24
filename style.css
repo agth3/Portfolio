@@ -1265,14 +1265,27 @@ video:focus, audio:focus {
   /* margin: 0 4.63vh; */
   /* margin-right: 4.63vh;
   margin-left: calc(25% + 4.63vh); */
-  background-color: #0f0c0c;
+  /* background-color: #0f0c0c; */
   /* background-color: var(--highlight-color); */
   position: relative;
   overflow: hidden;
   touch-action: pan-y;
 }
 
-
+.section-mvmt{
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  /* background-color: #67792c; */
+  width: calc(100% - (4.63vh * 2));
+  height: calc(100% - (4.63vh * 2));
+  margin-top: 4.63vh;
+  margin-left: 4.63vh;
+  grid-column: 1/8;
+  grid-row: 1/6;
+  position: relative;
+  overflow: hidden;
+}
 
 
 

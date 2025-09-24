@@ -9,6 +9,9 @@ _page de projets bis :
     - drag&drop des images + déplacements dans la zone ?
     - images qui apparaissent en mode "actif" donc high-res (jusqu'à ce qu'on interagisse pour afficher une autre), pareil pour celle affichée d'office sur les sections
 
+    - zone d'apparition à corriger
+    - clean le script pour enlever toute gestion du carrousel (puisqu'il n'y en a plus)
+
 _adapter à tous navigateurs (controles natifs safari/mozilla)
     - controles audio à pimper pour safari
     - adapter grille (carrousel plus ou moins haut pour remplir l'espace en fonction de la quantité de texte, dans le cas de texte courts le faire monter une case plus haut)
