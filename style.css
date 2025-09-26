@@ -1252,6 +1252,36 @@ video:focus, audio:focus {
 
 /*-------- SECTION CLIC ---------*/
 
+/* body.clic {
+  cursor: none;
+}
+
+.custom-cursor {
+    position: fixed;
+    pointer-events: none; 
+    z-index: 9999;
+    font-size: 14px;
+    font-family: sans-serif;
+    color: red;
+    font-weight: bold;
+    transform: translate(-50%, -50%);
+  } */
+
+/* curseur "clic" minimal — applique-le sur la zone voulue (ici .section-clic) */
+.section-clic {
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="24" viewBox="0 0 64 24"><text x="0" y="18" font-family="sans-serif" font-size="16" fill="black">clic</text></svg>') 8 18, auto;
+}
+
+/* désactiver le curseur custom sur les textes et images (hérité ou navigateur) */
+.section-clic p,
+.section-clic span,
+.section-clic h1, .section-clic h2, .section-clic h3, .section-clic h4, .section-clic h5, .section-clic h6,
+.section-clic img,
+.section-clic .project-image {
+  cursor: auto;
+}
+
+
 .section-clic {
   display: flex;
   flex-direction: column;

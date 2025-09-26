@@ -34,6 +34,9 @@
 
           </div>
 
+          <!--curseur customisé-->
+          <!-- <div class="custom-cursor">clic</div> -->
+
           <div class="container-projets" id="container-projets">   
 
               <section class="grid-projets" id="projet-OffKey">
@@ -475,178 +478,188 @@
   sections.forEach(section => observer.observe(section));
 
 
+  //Curseur "clic"
+const cursor = document.querySelector('.custom-cursor');
+
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+  });
+
 
     document.addEventListener("DOMContentLoaded", () => {
     // Configuration des images par projet
     const projectImages = {
     'projet-Amasha': [
-      { lowRes: 'asset/img/low-line-transp/amasha_1.png', highRes: 'asset/img/high/amasha_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/amasha_2.png', highRes: 'asset/img/high/amasha_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/amasha_3.png', highRes: 'asset/img/high/amasha_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/amasha_4.png', highRes: 'asset/img/high/amasha_4.jpg' },
-      { lowRes: 'asset/img/low-line-transp/amasha_5.png', highRes: 'asset/img/high/amasha_5.jpg' },
-      { lowRes: 'asset/img/low-line-transp/amasha_6.png', highRes: 'asset/img/high/amasha_6.jpg' },
-      { lowRes: 'asset/img/low-line-transp/amasha_7.png', highRes: 'asset/img/high/amasha_7.jpg' },
-      { lowRes: 'asset/img/low-line-transp/amasha_8.png', highRes: 'asset/img/high/amasha_8.jpg' }
+      { type: 'image', lowRes: 'asset/img/low-line-transp/amasha_1.png', highRes: 'asset/img/high/amasha_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/amasha_2.png', highRes: 'asset/img/high/amasha_2.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/amasha_3.png', highRes: 'asset/img/high/amasha_3.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/amasha_4.png', highRes: 'asset/img/high/amasha_4.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/amasha_5.png', highRes: 'asset/img/high/amasha_5.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/amasha_6.png', highRes: 'asset/img/high/amasha_6.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/amasha_7.png', highRes: 'asset/img/high/amasha_7.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/amasha_8.png', highRes: 'asset/img/high/amasha_8.jpg' }
     ],
 
     'projet-BriqueBloc': [
-      { lowRes: 'asset/img/low-line-transp/brique-bloc_1.png', highRes: 'asset/img/high/brique-bloc_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/brique-bloc_2.png', highRes: 'asset/img/high/brique-bloc_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/brique-bloc_3.png', highRes: 'asset/img/high/brique-bloc_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/brique-bloc_4.png', highRes: 'asset/img/high/brique-bloc_4.jpg' },
-      { lowRes: 'asset/img/low-line-transp/brique-bloc_5.png', highRes: 'asset/img/high/brique-bloc_5.jpg' }
+      { type: 'image', lowRes: 'asset/img/low-line-transp/brique-bloc_1.png', highRes: 'asset/img/high/brique-bloc_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/brique-bloc_2.png', highRes: 'asset/img/high/brique-bloc_2.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/brique-bloc_3.png', highRes: 'asset/img/high/brique-bloc_3.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/brique-bloc_4.png', highRes: 'asset/img/high/brique-bloc_4.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/brique-bloc_5.png', highRes: 'asset/img/high/brique-bloc_5.jpg' }
     ],
 
     'projet-CatalogueBouees': [
-      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_1.png', highRes: 'asset/img/high/catalogue-bouees_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_2.png', highRes: 'asset/img/high/catalogue-bouees_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_3.png', highRes: 'asset/img/high/catalogue-bouees_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_4.png', highRes: 'asset/img/high/catalogue-bouees_4.jpg' },
-      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_5.png', highRes: 'asset/img/high/catalogue-bouees_5.jpg' },
-      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_6.png', highRes: 'asset/img/high/catalogue-bouees_6.jpg' },
-      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_7.png', highRes: 'asset/img/high/catalogue-bouees_7.jpg' },
-      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_8.png', highRes: 'asset/img/high/catalogue-bouees_8.jpg' },
-      { lowRes: 'asset/img/low-line-transp/catalogue-bouees_9.png', highRes: 'asset/img/high/catalogue-bouees_9.jpg' }
+      { type: 'image', lowRes: 'asset/img/low-line-transp/catalogue-bouees_1.png', highRes: 'asset/img/high/catalogue-bouees_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/catalogue-bouees_2.png', highRes: 'asset/img/high/catalogue-bouees_2.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/catalogue-bouees_3.png', highRes: 'asset/img/high/catalogue-bouees_3.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/catalogue-bouees_4.png', highRes: 'asset/img/high/catalogue-bouees_4.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/catalogue-bouees_5.png', highRes: 'asset/img/high/catalogue-bouees_5.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/catalogue-bouees_6.png', highRes: 'asset/img/high/catalogue-bouees_6.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/catalogue-bouees_7.png', highRes: 'asset/img/high/catalogue-bouees_7.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/catalogue-bouees_8.png', highRes: 'asset/img/high/catalogue-bouees_8.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/catalogue-bouees_9.png', highRes: 'asset/img/high/catalogue-bouees_9.jpg' }
     ],
 
     'projet-Cimes': [
-      { lowRes: 'asset/img/low-line-transp/cimes_1.png', highRes: 'asset/img/high/cimes_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/cimes_2.png', highRes: 'asset/img/high/cimes_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/cimes_3.png', highRes: 'asset/img/high/cimes_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/cimes_4.png', highRes: 'asset/img/high/cimes_4.jpg' },
-      { lowRes: 'asset/img/low-line-transp/cimes_5.png', highRes: 'asset/img/high/cimes_5.jpg' },
-      { lowRes: 'asset/img/low-line-transp/cimes_6.png', highRes: 'asset/img/high/cimes_6.jpg' },
-      { lowRes: 'asset/img/low-line-transp/cimes_7.png', highRes: 'asset/img/high/cimes_7.jpg' },
-      { lowRes: 'asset/img/low-line-transp/cimes_8.png', highRes: 'asset/img/high/cimes_8.jpg' },
-      { lowRes: 'asset/img/low-line-transp/cimes_9.png', highRes: 'asset/img/high/cimes_9.jpg' }
+      { type: 'image', lowRes: 'asset/img/low-line-transp/cimes_1.png', highRes: 'asset/img/high/cimes_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/cimes_2.png', highRes: 'asset/img/high/cimes_2.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/cimes_3.png', highRes: 'asset/img/high/cimes_3.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/cimes_4.png', highRes: 'asset/img/high/cimes_4.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/cimes_5.png', highRes: 'asset/img/high/cimes_5.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/cimes_6.png', highRes: 'asset/img/high/cimes_6.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/cimes_7.png', highRes: 'asset/img/high/cimes_7.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/cimes_8.png', highRes: 'asset/img/high/cimes_8.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/cimes_9.png', highRes: 'asset/img/high/cimes_9.jpg' }
     ],
 
     'projet-EntreEtTenir': [
-      { lowRes: 'asset/img/low-line-transp/entre-et-tenir_1.png', highRes: 'asset/img/high/entre-et-tenir_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/entre-et-tenir_2.png', highRes: 'asset/img/high/entre-et-tenir_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/entre-et-tenir_3.png', highRes: 'asset/img/high/entre-et-tenir_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/entre-et-tenir_4.png', highRes: 'asset/img/high/entre-et-tenir_4.jpg' },
-      { lowRes: 'asset/img/low-line-transp/entre-et-tenir_5.png', highRes: 'asset/img/high/entre-et-tenir_5.jpg' },
-      { lowRes: 'asset/img/low-line-transp/entre-et-tenir_6.png', highRes: 'asset/img/high/entre-et-tenir_6.jpg' },
-      { lowRes: 'asset/img/low-line-transp/entre-et-tenir_7.png', highRes: 'asset/img/high/entre-et-tenir_7.jpg' },
-      { lowRes: 'asset/img/low-line-transp/entre-et-tenir_8.png', highRes: 'asset/img/high/entre-et-tenir_8.jpg' }
+      { type: 'image', lowRes: 'asset/img/low-line-transp/entre-et-tenir_2.png', highRes: 'asset/img/high/entre-et-tenir_2.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/entre-et-tenir_1.png', highRes: 'asset/img/high/entre-et-tenir_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/entre-et-tenir_3.png', highRes: 'asset/img/high/entre-et-tenir_3.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/entre-et-tenir_4.png', highRes: 'asset/img/high/entre-et-tenir_4.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/entre-et-tenir_5.png', highRes: 'asset/img/high/entre-et-tenir_5.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/entre-et-tenir_6.png', highRes: 'asset/img/high/entre-et-tenir_6.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/entre-et-tenir_7.png', highRes: 'asset/img/high/entre-et-tenir_7.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/entre-et-tenir_8.png', highRes: 'asset/img/high/entre-et-tenir_8.jpg' }
     ],
 
     'projet-EntreEtTenir2': [
-      { lowRes: 'asset/img/low-line-transp/entre-et-tenir-2_1.png', highRes: 'asset/img/high/entre-et-tenir-2_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/entre-et-tenir-2_2.png', highRes: 'asset/img/high/entre-et-tenir-2_2.jpg' }
+      { type: 'image', lowRes: 'asset/img/low-line-transp/entre-et-tenir-2_1.png', highRes: 'asset/img/high/entre-et-tenir-2_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/entre-et-tenir-2_2.png', highRes: 'asset/img/high/entre-et-tenir-2_2.jpg' }
     ],
 
     'projet-Hack': [
-      { lowRes: 'asset/img/low-line-transp/hack_1.png', highRes: 'asset/img/high/hack_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/hack_2.png', highRes: 'asset/img/high/hack_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/hack_3.png', highRes: 'asset/img/high/hack_3.jpg' }
+      { type: 'video', thumbnail: 'asset/img/low-line-transp/hack-thumbnail_1.png', src: 'asset/media/hack-vid_1.mp4' },
+      { type: 'video', thumbnail: 'asset/img/low-line-transp/hack-thumbnail_2.png', src: 'asset/media/hack-vid_2.mp4' },
+      { type: 'video', thumbnail: 'asset/img/low-line-transp/hack-thumbnail_3.png', src: 'asset/media/hack-vid_3.mp4' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/hack_1.png', highRes: 'asset/img/high/hack_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/hack_2.png', highRes: 'asset/img/high/hack_2.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/hack_3.png', highRes: 'asset/img/high/hack_3.jpg' }
     ],
 
     'projet-HAL9000': [
-      { lowRes: 'asset/img/low-line-transp/HAL9000-screen_1.png', highRes: 'asset/img/high/HAL9000-screen_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/HAL9000-screen_2.png', highRes: 'asset/img/high/HAL9000-screen_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/HAL9000-screen_3.png', highRes: 'asset/img/high/HAL9000-screen_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/HAL9000-screen_4.png', highRes: 'asset/img/high/HAL9000-screen_4.jpg' },
-      { lowRes: 'asset/img/low-line-transp/HAL9000-screen_5.png', highRes: 'asset/img/high/HAL9000-screen_5.jpg' },
-      { lowRes: 'asset/img/low-line-transp/HAL9000_1.png', highRes: 'asset/img/high/HAL9000_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/HAL9000_2.png', highRes: 'asset/img/high/HAL9000_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/HAL9000_3.png', highRes: 'asset/img/high/HAL9000_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/HAL9000_4.png', highRes: 'asset/img/high/HAL9000_4.jpg' },
-      { lowRes: 'asset/img/low-line-transp/HAL9000_5.png', highRes: 'asset/img/high/HAL9000_5.jpg' }
+      { type: 'image', lowRes: 'asset/img/low-line-transp/HAL9000-screen_1.png', highRes: 'asset/img/high/HAL9000-screen_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/HAL9000-screen_2.png', highRes: 'asset/img/high/HAL9000-screen_2.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/HAL9000-screen_3.png', highRes: 'asset/img/high/HAL9000-screen_3.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/HAL9000-screen_4.png', highRes: 'asset/img/high/HAL9000-screen_4.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/HAL9000-screen_5.png', highRes: 'asset/img/high/HAL9000-screen_5.jpg' },
+      { type: 'audio', thumbnail: 'asset/img/low-line-transp/HAL9000-thumbnail_1.png', src: 'asset/media/audio-1_pride.mp3', title: 'audio pride' },
+      { type: 'audio', thumbnail: 'asset/img/low-line-transp/HAL9000-thumbnail_2.png', src: 'asset/media/audio-2_doubt.mp3', title: 'audio doubt' },
+      { type: 'audio', thumbnail: 'asset/img/low-line-transp/HAL9000-thumbnail_3.png', src: 'asset/media/audio-3_disdain.mp3', title: 'audio disdain' },
+      { type: 'audio', thumbnail: 'asset/img/low-line-transp/HAL9000-thumbnail_4.png', src: 'asset/media/audio-4_fear.mp3', title: 'audio fear' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/HAL9000_1.png', highRes: 'asset/img/high/HAL9000_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/HAL9000_2.png', highRes: 'asset/img/high/HAL9000_2.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/HAL9000_3.png', highRes: 'asset/img/high/HAL9000_3.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/HAL9000_4.png', highRes: 'asset/img/high/HAL9000_4.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/HAL9000_5.png', highRes: 'asset/img/high/HAL9000_5.jpg' }
     ],
 
     'projet-JustClick': [
-      { lowRes: 'asset/img/low-line-transp/just-click_1.png', highRes: 'asset/img/high/just-click_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/just-click_2.png', highRes: 'asset/img/high/just-click_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/just-click_3.png', highRes: 'asset/img/high/just-click_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/just-click_4.png', highRes: 'asset/img/high/just-click_4.jpg' }
+      { type: 'iframe', thumbnail: 'asset/img/low-line-transp/just-click_3.png', src: 'https://agth3.github.io/just-click/', title: 'Interactive Demo Just Click'},
+      { type: 'image', lowRes: 'asset/img/low-line-transp/just-click_1.png', highRes: 'asset/img/high/just-click_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/just-click_2.png', highRes: 'asset/img/high/just-click_2.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/just-click_3.png', highRes: 'asset/img/high/just-click_3.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/just-click_4.png', highRes: 'asset/img/high/just-click_4.jpg' }
     ],
 
     'projet-Kaleidoscope': [
-      { lowRes: 'asset/img/low-line-transp/kaleidoscope_1.png', highRes: 'asset/img/high/kaleidoscope_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/kaleidoscope_2.png', highRes: 'asset/img/high/kaleidoscope_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/kaleidoscope_3.png', highRes: 'asset/img/high/kaleidoscope_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/kaleidoscope_4.png', highRes: 'asset/img/high/kaleidoscope_4.jpg' },
-      { lowRes: 'asset/img/low-line-transp/kaleidoscope_5.png', highRes: 'asset/img/high/kaleidoscope_5.jpg' },
-      { lowRes: 'asset/img/low-line-transp/kaleidoscope_6.png', highRes: 'asset/img/high/kaleidoscope_6.jpg' },
-      { lowRes: 'asset/img/low-line-transp/kaleidoscope-zoom_1.png', highRes: 'asset/img/high/kaleidoscope-zoom_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/kaleidoscope-zoom_2.png', highRes: 'asset/img/high/kaleidoscope-zoom_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/kaleidoscope-zoom_3.png', highRes: 'asset/img/high/kaleidoscope-zoom_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/kaleidoscope-zoom_4.png', highRes: 'asset/img/high/kaleidoscope-zoom_4.jpg' }
+      { type: 'image', lowRes: 'asset/img/low-line-transp/kaleidoscope_1.png', highRes: 'asset/img/high/kaleidoscope_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/kaleidoscope_2.png', highRes: 'asset/img/high/kaleidoscope_2.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/kaleidoscope_3.png', highRes: 'asset/img/high/kaleidoscope_3.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/kaleidoscope_4.png', highRes: 'asset/img/high/kaleidoscope_4.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/kaleidoscope_5.png', highRes: 'asset/img/high/kaleidoscope_5.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/kaleidoscope_6.png', highRes: 'asset/img/high/kaleidoscope_6.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/kaleidoscope-zoom_1.png', highRes: 'asset/img/high/kaleidoscope-zoom_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/kaleidoscope-zoom_2.png', highRes: 'asset/img/high/kaleidoscope-zoom_2.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/kaleidoscope-zoom_3.png', highRes: 'asset/img/high/kaleidoscope-zoom_3.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/kaleidoscope-zoom_4.png', highRes: 'asset/img/high/kaleidoscope-zoom_4.jpg' }
     ],
 
     'projet-Memoire': [
-      { lowRes: 'asset/img/low-line-transp/memoire_1.png', highRes: 'asset/img/high/memoire_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/memoire_2.png', highRes: 'asset/img/high/memoire_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/memoire_3.png', highRes: 'asset/img/high/memoire_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/memoire_4.png', highRes: 'asset/img/high/memoire_4.jpg' },
-      { lowRes: 'asset/img/low-line-transp/memoire_5.png', highRes: 'asset/img/high/memoire_5.jpg' },
-      { lowRes: 'asset/img/low-line-transp/memoire_6.png', highRes: 'asset/img/high/memoire_6.jpg' },
-      { lowRes: 'asset/img/low-line-transp/memoire_7.png', highRes: 'asset/img/high/memoire_7.jpg' }
+      { type: 'image', lowRes: 'asset/img/low-line-transp/memoire_1.png', highRes: 'asset/img/high/memoire_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/memoire_2.png', highRes: 'asset/img/high/memoire_2.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/memoire_3.png', highRes: 'asset/img/high/memoire_3.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/memoire_4.png', highRes: 'asset/img/high/memoire_4.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/memoire_5.png', highRes: 'asset/img/high/memoire_5.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/memoire_6.png', highRes: 'asset/img/high/memoire_6.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/memoire_7.png', highRes: 'asset/img/high/memoire_7.jpg' }
     ],
 
     'projet-OffKey': [
-      { lowRes: 'asset/img/low-line-transp/offkey_1.png', highRes: 'asset/img/high/offkey_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/offkey_2.png', highRes: 'asset/img/high/offkey_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/offkey_3.png', highRes: 'asset/img/high/offkey_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/offkey_4.png', highRes: 'asset/img/high/offkey_4.jpg' },
-      { lowRes: 'asset/img/low-line-transp/offkey_5.png', highRes: 'asset/img/high/offkey_5.jpg' },
-      { lowRes: 'asset/img/low-line-transp/offkey_6.png', highRes: 'asset/img/high/offkey_6.jpg' },
-      { lowRes: 'asset/img/low-line-transp/offkey_7.png', highRes: 'asset/img/high/offkey_7.jpg' },
-      { lowRes: 'asset/img/low-line-transp/offkey_8.png', highRes: 'asset/img/high/offkey_8.jpg' },
-      { lowRes: 'asset/img/low-line-transp/offkey_9.png', highRes: 'asset/img/high/offkey_9.jpg' }
+      { type: 'video', thumbnail: 'asset/img/low-line-transp/offkey_1-thumbnail.png', src: 'asset/media/offkey-vid_1.mp4' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/offkey_1.png', highRes: 'asset/img/high/offkey_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/offkey_2.png', highRes: 'asset/img/high/offkey_2.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/offkey_3.png', highRes: 'asset/img/high/offkey_3.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/offkey_4.png', highRes: 'asset/img/high/offkey_4.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/offkey_5.png', highRes: 'asset/img/high/offkey_5.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/offkey_6.png', highRes: 'asset/img/high/offkey_6.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/offkey_7.png', highRes: 'asset/img/high/offkey_7.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/offkey_8.png', highRes: 'asset/img/high/offkey_8.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/offkey_9.png', highRes: 'asset/img/high/offkey_9.jpg' }
     ],
 
     'projet-Oursins': [
-      { lowRes: 'asset/img/low-line-transp/oursins_1.png', highRes: 'asset/img/high/oursins_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/oursins_2.png', highRes: 'asset/img/high/oursins_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/oursins_3.png', highRes: 'asset/img/high/oursins_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/oursins_4.png', highRes: 'asset/img/high/oursins_4.jpg' },
-      { lowRes: 'asset/img/low-line-transp/oursins_5.png', highRes: 'asset/img/high/oursins_5.jpg' },
-      { lowRes: 'asset/img/low-line-transp/oursins_6.png', highRes: 'asset/img/high/oursins_6.jpg' },
-      { lowRes: 'asset/img/low-line-transp/oursins-edition_1.png', highRes: 'asset/img/high/oursins-edition_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/oursins-edition_2.png', highRes: 'asset/img/high/oursins-edition_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/oursins-edition_3.png', highRes: 'asset/img/high/oursins-edition_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/oursins-edition_4.png', highRes: 'asset/img/high/oursins-edition_4.jpg' },
-      { lowRes: 'asset/img/low-line-transp/oursins-edition_5.png', highRes: 'asset/img/high/oursins-edition_5.jpg' },
-      { lowRes: 'asset/img/low-line-transp/oursins-edition_6.png', highRes: 'asset/img/high/oursins-edition_6.jpg' }
+      { type: 'image', lowRes: 'asset/img/low-line-transp/oursins_1.png', highRes: 'asset/img/high/oursins_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/oursins_2.png', highRes: 'asset/img/high/oursins_2.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/oursins_3.png', highRes: 'asset/img/high/oursins_3.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/oursins_4.png', highRes: 'asset/img/high/oursins_4.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/oursins_5.png', highRes: 'asset/img/high/oursins_5.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/oursins_6.png', highRes: 'asset/img/high/oursins_6.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/oursins-edition_1.png', highRes: 'asset/img/high/oursins-edition_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/oursins-edition_2.png', highRes: 'asset/img/high/oursins-edition_2.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/oursins-edition_3.png', highRes: 'asset/img/high/oursins-edition_3.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/oursins-edition_4.png', highRes: 'asset/img/high/oursins-edition_4.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/oursins-edition_5.png', highRes: 'asset/img/high/oursins-edition_5.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/oursins-edition_6.png', highRes: 'asset/img/high/oursins-edition_6.jpg' }
     ],
 
     'projet-Phytomorphose': [
-      { lowRes: 'asset/img/low-line-transp/phytom_1.png', highRes: 'asset/img/high/phytom_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/phytom_2.png', highRes: 'asset/img/high/phytom_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/phytom_3.png', highRes: 'asset/img/high/phytom_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/phytom_4.png', highRes: 'asset/img/high/phytom_4.jpg' },
-      { lowRes: 'asset/img/low-line-transp/phytom_5.png', highRes: 'asset/img/high/phytom_5.jpg' },
-      { lowRes: 'asset/img/low-line-transp/phytom_6.png', highRes: 'asset/img/high/phytom_6.jpg' }
+      { type: 'image', lowRes: 'asset/img/low-line-transp/phytom_1.png', highRes: 'asset/img/high/phytom_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/phytom_2.png', highRes: 'asset/img/high/phytom_2.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/phytom_3.png', highRes: 'asset/img/high/phytom_3.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/phytom_4.png', highRes: 'asset/img/high/phytom_4.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/phytom_5.png', highRes: 'asset/img/high/phytom_5.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/phytom_6.png', highRes: 'asset/img/high/phytom_6.jpg' }
     ],
 
     'projet-Vitrine': [
-      { lowRes: 'asset/img/low-line-transp/vitrine_1.png', highRes: 'asset/img/high/vitrine_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/vitrine_2.png', highRes: 'asset/img/high/vitrine_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/vitrine_3.png', highRes: 'asset/img/high/vitrine_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/vitrine_4.png', highRes: 'asset/img/high/vitrine_4.jpg' },
-      { lowRes: 'asset/img/low-line-transp/vitrine_5.png', highRes: 'asset/img/high/vitrine_5.jpg' },
-      { lowRes: 'asset/img/low-line-transp/vitrine_6.png', highRes: 'asset/img/high/vitrine_6.jpg' },
-      { lowRes: 'asset/img/low-line-transp/vitrine_7.png', highRes: 'asset/img/high/vitrine_7.jpg' },
-      { lowRes: 'asset/img/low-line-transp/vitrine_8.png', highRes: 'asset/img/high/vitrine_8.jpg' }
-    ],
-
-    'thumbnails': [
-      { lowRes: 'asset/img/low-line-transp/hack-thumbnail_1.png', highRes: 'asset/img/high/hack-thumbnail_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/hack-thumbnail_2.png', highRes: 'asset/img/high/hack-thumbnail_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/hack-thumbnail_3.png', highRes: 'asset/img/high/hack-thumbnail_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/HAL9000-thumbnail_1.png', highRes: 'asset/img/high/HAL9000-thumbnail_1.jpg' },
-      { lowRes: 'asset/img/low-line-transp/HAL9000-thumbnail_2.png', highRes: 'asset/img/high/HAL9000-thumbnail_2.jpg' },
-      { lowRes: 'asset/img/low-line-transp/HAL9000-thumbnail_3.png', highRes: 'asset/img/high/HAL9000-thumbnail_3.jpg' },
-      { lowRes: 'asset/img/low-line-transp/HAL9000-thumbnail_4.png', highRes: 'asset/img/high/HAL9000-thumbnail_4.jpg' },
-      { lowRes: 'asset/img/low-line-transp/offkey_1-thumbnail.png', highRes: 'asset/img/high/offkey_1-thumbnail.jpg' }
+      { type: 'image', lowRes: 'asset/img/low-line-transp/vitrine_1.png', highRes: 'asset/img/high/vitrine_1.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/vitrine_2.png', highRes: 'asset/img/high/vitrine_2.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/vitrine_3.png', highRes: 'asset/img/high/vitrine_3.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/vitrine_4.png', highRes: 'asset/img/high/vitrine_4.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/vitrine_5.png', highRes: 'asset/img/high/vitrine_5.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/vitrine_6.png', highRes: 'asset/img/high/vitrine_6.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/vitrine_7.png', highRes: 'asset/img/high/vitrine_7.jpg' },
+      { type: 'image', lowRes: 'asset/img/low-line-transp/vitrine_8.png', highRes: 'asset/img/high/vitrine_8.jpg' }
     ]
-    };
 
-  // Détection du mode d'interaction
+    };
+    
+
+    
+
+// Détection du mode d'interaction
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
   const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   const isDevToolsMobile = window.innerWidth <= 768 && !isMobile;
@@ -657,6 +670,32 @@
   
   // État global pour chaque projet
   const projectStates = new Map();
+  
+  // Gestionnaire global des médias actifs
+  const mediaManager = {
+    activeMedia: null,
+    
+    stopAllMedia() {
+      // Arrêter tous les médias audio/vidéo
+      document.querySelectorAll('audio, video').forEach(media => {
+        media.pause();
+        media.currentTime = 0;
+      });
+      
+      this.activeMedia = null;
+      console.log('All media stopped');
+    },
+    
+    setActiveMedia(mediaElement) {
+      if (this.activeMedia && this.activeMedia !== mediaElement) {
+        // Arrêter le média précédent
+        if (this.activeMedia.tagName === 'AUDIO' || this.activeMedia.tagName === 'VIDEO') {
+          this.activeMedia.pause();
+        }
+      }
+      this.activeMedia = mediaElement;
+    }
+  };
 
   // Variables pour l'animation globale
   let animationFrameId = null;
@@ -693,13 +732,13 @@
   }
 
   // Fonction pour obtenir une position aléatoire dans section-clic
-  function getRandomPosition(sectionClic, imgWidth, imgHeight) {
+  function getRandomPosition(sectionClic, elementWidth, elementHeight) {
     const rect = sectionClic.getBoundingClientRect();
     const containerWidth = rect.width;
     const containerHeight = rect.height;
     
-    const maxX = Math.max(0, containerWidth - imgWidth);
-    const maxY = Math.max(0, containerHeight - imgHeight);
+    const maxX = Math.max(0, containerWidth - elementWidth);
+    const maxY = Math.max(0, containerHeight - elementHeight);
     
     return {
       x: Math.random() * maxX,
@@ -707,25 +746,27 @@
     };
   }
 
-  // Fonction pour dimensionner l'image
-  function calculateImageDimensions(naturalWidth, naturalHeight, container) {
+  // Fonction pour dimensionner l'élément
+  function calculateElementDimensions(container, mediaType = 'image') {
     const rect = container.getBoundingClientRect();
-    const maxWidth = rect.width * (isMobile ? 0.45 : 0.35);
-    const maxHeight = rect.height * (isMobile ? 0.45 : 0.35);
+    let maxWidth, maxHeight;
     
-    let finalWidth = naturalWidth;
-    let finalHeight = naturalHeight;
-    
-    if (finalWidth > maxWidth || finalHeight > maxHeight) {
-      const widthRatio = maxWidth / finalWidth;
-      const heightRatio = maxHeight / finalHeight;
-      const ratio = Math.min(widthRatio, heightRatio);
-      
-      finalWidth = Math.round(finalWidth * ratio);
-      finalHeight = Math.round(finalHeight * ratio);
+    switch (mediaType) {
+      case 'video':
+      case 'iframe':
+        maxWidth = rect.width * (isMobile ? 0.6 : 0.5);
+        maxHeight = rect.height * (isMobile ? 0.5 : 0.4);
+        break;
+      case 'audio':
+        maxWidth = rect.width * (isMobile ? 0.8 : 0.6);
+        maxHeight = isMobile ? 80 : 60; // Hauteur fixe pour audio player
+        break;
+      default: // image
+        maxWidth = rect.width * (isMobile ? 0.45 : 0.35);
+        maxHeight = rect.height * (isMobile ? 0.45 : 0.35);
     }
     
-    return { width: finalWidth, height: finalHeight };
+    return { width: maxWidth, height: maxHeight };
   }
 
   // Fonction pour obtenir les limites de mouvement (section-mvmt)
@@ -736,250 +777,375 @@
     return sectionMvmt.getBoundingClientRect();
   }
 
-  // Fonction pour créer une image dans un projet
- function createProjectImage(projectId, imageConfig, imageIndex, sectionClic) {
-  const state = projectStates.get(projectId);
-  if (!state) return null;
+  // Fonction pour créer un conteneur de média
+  function createMediaContainer(projectId, mediaConfig, mediaIndex, sectionClic) {
+    const state = projectStates.get(projectId);
+    if (!state) return null;
 
-  const img = document.createElement('img');
-  img.className = 'project-image';
-  img.style.position = 'absolute';
-  img.style.cursor = 'grab';
-  img.style.transition = 'transform 0.2s ease-out, opacity 0.15s ease-out';
-  img.style.transform = 'scale(1)';
-  img.style.opacity = '0';
-  img.loading = 'lazy';
+    // Conteneur principal pour le média
+    const container = document.createElement('div');
+    container.className = 'project-media';
+    container.style.position = 'absolute';
+    container.style.cursor = 'grab';
+    container.style.transition = 'transform 0.2s ease-out, opacity 0.15s ease-out';
+    container.style.transform = 'scale(1)';
+    container.style.opacity = '0';
+    container.style.overflow = 'hidden';
+    container.style.borderRadius = '4px';
 
-  // Attribuer une vitesse aléatoire de la pool
-  const availableSpeeds = [...fixedSpeeds];
-  const randomIndex = Math.floor(Math.random() * availableSpeeds.length);
-  const assignedSpeed = availableSpeeds[randomIndex];
+    // Attribuer une vitesse aléatoire de la pool
+    const availableSpeeds = [...fixedSpeeds];
+    const randomIndex = Math.floor(Math.random() * availableSpeeds.length);
+    const assignedSpeed = availableSpeeds[randomIndex];
 
-  img.projectData = {
-    projectId,
-    imageIndex,
-    lowRes: imageConfig.lowRes,
-    highRes: imageConfig.highRes,
-    isHighRes: false,
-    isActive: false,
-    isDragging: false,
-    wasDragged: false,
-    highResTimer: null,
-    creationTime: Date.now(),
-    activationTime: null,
-    tapCount: shouldUseTouchMode ? 0 : undefined,
-    isMoving: false,
-    speed: baseSpeed * assignedSpeed,
-    angle: Math.random() * 360,
-    targetAngle: Math.random() * 360,
-    angleChangeTimer: 0,
-    transitionProgress: 1,
-    hasChangedDirection: false
-  };
+    // Données attachées au conteneur
+    container.mediaData = {
+      projectId,
+      mediaIndex,
+      mediaType: mediaConfig.type,
+      config: mediaConfig,
+      isActive: false,
+      isDragging: false,
+      wasDragged: false,
+      creationTime: Date.now(),
+      activationTime: null,
+      tapCount: shouldUseTouchMode ? 0 : undefined,
+      mediaElement: null, // Référence vers l'élément média actuel
+      // Propriétés de mouvement
+      isMoving: false,
+      speed: baseSpeed * assignedSpeed,
+      angle: Math.random() * 360,
+      targetAngle: Math.random() * 360,
+      angleChangeTimer: 0,
+      transitionProgress: 1,
+      hasChangedDirection: false
+    };
 
-  const nextZIndex = state.getNextZIndex();
-  img.style.zIndex = nextZIndex;
+    // Calculer les dimensions et la position
+    const { width, height } = calculateElementDimensions(sectionClic, mediaConfig.type);
+    container.style.width = width + 'px';
+    container.style.height = height + 'px';
 
-  // Dimensionnement
-  const dimensionImg = new Image();
-  dimensionImg.onload = () => {
-    const { width, height } = calculateImageDimensions(
-      dimensionImg.naturalWidth,
-      dimensionImg.naturalHeight,
-      sectionClic // 📌 apparition calculée par rapport à section-clic
-    );
-
-    img.style.width = width + 'px';
-    img.style.height = height + 'px';
-    img.style.objectFit = 'cover';
-
-    // 📌 Position initiale dans section-clic
     const { x, y } = getRandomPosition(sectionClic, width, height);
+    container.style.left = x + 'px';
+    container.style.top = y + 'px';
 
-    // Mais appliquée dans section-mvmt (coords relatives à son parent)
-    const clicRect = sectionClic.getBoundingClientRect();
-    const mvmtRect = state.projectElement.querySelector('.section-mvmt').getBoundingClientRect();
+    // Calculer le z-index initial
+    const nextZIndex = state.getNextZIndex();
+    container.style.zIndex = nextZIndex;
 
-    // Décalage des coordonnées : on convertit la position "dans clic" vers "dans mvmt"
-    const offsetX = clicRect.left - mvmtRect.left;
-    const offsetY = clicRect.top - mvmtRect.top;
+    // Créer le contenu initial (thumbnail)
+    createThumbnailContent(container, mediaConfig);
 
-    img.style.left = (x + offsetX) + 'px';
-    img.style.top  = (y + offsetY) + 'px';
+    // Gestion des interactions et drag & drop
+    setupMediaInteractions(container);
+    setupMediaDragAndDrop(container, state.projectElement);
 
-    img.src = imageConfig.lowRes;
-    img.style.opacity = '1';
+    // Ajouter à section-mvmt
+    const sectionMvmt = state.projectElement.querySelector('.section-mvmt');
+    if (sectionMvmt) {
+      sectionMvmt.appendChild(container);
+    } else {
+      sectionClic.appendChild(container);
+    }
+    
+    container.style.opacity = '1';
+    state.addMedia(container);
+    
+    return container;
+  }
 
-    preloadHighResImage(imageConfig.highRes);
-  };
-  dimensionImg.src = imageConfig.highRes;
+  // Fonction pour créer le contenu thumbnail
+  function createThumbnailContent(container, mediaConfig) {
+    container.innerHTML = '';
+    
+    const thumbnail = document.createElement('img');
+    thumbnail.src = mediaConfig.thumbnail || mediaConfig.lowRes;
+    thumbnail.style.width = '100%';
+    thumbnail.style.height = '100%';
+    thumbnail.style.objectFit = 'cover';
+    thumbnail.style.display = 'block';
+    
+    // Ajouter un overlay avec l'icône du type de média
+    const overlay = document.createElement('div');
+    overlay.className = 'media-overlay';
+    overlay.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      pointer-events: none;
+    `;
+    
+    // Icône selon le type de média
+    const iconMap = {
+      video: '▶',
+      audio: '🎵',
+      iframe: '🌐',
+      image: ''
+    };
+    
+    overlay.textContent = iconMap[mediaConfig.type] || '';
+    
+    container.appendChild(thumbnail);
+    if (overlay.textContent) {
+      container.appendChild(overlay);
+    }
+    
+    container.mediaData.mediaElement = thumbnail;
+  }
 
-  setupImageInteractions(img);
-  setupDragAndDrop(img, state.projectElement);
+  // Fonction pour créer le contenu actif
+  function createActiveContent(container, mediaConfig) {
+    container.innerHTML = '';
+    let mediaElement;
+    
+    switch (mediaConfig.type) {
+      case 'image':
+        mediaElement = document.createElement('img');
+        mediaElement.src = mediaConfig.highRes || mediaConfig.src;
+        mediaElement.style.width = '100%';
+        mediaElement.style.height = '100%';
+        mediaElement.style.objectFit = 'cover';
+        break;
+        
+      case 'video':
+        mediaElement = document.createElement('video');
+        mediaElement.src = mediaConfig.src;
+        mediaElement.controls = true;
+        mediaElement.style.width = '100%';
+        mediaElement.style.height = '100%';
+        mediaElement.style.objectFit = 'cover';
+        mediaElement.preload = 'metadata';
+        
+        // Gestionnaire d'événements pour le video
+        mediaElement.addEventListener('play', () => {
+          mediaManager.setActiveMedia(mediaElement);
+        });
+        break;
+        
+      case 'audio':
+        const audioWrapper = document.createElement('div');
+        audioWrapper.style.cssText = `
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          padding: 10px;
+          box-sizing: border-box;
+        `;
+        
+        const title = document.createElement('div');
+        title.textContent = mediaConfig.title || 'Audio';
+        title.style.cssText = `
+          font-size: 14px;
+          font-weight: bold;
+          margin-bottom: 10px;
+          text-align: center;
+        `;
+        
+        mediaElement = document.createElement('audio');
+        mediaElement.src = mediaConfig.src;
+        mediaElement.controls = true;
+        mediaElement.style.width = '100%';
+        mediaElement.preload = 'metadata';
+        
+        // Gestionnaire d'événements pour l'audio
+        mediaElement.addEventListener('play', () => {
+          mediaManager.setActiveMedia(mediaElement);
+        });
+        
+        audioWrapper.appendChild(title);
+        audioWrapper.appendChild(mediaElement);
+        container.appendChild(audioWrapper);
+        break;
+        
+      case 'iframe':
+        const iframeWrapper = document.createElement('div');
+        iframeWrapper.style.cssText = `
+          width: 100%;
+          height: 100%;
+          position: relative;
+          background: #f0f0f0;
+        `;
+        
+        mediaElement = document.createElement('iframe');
+        mediaElement.src = mediaConfig.src;
+        mediaElement.style.cssText = `
+          width: 100%;
+          height: 100%;
+          border: none;
+          border-radius: 4px;
+        `;
+        mediaElement.loading = 'lazy';
+        
+        iframeWrapper.appendChild(mediaElement);
+        container.appendChild(iframeWrapper);
+        break;
+    }
+    
+    if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
+      container.appendChild(mediaElement);
+    }
+    
+    container.mediaData.mediaElement = mediaElement;
+    
+    // Précharger l'image HD si c'est une image
+    if (mediaConfig.type === 'image' && mediaConfig.highRes) {
+      preloadHighResImage(mediaConfig.highRes);
+    }
+  }
 
-  // 📌 insertion dans section-mvmt (pour que rien ne soit croppé)
-  const sectionMvmt = state.projectElement.querySelector('.section-mvmt');
-  sectionMvmt.appendChild(img);
-
-  state.addImage(img);
-
-  return img;
-}
-
-
-  // Fonction pour activer une image
-  function activateImage(img) {
-    const projectId = img.projectData.projectId;
+  // Fonction pour activer un média
+  function activateMedia(container) {
+    const projectId = container.mediaData.projectId;
     const state = projectStates.get(projectId);
     if (!state) return;
 
-    if (img.projectData.isActive) return;
+    if (container.mediaData.isActive) return;
 
-    // Désactiver toutes les autres images du projet
-    state.deactivateAllImages();
+    // Désactiver tous les autres médias du projet
+    state.deactivateAllMedia();
+    
+    // Arrêter tous les médias en cours
+    mediaManager.stopAllMedia();
 
-    // Activer cette image
-    img.projectData.isActive = true;
-    img.projectData.activationTime = Date.now();
-    img.projectData.isMoving = false; // Les images actives sont immobiles
+    // Activer ce média
+    container.mediaData.isActive = true;
+    container.mediaData.activationTime = Date.now();
+    container.mediaData.isMoving = false; // Les médias actifs sont immobiles
     
     // Effet visuel
-    img.style.transform = 'scale(1.05)';
+    container.style.transform = 'scale(1.05)';
     
     // Mettre au premier plan
     const topZIndex = state.getTopZIndex();
-    img.style.zIndex = topZIndex;
+    container.style.zIndex = topZIndex;
 
-    // Nettoyer le timer existant
-    if (img.projectData.highResTimer) {
-      clearTimeout(img.projectData.highResTimer);
-      img.projectData.highResTimer = null;
-    }
+    // Créer le contenu actif
+    createActiveContent(container, container.mediaData.config);
 
-    // Passer en HD
-    if (!img.projectData.isHighRes) {
-      if (preloadedImages.has(img.projectData.highRes)) {
-        img.src = img.projectData.highRes;
-        img.projectData.isHighRes = true;
-      } else {
-        preloadHighResImage(img.projectData.highRes).then(highResSrc => {
-          if (img.projectData.isActive && img.parentNode) {
-            img.src = highResSrc;
-            img.projectData.isHighRes = true;
-          }
-        }).catch(console.error);
+    // Démarrer le mouvement pour tous les autres médias
+    state.startMovementForInactiveMedia();
+
+    console.log(`Media ${container.mediaData.mediaIndex} (${container.mediaData.mediaType}) activated in project ${projectId}`);
+  }
+
+  // Fonction pour désactiver un média
+  function deactivateMedia(container) {
+    if (!container.mediaData.isActive) return;
+    
+    container.mediaData.isActive = false;
+    container.mediaData.activationTime = null;
+    container.mediaData.isMoving = true; // Les médias inactifs sont en mouvement
+    
+    // Arrêter le média s'il est en cours de lecture
+    const mediaElement = container.mediaData.mediaElement;
+    if (mediaElement && (mediaElement.tagName === 'AUDIO' || mediaElement.tagName === 'VIDEO')) {
+      mediaElement.pause();
+      if (mediaManager.activeMedia === mediaElement) {
+        mediaManager.activeMedia = null;
       }
     }
-
-    // Démarrer le mouvement pour toutes les autres images
-    state.startMovementForInactiveImages();
-
-    console.log(`Image ${img.projectData.imageIndex} activated in project ${projectId}`);
-  }
-
-  // Fonction pour désactiver une image
-  function deactivateImage(img) {
-    if (!img.projectData.isActive) return;
-    
-    img.projectData.isActive = false;
-    img.projectData.activationTime = null;
-    img.projectData.isMoving = true; // Les images inactives sont en mouvement
     
     // Effet visuel
-    img.style.transform = 'scale(1)';
+    container.style.transform = 'scale(1)';
     
     // Retour au z-index basé sur la chronologie
-    const state = projectStates.get(img.projectData.projectId);
+    const state = projectStates.get(container.mediaData.projectId);
     if (state) {
-      const chronologicalZIndex = state.getChronologicalZIndex(img);
-      img.style.zIndex = chronologicalZIndex;
+      const chronologicalZIndex = state.getChronologicalZIndex(container);
+      container.style.zIndex = chronologicalZIndex;
     }
 
-    // Retour vers low-res avec délai
-    if (img.projectData.isHighRes) {
-      img.projectData.highResTimer = setTimeout(() => {
-        if (!img.projectData.isActive && img.parentNode) {
-          img.src = img.projectData.lowRes;
-          img.projectData.isHighRes = false;
-        }
-        img.projectData.highResTimer = null;
-      }, 200);
-    }
+    // Retour au thumbnail
+    createThumbnailContent(container, container.mediaData.config);
 
-    console.log(`Image ${img.projectData.imageIndex} deactivated`);
+    console.log(`Media ${container.mediaData.mediaIndex} (${container.mediaData.mediaType}) deactivated`);
   }
 
-  // Configuration des interactions pour les images
-  function setupImageInteractions(img) {
+  // Configuration des interactions pour les médias
+  function setupMediaInteractions(container) {
     if (shouldUseTouchMode) {
       // Mode tactile : système de double tap
-      img.addEventListener('touchstart', e => {
-        if (img.projectData.isDragging) return;
-        img.projectData.touchStartTime = Date.now();
+      container.addEventListener('touchstart', e => {
+        if (container.mediaData.isDragging) return;
+        container.mediaData.touchStartTime = Date.now();
       });
       
-      img.addEventListener('touchend', e => {
-        if (img.projectData.isDragging || img.projectData.wasDragged) return;
+      container.addEventListener('touchend', e => {
+        if (container.mediaData.isDragging || container.mediaData.wasDragged) return;
         e.preventDefault();
         
-        const touchDuration = Date.now() - (img.projectData.touchStartTime || 0);
+        const touchDuration = Date.now() - (container.mediaData.touchStartTime || 0);
         if (touchDuration < 300) { // Tap rapide
-          handleTouchInteraction(img);
+          handleMediaTouchInteraction(container);
         }
       });
       
       // Support dev tools mobile
       if (isDevToolsMobile) {
-        img.addEventListener('click', e => {
-          if (!img.projectData.isDragging && !img.projectData.wasDragged) {
+        container.addEventListener('click', e => {
+          if (!container.mediaData.isDragging && !container.mediaData.wasDragged) {
             e.stopPropagation();
-            handleTouchInteraction(img);
+            handleMediaTouchInteraction(container);
           }
         });
       }
     } else {
       // Mode desktop : hover + click
-      img.addEventListener('mouseenter', () => {
-        if (!img.projectData.isDragging) {
-          activateImage(img);
+      container.addEventListener('mouseenter', () => {
+        if (!container.mediaData.isDragging) {
+          activateMedia(container);
         }
       });
 
-      img.addEventListener('click', e => {
-        if (!img.projectData.isDragging && !img.projectData.wasDragged) {
+      container.addEventListener('click', e => {
+        if (!container.mediaData.isDragging && !container.mediaData.wasDragged) {
           e.stopPropagation();
-          activateImage(img);
+          activateMedia(container);
         }
       });
     }
   }
 
-  // Gestion des interactions tactiles
-  function handleTouchInteraction(img) {
-    const d = img.projectData;
+  // Gestion des interactions tactiles pour médias
+  function handleMediaTouchInteraction(container) {
+    const d = container.mediaData;
     
     if (d.isActive && d.tapCount === 1) {
-      // Deuxième tap sur image active : ne rien faire
+      // Deuxième tap sur média actif : ne rien faire
       d.tapCount = 0;
     } else {
       // Premier tap : activer
       d.tapCount = 1;
-      activateImage(img);
+      activateMedia(container);
     }
   }
 
-  // Configuration du drag & drop
-  function setupDragAndDrop(img, projectElement) {
-    img.style.cursor = 'grab';
+  // Configuration du drag & drop pour médias
+  function setupMediaDragAndDrop(container, projectElement) {
+    container.style.cursor = 'grab';
 
     let newX = 0, newY = 0, startX = 0, startY = 0;
     let isDragging = false;
     let dragStartTime = 0;
 
-    img.addEventListener('mousedown', mouseDown);
+    container.addEventListener('mousedown', mouseDown);
 
     if (shouldUseTouchMode) {
-      img.addEventListener('touchstart', e => {
+      container.addEventListener('touchstart', e => {
         e.preventDefault();
         const t = e.touches[0];
         mouseDown({ 
@@ -994,19 +1160,19 @@
       if (e.preventDefault) e.preventDefault();
       isDragging = true;
       dragStartTime = Date.now();
-      const d = img.projectData;
+      const d = container.mediaData;
       d.isDragging = true;
       d.isMoving = false; // Arrêter le mouvement pendant le drag
       
-      // Activer immédiatement l'image si pas déjà active
+      // Activer immédiatement le média si pas déjà actif
       if (!d.isActive) {
-        activateImage(img);
+        activateMedia(container);
       }
       
       startX = e.clientX;
       startY = e.clientY;
       
-      img.style.cursor = 'grabbing';
+      container.style.cursor = 'grabbing';
       
       document.addEventListener('mousemove', mouseMove);
       document.addEventListener('mouseup', mouseUp);
@@ -1041,29 +1207,29 @@
       startX = e.clientX;
       startY = e.clientY;
       
-      const newLeft = img.offsetLeft - newX;
-      const newTop = img.offsetTop - newY;
+      const newLeft = container.offsetLeft - newX;
+      const newTop = container.offsetTop - newY;
       
-      // Garder l'image dans les limites de section-mvmt
+      // Garder le média dans les limites de section-mvmt
       const movementBounds = getMovementBounds(projectElement);
-      const projectRect = projectElement.getBoundingClientRect();
       
       if (movementBounds) {
-        const imgRect = img.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
         
         // Calculer les limites relatives à section-mvmt
-        const maxLeft = movementBounds.width - imgRect.width;
-        const maxTop = movementBounds.height - imgRect.height;
+        const maxLeft = movementBounds.width - containerRect.width;
+        const maxTop = movementBounds.height - containerRect.height;
         
-        img.style.left = Math.max(0, Math.min(maxLeft, newLeft)) + 'px';
-        img.style.top = Math.max(0, Math.min(maxTop, newTop)) + 'px';
+        container.style.left = Math.max(0, Math.min(maxLeft, newLeft)) + 'px';
+        container.style.top = Math.max(0, Math.min(maxTop, newTop)) + 'px';
       } else {
         // Fallback sur les limites du projet
-        const maxLeft = projectRect.width - img.offsetWidth;
-        const maxTop = projectRect.height - img.offsetHeight;
+        const projectRect = projectElement.getBoundingClientRect();
+        const maxLeft = projectRect.width - container.offsetWidth;
+        const maxTop = projectRect.height - container.offsetHeight;
         
-        img.style.left = Math.max(0, Math.min(maxLeft, newLeft)) + 'px';
-        img.style.top = Math.max(0, Math.min(maxTop, newTop)) + 'px';
+        container.style.left = Math.max(0, Math.min(maxLeft, newLeft)) + 'px';
+        container.style.top = Math.max(0, Math.min(maxTop, newTop)) + 'px';
       }
     }
 
@@ -1071,7 +1237,7 @@
       if (!isDragging) return;
       
       const dragDuration = Date.now() - dragStartTime;
-      const d = img.projectData;
+      const d = container.mediaData;
       
       const wasDragOperation = dragDuration > 150;
       
@@ -1083,9 +1249,9 @@
         d.wasDragged = false;
       }, 50);
       
-      img.style.cursor = 'grab';
+      container.style.cursor = 'grab';
       
-      // Reprendre le mouvement si l'image n'est pas active
+      // Reprendre le mouvement si le média n'est pas actif
       if (!d.isActive) {
         d.isMoving = true;
         // Changer de direction après le drag
@@ -1110,14 +1276,14 @@
 
     // Traiter chaque projet
     projectStates.forEach(state => {
-      const movingImages = state.imageList.filter(img => 
-        img.projectData.isMoving && !img.projectData.isDragging && img.parentNode
+      const movingMedia = state.mediaList.filter(container => 
+        container.mediaData.isMoving && !container.mediaData.isDragging && container.parentNode
       );
 
-      movingImages.forEach(img => {
-        const d = img.projectData;
-        let x = parseFloat(img.style.left) || 0;
-        let y = parseFloat(img.style.top) || 0;
+      movingMedia.forEach(container => {
+        const d = container.mediaData;
+        let x = parseFloat(container.style.left) || 0;
+        let y = parseFloat(container.style.top) || 0;
 
         // Gestion des changements d'angle
         d.angleChangeTimer++;
@@ -1150,11 +1316,11 @@
         // Vérification des limites avec rebond
         const movementBounds = getMovementBounds(state.projectElement);
         if (movementBounds) {
-          const imgWidth = img.offsetWidth || 150;
-          const imgHeight = img.offsetHeight || 150;
+          const containerWidth = container.offsetWidth || 150;
+          const containerHeight = container.offsetHeight || 150;
           
-          const maxX = movementBounds.width - imgWidth;
-          const maxY = movementBounds.height - imgHeight;
+          const maxX = movementBounds.width - containerWidth;
+          const maxY = movementBounds.height - containerHeight;
           
           // Rebond sur les bords
           if (x <= 0 || x >= maxX) {
@@ -1174,8 +1340,8 @@
         const deltaX = Math.abs(dx);
         const deltaY = Math.abs(dy);
         if (deltaX > 0.3 || deltaY > 0.3) {
-          img.style.left = `${x}px`;
-          img.style.top = `${y}px`;
+          container.style.left = `${x}px`;
+          container.style.top = `${y}px`;
         }
       });
     });
@@ -1183,31 +1349,31 @@
     animationFrameId = requestAnimationFrame(updatePositions);
   }
 
-  // Fonction pour afficher l'image suivante
-  function showNextImage(projectId) {
-    const images = projectImages[projectId];
+  // Fonction pour afficher le média suivant
+  function showNextMedia(projectId) {
+    const medias = projectMedias[projectId];
     const state = projectStates.get(projectId);
-    if (!images || !state) return;
+    if (!medias || !state) return;
 
-    // Désactiver toutes les images existantes
-    state.deactivateAllImages();
+    // Désactiver tous les médias existants
+    state.deactivateAllMedia();
     
     // Calculer le prochain index
-    state.currentIndex = (state.currentIndex + 1) % images.length;
-    const nextImageConfig = images[state.currentIndex];
+    state.currentIndex = (state.currentIndex + 1) % medias.length;
+    const nextMediaConfig = medias[state.currentIndex];
     
-    // Créer et afficher la nouvelle image
-    const newImage = createProjectImage(
+    // Créer et afficher le nouveau média
+    const newMediaContainer = createMediaContainer(
       projectId, 
-      nextImageConfig, 
+      nextMediaConfig, 
       state.currentIndex, 
       state.sectionClic
     );
 
-    if (newImage) {
-      // Nouvelle image = active automatiquement
+    if (newMediaContainer) {
+      // Nouveau média = actif automatiquement
       setTimeout(() => {
-        activateImage(newImage);
+        activateMedia(newMediaContainer);
       }, 100);
     }
 
@@ -1217,83 +1383,99 @@
     }
   }
 
-  // Classe pour gérer l'état d'un projet
+  // Classe pour gérer l'état d'un projet avec médias
   class ProjectState {
-    constructor(projectId, projectElement, images) {
+    constructor(projectId, projectElement, medias) {
       this.projectId = projectId;
       this.projectElement = projectElement;
       this.sectionClic = projectElement.querySelector('.section-clic');
-      this.images = images;
+      this.medias = medias;
       this.currentIndex = 0;
-      this.imageList = [];
-      this.maxImages = 4;
+      this.mediaList = [];
+      this.maxMedias = 4;
       this.baseZIndex = 50;
     }
 
-    addImage(img) {
-      this.imageList.push(img);
+    addMedia(container) {
+      this.mediaList.push(container);
       
-      if (this.imageList.length > this.maxImages) {
-        const oldestImage = this.imageList.shift();
-        this.removeImage(oldestImage);
+      if (this.mediaList.length > this.maxMedias) {
+        const oldestMedia = this.mediaList.shift();
+        this.removeMedia(oldestMedia);
       }
     }
 
-    removeImage(img) {
-      if (img.projectData.highResTimer) {
-        clearTimeout(img.projectData.highResTimer);
+    removeMedia(container) {
+      // Arrêter le média s'il est en cours
+      const mediaElement = container.mediaData.mediaElement;
+      if (mediaElement && (mediaElement.tagName === 'AUDIO' || mediaElement.tagName === 'VIDEO')) {
+        mediaElement.pause();
+        if (mediaManager.activeMedia === mediaElement) {
+          mediaManager.activeMedia = null;
+        }
       }
       
-      const index = this.imageList.indexOf(img);
+      const index = this.mediaList.indexOf(container);
       if (index > -1) {
-        this.imageList.splice(index, 1);
+        this.mediaList.splice(index, 1);
       }
       
-      if (img.parentNode) {
-        img.parentNode.removeChild(img);
+      if (container.parentNode) {
+        container.parentNode.removeChild(container);
       }
       
-      console.log(`Removed oldest image from project ${this.projectId}`);
+      console.log(`Removed oldest media from project ${this.projectId}`);
     }
 
-    deactivateAllImages() {
-      this.imageList.forEach(img => {
-        if (img.projectData.isActive) {
-          deactivateImage(img);
+    deactivateAllMedia() {
+      this.mediaList.forEach(container => {
+        if (container.mediaData.isActive) {
+          deactivateMedia(container);
         }
       });
     }
 
-    startMovementForInactiveImages() {
-      // Démarrer le mouvement seulement s'il y a plus d'une image
-      if (this.imageList.length > 1) {
-        this.imageList.forEach(img => {
-          if (!img.projectData.isActive) {
-            img.projectData.isMoving = true;
+    startMovementForInactiveMedia() {
+      // Démarrer le mouvement seulement s'il y a plus d'un média
+      if (this.mediaList.length > 1) {
+        this.mediaList.forEach(container => {
+          if (!container.mediaData.isActive) {
+            container.mediaData.isMoving = true;
           }
         });
       }
     }
 
     getNextZIndex() {
-      return this.baseZIndex + this.imageList.length;
+      return this.baseZIndex + this.mediaList.length;
     }
 
     getTopZIndex() {
-      return this.baseZIndex + this.maxImages + 10;
+      return this.baseZIndex + this.maxMedias + 10;
     }
 
-    getChronologicalZIndex(img) {
-      const index = this.imageList.indexOf(img);
+    getChronologicalZIndex(container) {
+      const index = this.mediaList.indexOf(container);
       return this.baseZIndex + index;
     }
+  }
+
+  // Fonction pour arrêter tous les médias lors du changement de section
+  function handleSectionChange() {
+    console.log('Section changed - stopping all media');
+    mediaManager.stopAllMedia();
+    
+    // Désactiver tous les médias de tous les projets
+    projectStates.forEach(state => {
+      state.deactivateAllMedia();
+    });
   }
 
   // Initialisation des projets
   function initializeProject(projectElement) {
     const projectId = projectElement.id;
-    const images = projectImages[projectId];
-    if (!images || images.length === 0) return;
+    const medias = projectMedias[projectId];
+    if (!medias || medias.length === 0) return;
 
     const sectionClic = projectElement.querySelector('.section-clic');
     const sectionMvmt = projectElement.querySelector('.section-mvmt');
@@ -1307,49 +1489,52 @@
     sectionClic.style.position = 'relative';
 
     // Initialiser l'état du projet
-    const state = new ProjectState(projectId, projectElement, images);
+    const state = new ProjectState(projectId, projectElement, medias);
     projectStates.set(projectId, state);
 
-    // Afficher la première image (immobile jusqu'au premier clic)
-    const firstImage = createProjectImage(projectId, images[0], 0, sectionClic);
+    // Afficher le premier média (immobile jusqu'au premier clic)
+    const firstMediaContainer = createMediaContainer(projectId, medias[0], 0, sectionClic);
     
-    if (firstImage) {
-      // Première image = active automatiquement et immobile
+    if (firstMediaContainer) {
+      // Premier média = actif automatiquement et immobile
       setTimeout(() => {
-        activateImage(firstImage);
+        activateMedia(firstMediaContainer);
       }, 100);
     }
 
-    // Gérer les clics sur la section (mais pas sur les images)
+    // Gérer les clics sur la section (mais pas sur les médias)
     projectElement.addEventListener('click', (e) => {
-      if (e.target.classList.contains('project-image')) {
+      if (e.target.closest('.project-media')) {
         return;
       }
       
-      showNextImage(projectId);
+      showNextMedia(projectId);
     });
 
     // Support tactile pour la section
     if (shouldUseTouchMode) {
       projectElement.addEventListener('touchend', (e) => {
-        if (!e.target.classList.contains('project-image')) {
+        if (!e.target.closest('.project-media')) {
           e.preventDefault();
-          showNextImage(projectId);
+          showNextMedia(projectId);
         }
       });
     }
 
-    console.log(`Project ${projectId} initialized with movement system`);
+    console.log(`Project ${projectId} initialized with media system - ${medias.length} medias`);
   }
 
   // Gestion de la visibilité de l'onglet pour optimiser les performances
   function handleVisibilityChange() {
     if (document.visibilityState === 'hidden') {
+      // Mettre en pause tous les médias et arrêter l'animation
+      mediaManager.stopAllMedia();
       if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
         animationFrameId = null;
       }
     } else if (document.visibilityState === 'visible') {
+      // Reprendre l'animation
       lastTimestamp = performance.now();
       if (!animationFrameId) {
         animationFrameId = requestAnimationFrame(updatePositions);
@@ -1361,39 +1546,77 @@
   if (shouldUseTouchMode) {
     document.addEventListener('click', (e) => {
       const target = e.target;
-      const isImage = target.classList.contains('project-image');
+      const isMedia = target.closest('.project-media');
       const isProjectSection = target.closest('.grid-projets');
 
-      if (!isImage && !isProjectSection) {
+      if (!isMedia && !isProjectSection) {
         projectStates.forEach(state => {
-          state.deactivateAllImages();
+          state.deactivateAllMedia();
         });
+        mediaManager.stopAllMedia();
       }
     });
   }
 
+  // Observer pour détecter le changement de section visible
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) {
+        // Section n'est plus visible - arrêter tous ses médias
+        const projectId = entry.target.id;
+        const state = projectStates.get(projectId);
+        if (state) {
+          state.deactivateAllMedia();
+        }
+      }
+    });
+  }, {
+    root: document.querySelector('#container-projets'),
+    threshold: 0.1
+  });
+
   // Event listeners pour la gestion de la visibilité
   document.addEventListener('visibilitychange', handleVisibilityChange);
 
+  // Event listener pour les changements de section (navigation)
+  document.addEventListener('keydown', (e) => {
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+      handleSectionChange();
+    }
+  });
+
+  // Event listeners pour les boutons de navigation
+  const navigationButtons = document.querySelectorAll('.fleches-sections-projets');
+  navigationButtons.forEach(button => {
+    button.addEventListener('click', handleSectionChange);
+    if (shouldUseTouchMode) {
+      button.addEventListener('touchend', handleSectionChange);
+    }
+  });
+
   // Cleanup au déchargement
   window.addEventListener('beforeunload', () => {
+    mediaManager.stopAllMedia();
     if (animationFrameId) {
       cancelAnimationFrame(animationFrameId);
     }
   });
 
   // Initialiser tous les projets disponibles
-  Object.keys(projectImages).forEach(projectId => {
+  Object.keys(projectMedias).forEach(projectId => {
     const projectElement = document.getElementById(projectId);
     if (projectElement) {
       initializeProject(projectElement);
+      // Observer les changements de visibilité de chaque section
+      sectionObserver.observe(projectElement);
     }
   });
 
   // Démarrer l'animation
   animationFrameId = requestAnimationFrame(updatePositions);
 
-  console.log('Enhanced project system with movement initialized');
+  console.log('Enhanced project system with multimedia support initialized');
 });
+
   </script>
   </html>

@@ -9,7 +9,11 @@ _page de projets bis :
     - drag&drop des images + déplacements dans la zone ?
     - images qui apparaissent en mode "actif" donc high-res (jusqu'à ce qu'on interagisse pour afficher une autre), pareil pour celle affichée d'office sur les sections
 
-    - zone d'apparition à corriger
+    - correction bugs 1ere img x
+    - hover effet actif momentané (tant que hover actif)
+    - adapter div pour media autres
+    - pimper cursor pour indiquer le clic x
+    - changer img par non-transparentes ou noires
     - clean le script pour enlever toute gestion du carrousel (puisqu'il n'y en a plus)
 
 _adapter à tous navigateurs (controles natifs safari/mozilla)
