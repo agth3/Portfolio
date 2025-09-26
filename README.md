@@ -11,7 +11,8 @@ _page de projets bis :
 
     - correction bugs 1ere img x
     - hover effet actif momentané (tant que hover actif)
-    - adapter div pour media autres
+    - adapter div pour media autres -> images actuellement toutes au même format c'est pas bon
+    render l'iframe drag&droppable
     - pimper cursor pour indiquer le clic x
     - changer img par non-transparentes ou noires
     - clean le script pour enlever toute gestion du carrousel (puisqu'il n'y en a plus)

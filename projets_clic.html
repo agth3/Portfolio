@@ -479,18 +479,18 @@
 
 
   //Curseur "clic"
-const cursor = document.querySelector('.custom-cursor');
+// const cursor = document.querySelector('.custom-cursor');
 
-  document.addEventListener('mousemove', e => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-  });
+//   document.addEventListener('mousemove', e => {
+//     cursor.style.left = e.clientX + 'px';
+//     cursor.style.top = e.clientY + 'px';
+//   });
 
 
     document.addEventListener("DOMContentLoaded", () => {
     // Configuration des images par projet
     const projectImages = {
-    'projet-Amasha': [
+    'projet-Stone-of-Amasha': [
       { type: 'image', lowRes: 'asset/img/low-line-transp/amasha_1.png', highRes: 'asset/img/high/amasha_1.jpg' },
       { type: 'image', lowRes: 'asset/img/low-line-transp/amasha_2.png', highRes: 'asset/img/high/amasha_2.jpg' },
       { type: 'image', lowRes: 'asset/img/low-line-transp/amasha_3.png', highRes: 'asset/img/high/amasha_3.jpg' },
@@ -501,7 +501,7 @@ const cursor = document.querySelector('.custom-cursor');
       { type: 'image', lowRes: 'asset/img/low-line-transp/amasha_8.png', highRes: 'asset/img/high/amasha_8.jpg' }
     ],
 
-    'projet-BriqueBloc': [
+    'projet-Brique-Bloc': [
       { type: 'image', lowRes: 'asset/img/low-line-transp/brique-bloc_1.png', highRes: 'asset/img/high/brique-bloc_1.jpg' },
       { type: 'image', lowRes: 'asset/img/low-line-transp/brique-bloc_2.png', highRes: 'asset/img/high/brique-bloc_2.jpg' },
       { type: 'image', lowRes: 'asset/img/low-line-transp/brique-bloc_3.png', highRes: 'asset/img/high/brique-bloc_3.jpg' },
@@ -509,7 +509,7 @@ const cursor = document.querySelector('.custom-cursor');
       { type: 'image', lowRes: 'asset/img/low-line-transp/brique-bloc_5.png', highRes: 'asset/img/high/brique-bloc_5.jpg' }
     ],
 
-    'projet-CatalogueBouees': [
+    'projet-Catalogue-bouees': [
       { type: 'image', lowRes: 'asset/img/low-line-transp/catalogue-bouees_1.png', highRes: 'asset/img/high/catalogue-bouees_1.jpg' },
       { type: 'image', lowRes: 'asset/img/low-line-transp/catalogue-bouees_2.png', highRes: 'asset/img/high/catalogue-bouees_2.jpg' },
       { type: 'image', lowRes: 'asset/img/low-line-transp/catalogue-bouees_3.png', highRes: 'asset/img/high/catalogue-bouees_3.jpg' },
@@ -533,7 +533,7 @@ const cursor = document.querySelector('.custom-cursor');
       { type: 'image', lowRes: 'asset/img/low-line-transp/cimes_9.png', highRes: 'asset/img/high/cimes_9.jpg' }
     ],
 
-    'projet-EntreEtTenir': [
+    'projet-Entre-et-tenir-pt1': [
       { type: 'image', lowRes: 'asset/img/low-line-transp/entre-et-tenir_2.png', highRes: 'asset/img/high/entre-et-tenir_2.jpg' },
       { type: 'image', lowRes: 'asset/img/low-line-transp/entre-et-tenir_1.png', highRes: 'asset/img/high/entre-et-tenir_1.jpg' },
       { type: 'image', lowRes: 'asset/img/low-line-transp/entre-et-tenir_3.png', highRes: 'asset/img/high/entre-et-tenir_3.jpg' },
@@ -544,12 +544,12 @@ const cursor = document.querySelector('.custom-cursor');
       { type: 'image', lowRes: 'asset/img/low-line-transp/entre-et-tenir_8.png', highRes: 'asset/img/high/entre-et-tenir_8.jpg' }
     ],
 
-    'projet-EntreEtTenir2': [
+    'projet-Entre-et-tenir-pt2': [
       { type: 'image', lowRes: 'asset/img/low-line-transp/entre-et-tenir-2_1.png', highRes: 'asset/img/high/entre-et-tenir-2_1.jpg' },
       { type: 'image', lowRes: 'asset/img/low-line-transp/entre-et-tenir-2_2.png', highRes: 'asset/img/high/entre-et-tenir-2_2.jpg' }
     ],
 
-    'projet-Hack': [
+    'projet-Affiches-Animees': [
       { type: 'video', thumbnail: 'asset/img/low-line-transp/hack-thumbnail_1.png', src: 'asset/media/hack-vid_1.mp4' },
       { type: 'video', thumbnail: 'asset/img/low-line-transp/hack-thumbnail_2.png', src: 'asset/media/hack-vid_2.mp4' },
       { type: 'video', thumbnail: 'asset/img/low-line-transp/hack-thumbnail_3.png', src: 'asset/media/hack-vid_3.mp4' },
@@ -575,7 +575,7 @@ const cursor = document.querySelector('.custom-cursor');
       { type: 'image', lowRes: 'asset/img/low-line-transp/HAL9000_5.png', highRes: 'asset/img/high/HAL9000_5.jpg' }
     ],
 
-    'projet-JustClick': [
+    'projet-Just-Click': [
       { type: 'iframe', thumbnail: 'asset/img/low-line-transp/just-click_3.png', src: 'https://agth3.github.io/just-click/', title: 'Interactive Demo Just Click'},
       { type: 'image', lowRes: 'asset/img/low-line-transp/just-click_1.png', highRes: 'asset/img/high/just-click_1.jpg' },
       { type: 'image', lowRes: 'asset/img/low-line-transp/just-click_2.png', highRes: 'asset/img/high/just-click_2.jpg' },
@@ -676,15 +676,17 @@ const cursor = document.querySelector('.custom-cursor');
     activeMedia: null,
     
     stopAllMedia() {
-      // Arrêter tous les médias audio/vidéo
-      document.querySelectorAll('audio, video').forEach(media => {
-        media.pause();
-        media.currentTime = 0;
-      });
-      
-      this.activeMedia = null;
-      console.log('All media stopped');
-    },
+  // Arrêter tous les médias audio/vidéo
+  document.querySelectorAll('audio, video').forEach(media => {
+    if (!media.paused) {
+      media.pause();
+    }
+    media.currentTime = 0;
+  });
+  
+  this.activeMedia = null;
+  console.log('All media stopped');
+},
     
     setActiveMedia(mediaElement) {
       if (this.activeMedia && this.activeMedia !== mediaElement) {
@@ -917,19 +919,26 @@ const cursor = document.querySelector('.custom-cursor');
         break;
         
       case 'video':
-        mediaElement = document.createElement('video');
-        mediaElement.src = mediaConfig.src;
-        mediaElement.controls = true;
-        mediaElement.style.width = '100%';
-        mediaElement.style.height = '100%';
-        mediaElement.style.objectFit = 'cover';
-        mediaElement.preload = 'metadata';
-        
-        // Gestionnaire d'événements pour le video
-        mediaElement.addEventListener('play', () => {
-          mediaManager.setActiveMedia(mediaElement);
-        });
-        break;
+  mediaElement = document.createElement('video');
+  mediaElement.src = mediaConfig.src;
+  mediaElement.controls = true;
+  mediaElement.style.width = '100%';
+  mediaElement.style.height = '100%';
+  mediaElement.style.objectFit = 'cover';
+  mediaElement.preload = 'metadata';
+  mediaElement.muted = true;
+
+  // Gestionnaire d'événements pour le video
+  mediaElement.addEventListener('play', () => {
+    mediaManager.setActiveMedia(mediaElement);
+  });
+  
+  mediaElement.addEventListener('pause', () => {
+    if (mediaManager.activeMedia === mediaElement) {
+      mediaManager.activeMedia = null;
+    }
+  });
+  break;
         
       case 'audio':
         const audioWrapper = document.createElement('div');
@@ -962,14 +971,15 @@ const cursor = document.querySelector('.custom-cursor');
         mediaElement.preload = 'metadata';
         
         // Gestionnaire d'événements pour l'audio
-        mediaElement.addEventListener('play', () => {
-          mediaManager.setActiveMedia(mediaElement);
-        });
-        
-        audioWrapper.appendChild(title);
-        audioWrapper.appendChild(mediaElement);
-        container.appendChild(audioWrapper);
-        break;
+  mediaElement.addEventListener('play', () => {
+    mediaManager.setActiveMedia(mediaElement);
+  });
+  
+  mediaElement.addEventListener('pause', () => {
+    if (mediaManager.activeMedia === mediaElement) {
+      mediaManager.activeMedia = null;
+    }
+  });
         
       case 'iframe':
         const iframeWrapper = document.createElement('div');
@@ -1351,7 +1361,7 @@ const cursor = document.querySelector('.custom-cursor');
 
   // Fonction pour afficher le média suivant
   function showNextMedia(projectId) {
-    const medias = projectMedias[projectId];
+    const medias = projectImages[projectId];
     const state = projectStates.get(projectId);
     if (!medias || !state) return;
 
@@ -1474,7 +1484,7 @@ const cursor = document.querySelector('.custom-cursor');
   // Initialisation des projets
   function initializeProject(projectElement) {
     const projectId = projectElement.id;
-    const medias = projectMedias[projectId];
+    const medias = projectImages[projectId];
     if (!medias || medias.length === 0) return;
 
     const sectionClic = projectElement.querySelector('.section-clic');
@@ -1603,7 +1613,7 @@ const cursor = document.querySelector('.custom-cursor');
   });
 
   // Initialiser tous les projets disponibles
-  Object.keys(projectMedias).forEach(projectId => {
+  Object.keys(projectImages).forEach(projectId => {
     const projectElement = document.getElementById(projectId);
     if (projectElement) {
       initializeProject(projectElement);
