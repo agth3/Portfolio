@@ -388,7 +388,6 @@
   } else {
     newIndex = Math.round(container.scrollLeft / sectionWidth);
   }
-    
     if (newIndex !== currentIndex && newIndex >= 0 && newIndex < sections.length) {
       currentIndex = newIndex;
       updateButtons();
@@ -402,35 +401,9 @@
     if (newIsMobile !== isMobile || newIsMobilePortrait !== isMobilePortrait) {
       isMobile = newIsMobile;
       isMobilePortrait = newIsMobilePortrait;
-      updateButtons();
-      
-      // CORRECTION : Mettre à jour TOUS les carrousels avec la nouvelle logique
-      document.querySelectorAll('.carrousel-track').forEach(track => {
-        const carousel = track.carousel;
-        if (carousel) {
-          carousel.isMobile = newIsMobile;
-          carousel.isMobilePortrait = newIsMobilePortrait;
-          carousel.isMobileLandscape = newIsMobile && !newIsMobilePortrait;
-          
-          // CORRECTION : Recalculer scrollDirection et dimensions
-          if (carousel.isMobilePortrait) {
-            carousel.scrollDirection = 'horizontal';
-            carousel.slideWidth = window.innerWidth - 2 * (window.innerWidth * 0.095);
-            carousel.slideHeight = null;
-          } else {
-            carousel.scrollDirection = 'vertical';
-            carousel.slideHeight = window.innerHeight - 2 * carousel.getVh(16.667);
-            carousel.slideWidth = null;
-          }
-          
-          carousel.initWithRealFirstImage();
-        }
-      });
+      updateButtons(); 
     }
   });
-  // Initialisation
-
-
 
   //    ADAPTATION DES TEINTES DE HIGHLIGHT PAR SECTION AFFICHEE
 
@@ -477,15 +450,6 @@
 
   // Observe chaque section
   sections.forEach(section => observer.observe(section));
-
-
-  //Curseur "clic"
-// const cursor = document.querySelector('.custom-cursor');
-
-//   document.addEventListener('mousemove', e => {
-//     cursor.style.left = e.clientX + 'px';
-//     cursor.style.top = e.clientY + 'px';
-//   });
 
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -739,7 +703,6 @@
   const sectionMvmt = projectElement.querySelector('.section-mvmt');
   
   if (!sectionMvmt) {
-    // Fallback si pas de section-mvmt
     const rect = sectionClic.getBoundingClientRect();
     const maxX = Math.max(0, rect.width - elementWidth);
     const maxY = Math.max(0, rect.height - elementHeight);
@@ -749,21 +712,27 @@
     };
   }
   
-  // Obtenir les positions relatives des deux sections
+  // Obtenir les dimensions content (sans marges)
+  const mvmtStyles = window.getComputedStyle(sectionMvmt);
+  const marginLeft = parseFloat(mvmtStyles.marginLeft) || 0;
+  const marginTop = parseFloat(mvmtStyles.marginTop) || 0;
+  
   const clicRect = sectionClic.getBoundingClientRect();
   const mvmtRect = sectionMvmt.getBoundingClientRect();
   
-  // Calculer le décalage de section-clic par rapport à section-mvmt
-  const offsetX = clicRect.left - mvmtRect.left;
-  const offsetY = clicRect.top - mvmtRect.top;
+  // Position de section-clic DANS section-mvmt
+  const offsetX = clicRect.left - mvmtRect.left - marginLeft;
+  const offsetY = clicRect.top - mvmtRect.top - marginTop;
   
-  // Zone d'apparition limitée à section-clic mais exprimée en coordonnées section-mvmt
-  const spawnMaxX = Math.max(0, clicRect.width - elementWidth);
-  const spawnMaxY = Math.max(0, clicRect.height - elementHeight);
+  // Zone de spawn limitée à section-clic, mais compenser pour le scale-up potentiel
+  const scaledWidth = elementWidth * 1.25;
+  const scaledHeight = elementHeight * 1.25;
+  const spawnWidth = Math.max(0, clicRect.width - scaledWidth);
+  const spawnHeight = Math.max(0, clicRect.height - scaledHeight);
   
   return {
-    x: offsetX + (Math.random() * spawnMaxX),
-    y: offsetY + (Math.random() * spawnMaxY)
+    x: offsetX + (Math.random() * spawnWidth) + (scaledWidth - elementWidth) / 2,
+    y: offsetY + (Math.random() * spawnHeight) + (scaledHeight - elementHeight) / 2
   };
 }
 
@@ -792,8 +761,8 @@ function calculateElementDimensions(container, mediaType = 'image', mediaConfig 
       maxHeight = audioSize;
       break;
     default: // image
-      maxWidth = rect.width * (isMobile ? 0.45 : 0.35); //si ismobile vrai 0.45, si non, 0.5
-      maxHeight = rect.height * (isMobile ? 0.45 : 0.3);
+      maxWidth = rect.width * (isMobile ? 0.5 : 0.35); //si ismobile vrai 0.45, si non, 0.5
+      maxHeight = rect.height * (isMobile ? 0.4 : 0.3);
   }
   
   return { maxWidth, maxHeight };
@@ -804,7 +773,14 @@ function calculateElementDimensions(container, mediaType = 'image', mediaConfig 
   const sectionMvmt = projectElement.querySelector('.section-mvmt');
   if (!sectionMvmt) return null;
   
-  return sectionMvmt.getBoundingClientRect();
+  const rect = sectionMvmt.getBoundingClientRect();
+  console.log('🔵 getMovementBounds:', {
+    width: rect.width,
+    height: rect.height,
+    top: rect.top,
+    left: rect.left
+  });
+  return rect;
 }
 
   // Fonction pour ajuster les dimensions du conteneur après chargement du média
@@ -1006,18 +982,6 @@ if (sectionMvmt) {
     audioContainer.style.backgroundImage = `url(${backgroundImage})`;
   }
   
-  // Overlay semi-transparent
-  // const overlay = document.createElement('div');
-  // overlay.style.cssText = `
-  //   position: absolute;
-  //   top: 0;
-  //   left: 0;
-  //   right: 0;
-  //   bottom: 0;
-  //   background: rgba(0, 0, 0, 0.4);
-  //   pointer-events: none;
-  // `;
-  
   // Audio player centré (sans titre)
   mediaElement = document.createElement('audio');
   mediaElement.src = mediaConfig.src;
@@ -1043,7 +1007,6 @@ if (sectionMvmt) {
   });
   
   // Assemblage
-  // audioContainer.appendChild(overlay);
   audioContainer.appendChild(mediaElement);
   container.appendChild(audioContainer);
   break;
@@ -1367,7 +1330,7 @@ function setupMediaDragAndDrop(container, projectElement) {
     }
   }
 
-  function mouseMove(e) {
+function mouseMove(e) {
     if (!isDragging) return;
     if (e.preventDefault) e.preventDefault();
     
@@ -1377,29 +1340,34 @@ function setupMediaDragAndDrop(container, projectElement) {
     startX = e.clientX;
     startY = e.clientY;
     
-    const newLeft = container.offsetLeft - newX;
-    const newTop = container.offsetTop - newY;
+    let newLeft = container.offsetLeft - newX;
+    let newTop = container.offsetTop - newY;
     
-    // Contraintes de mouvement
-    const movementBounds = getMovementBounds(projectElement);
-    
-    if (movementBounds) {
+    const sectionMvmt = projectElement.querySelector('.section-mvmt');
+    if (sectionMvmt) {
+      const mvmtStyles = window.getComputedStyle(sectionMvmt);
+      const marginLeft = parseFloat(mvmtStyles.marginLeft) || 0;
+      const marginTop = parseFloat(mvmtStyles.marginTop) || 0;
+      
+      // Dimensions réelles du conteneur (tenant compte du scale actuel)
       const containerRect = container.getBoundingClientRect();
-      const maxLeft = movementBounds.width - containerRect.width;
-      const maxTop = movementBounds.height - containerRect.height;
+      const containerWidth = containerRect.width;
+      const containerHeight = containerRect.height;
       
-      container.style.left = Math.max(0, Math.min(maxLeft, newLeft)) + 'px';
-      container.style.top = Math.max(0, Math.min(maxTop, newTop)) + 'px';
-    } else {
-      const projectRect = projectElement.getBoundingClientRect();
-      const maxLeft = projectRect.width - container.offsetWidth;
-      const maxTop = projectRect.height - container.offsetHeight;
+      // Limites basées sur la zone content+padding (sans marges)
+      const minLeft = marginLeft;
+      const minTop = marginTop;
+      const maxLeft = sectionMvmt.offsetWidth + marginLeft - containerWidth;
+      const maxTop = sectionMvmt.offsetHeight + marginTop - containerHeight;
       
-      container.style.left = Math.max(0, Math.min(maxLeft, newLeft)) + 'px';
-      container.style.top = Math.max(0, Math.min(maxTop, newTop)) + 'px';
+      newLeft = Math.max(minLeft, Math.min(maxLeft, newLeft));
+      newTop = Math.max(minTop, Math.min(maxTop, newTop));
     }
+    
+    container.style.left = newLeft + 'px';
+    container.style.top = newTop + 'px';
   }
-
+  
   function mouseUp(e) {
     if (!isDragging) return;
     
@@ -1544,28 +1512,44 @@ function setupGlobalDragCleanup() {
         x += dx;
         y += dy;
 
+        if (Math.random() < 0.01) { // Log 1% du temps pour ne pas surcharger
+  console.log('🟢 AUTO-MOVE - Position:', {
+    x,
+    y,
+    containerOffsetWidth: container.offsetWidth,
+    containerOffsetHeight: container.offsetHeight
+  });
+}
+
         // Vérification des limites avec rebond
-        const movementBounds = getMovementBounds(state.projectElement);
+const movementBounds = getMovementBounds(state.projectElement);
 if (movementBounds) {
+  const sectionMvmt = state.projectElement.querySelector('.section-mvmt');
+  const mvmtStyles = window.getComputedStyle(sectionMvmt);
+  const marginLeft = parseFloat(mvmtStyles.marginLeft) || 0;
+  const marginTop = parseFloat(mvmtStyles.marginTop) || 0;
+  
   const containerWidth = container.offsetWidth || 150;
   const containerHeight = container.offsetHeight || 150;
   
-  const maxX = movementBounds.width - containerWidth;
-  const maxY = movementBounds.height - containerHeight;
+  const minX = marginLeft;
+  const minY = marginTop;
+  const maxX = sectionMvmt.offsetWidth + marginLeft - containerWidth;
+  const maxY = sectionMvmt.offsetHeight + marginTop - containerHeight;
   
-  // Rebond sur les bords de section-mvmt
-  if (x <= 0 || x >= maxX) {
+  if (x <= minX || x >= maxX) {
     d.angle = 180 - d.angle;
     d.targetAngle = d.angle + (Math.random() - 0.5) * 30;
-    x = Math.max(0, Math.min(maxX, x));
+    x = Math.max(minX, Math.min(maxX, x));
   }
   
-  if (y <= 0 || y >= maxY) {
+  if (y <= minY || y >= maxY) {
     d.angle = -d.angle;
     d.targetAngle = d.angle + (Math.random() - 0.5) * 30;
-    y = Math.max(0, Math.min(maxY, y));
+    y = Math.max(minY, Math.min(maxY, y));
   }
 }
+
 
         // Mise à jour de la position
         const deltaX = Math.abs(dx);
@@ -1658,7 +1642,7 @@ if (movementBounds) {
       console.log(`Removed oldest media from project ${this.projectId}`);
     }
 
-    // NOUVELLE MÉTHODE : Purger tous les médias sauf le dernier
+    // NOUVELLE MÉTHODE : Purger tous les médias sauf le dernier pour libérer de la perf
   purgeAllExceptLast() {
     if (this.mediaList.length <= 1) {
       // Rien à purger si 0 ou 1 média

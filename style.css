@@ -1307,10 +1307,9 @@ video:focus, audio:focus {
   flex-direction: column;
   /* justify-content: center; */
   /* background-color: #67792c; */
-  width: calc(100% - (4.63vh * 2));
-  height: calc(100% - (4.63vh * 2));
-  margin-top: 4.63vh;
-  margin-left: 4.63vh;
+  width: calc(100% - 9.26vh);
+  height: calc(100% - 9.26vh);
+  margin: 4.63vh; 
   grid-column: 1/8;
   grid-row: 1/6;
   position: relative;

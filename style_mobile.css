@@ -500,6 +500,24 @@
   margin-left: 2.315dvh;
 }
 
+audio::-webkit-media-controls-panel{
+  transform: scale(0.7);
+    transform-origin: center center;
+  }
+
+  video::-webkit-media-controls-panel {
+    transform: scale(0.6);
+    transform-origin: center bottom;
+  }
+  
+  /* audio{
+    height: fit-content;
+  } */
+
+  video {
+    height: auto;
+  }
+
 
   /*--------- PAGE BIO ---------*/
 

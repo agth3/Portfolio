@@ -7,6 +7,9 @@ _page de projets bis :
     - clean le script pour enlever toute gestion du carrousel (puisqu'il n'y en a plus)
     - adapter au smartphone :
      * régler taille settings media player sur mobile bcp trop grands
+     -zone effective de drag ne correspond pas aux margins réels des sections-mvmt
+
+     créer mes propres players settings psk là c'est cata
 
 
 _adapter à tous navigateurs (controles natifs safari/mozilla)
