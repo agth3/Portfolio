@@ -4,11 +4,8 @@ TO DO :
 
 _page de projets bis :
     - hover effet actif momentané (tant que hover actif)
-    - clean le script pour enlever toute gestion du carrousel (puisqu'il n'y en a plus)
     - adapter au smartphone :
      * régler taille settings media player sur mobile bcp trop grands
-     -zone effective de drag ne correspond pas aux margins réels des sections-mvmt
-
      créer mes propres players settings psk là c'est cata
 
 

@@ -783,7 +783,7 @@ function calculateElementDimensions(container, mediaType = 'image', mediaConfig 
   return rect;
 }
 
-    // Fonction pour ajuster les dimensions du conteneur après chargement du média
+     // Fonction pour ajuster les dimensions du conteneur après chargement du média
 function adjustContainerSize(container) {
   const mediaElement = container.mediaData.mediaElement;
   if (!mediaElement) return;
@@ -808,6 +808,7 @@ function adjustContainerSize(container) {
     setTimeout(adjustSize, 10);
   }
 }
+
   // Fonction pour créer un conteneur de média
   function createMediaContainer(projectId, mediaConfig, mediaIndex, sectionClic) {
     const state = projectStates.get(projectId);
@@ -1611,7 +1612,22 @@ if (sectionMvmt) {
       this.mediaList = [];
       this.maxMedias = 4;
       this.baseZIndex = 50;
+
+      this.hintElement = null;
+this.inactivityTimer = null;
     }
+
+    markInteraction() {
+  hideHint(this.hintElement);
+  
+  if (this.inactivityTimer) {
+    clearTimeout(this.inactivityTimer);
+  }
+  
+  this.inactivityTimer = setTimeout(() => {
+    showHint(this.hintElement);
+  }, 8000);
+}
 
     addMedia(container) {
       this.mediaList.push(container);
@@ -1717,6 +1733,47 @@ if (sectionMvmt) {
   });
 }
 
+// Gestionnaire d'indicateur d'aide (mobile uniquement)
+function createInteractionHint(sectionClic) {
+  if (!shouldUseTouchMode) return null;
+  
+  const hint = document.createElement('div');
+  hint.className = 'interaction-hint';
+  hint.setAttribute('data-i18n', 'clickToShowContent');
+  hint.textContent = ''; // valeur par défaut (sera remplacée par i18n)
+  hint.style.cssText = `
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    // color: #d0d0d0;
+    // font-size: 16px;
+    // font-weight: 300;
+    text-align: center;
+    pointer-events: none;
+    z-index: 100; //pour rester au dessus des images
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+    // padding: 0 20px;
+    user-select: none;
+  `;
+  
+  sectionClic.appendChild(hint);
+  return hint;
+}
+
+function showHint(hint) {
+  if (!hint) return;
+  hint.style.animation = 'slowBlink 4s ease-in-out infinite';
+  hint.style.opacity = '1';
+}
+
+function hideHint(hint) {
+  if (!hint) return;
+  hint.style.opacity = '0';
+  hint.style.animation = 'none';
+}
+
   // Initialisation des projets
   function initializeProject(projectElement) {
     const projectId = projectElement.id;
@@ -1738,6 +1795,12 @@ if (sectionMvmt) {
     const state = new ProjectState(projectId, projectElement, medias);
     projectStates.set(projectId, state);
 
+    // Créer l'indicateur (mobile uniquement)
+    state.hintElement = createInteractionHint(sectionClic);
+    if (state.hintElement) {
+      showHint(state.hintElement);
+    }
+
     // Afficher le premier média (immobile jusqu'au premier clic)
     const firstMediaContainer = createMediaContainer(projectId, medias[0], 0, sectionClic);
     
@@ -1749,23 +1812,36 @@ if (sectionMvmt) {
     }
 
     // Gérer les clics sur la section (mais pas sur les médias)
-    projectElement.addEventListener('click', (e) => {
-      if (e.target.closest('.project-media')) {
-        return;
-      }
-      
-      showNextMedia(projectId);
-    });
+projectElement.addEventListener('click', (e) => {
+  if (e.target.closest('.project-media')) {
+    return;
+  }
 
-    // Support tactile pour la section
-    if (shouldUseTouchMode) {
-      projectElement.addEventListener('touchend', (e) => {
-        if (!e.target.closest('.project-media')) {
-          e.preventDefault();
-          showNextMedia(projectId);
-        }
-      });
+  // Dans le click listener :
+  const state = projectStates.get(projectId);
+  if (state && state.hintElement) {
+    state.markInteraction();
+  }
+
+  showNextMedia(projectId);
+});
+
+// Support tactile pour la section
+if (shouldUseTouchMode) {
+  projectElement.addEventListener('touchend', (e) => {
+    if (!e.target.closest('.project-media')) {
+      e.preventDefault();
+
+      // Dans le touch listener :
+      const state = projectStates.get(projectId);
+      if (state && state.hintElement) {
+        state.markInteraction();
+      }
+
+      showNextMedia(projectId);
     }
+  });
+}
 
     console.log(`Project ${projectId} initialized with media system - ${medias.length} medias`);
   }
