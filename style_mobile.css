@@ -494,10 +494,15 @@
 .section-mvmt{
   grid-column: 1/7;
   grid-row: 2/9;
-  width: calc(100% - (2.315dvh * 2));
-  height: calc(100% + (2.315dvh * 2));
-  margin-top: -2.315dvh;
-  margin-left: 2.315dvh;
+  width: calc(100% - 4.63dvh);
+height: calc(100% - 4.63dvh);
+/* width: 100%;
+  height: 100%;*/
+   margin: 2.315dvh; 
+  /*box-sizing: border-box; */
+/* width: calc(100% - 4.63dvh);
+  height: calc(100% - 0.001px);  */
+  /* margin: 0 2.315dvh 0 2.315dvh; */
 }
 
 audio::-webkit-media-controls-panel{

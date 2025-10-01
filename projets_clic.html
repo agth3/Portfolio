@@ -783,14 +783,15 @@ function calculateElementDimensions(container, mediaType = 'image', mediaConfig 
   return rect;
 }
 
-  // Fonction pour ajuster les dimensions du conteneur après chargement du média
+    // Fonction pour ajuster les dimensions du conteneur après chargement du média
 function adjustContainerSize(container) {
   const mediaElement = container.mediaData.mediaElement;
   if (!mediaElement) return;
   
   // Attendre que l'élément soit chargé
   const adjustSize = () => {
-    const rect = container.getBoundingClientRect();
+    // Utiliser les dimensions calculées de l'élément média, pas du conteneur
+    const rect = mediaElement.getBoundingClientRect();
     container.style.width = rect.width + 'px';
     container.style.height = rect.height + 'px';
   };
@@ -807,7 +808,6 @@ function adjustContainerSize(container) {
     setTimeout(adjustSize, 10);
   }
 }
-
   // Fonction pour créer un conteneur de média
   function createMediaContainer(projectId, mediaConfig, mediaIndex, sectionClic) {
     const state = projectStates.get(projectId);
@@ -1345,20 +1345,24 @@ function mouseMove(e) {
     
     const sectionMvmt = projectElement.querySelector('.section-mvmt');
     if (sectionMvmt) {
-      const mvmtStyles = window.getComputedStyle(sectionMvmt);
-      const marginLeft = parseFloat(mvmtStyles.marginLeft) || 0;
-      const marginTop = parseFloat(mvmtStyles.marginTop) || 0;
-      
-      // Dimensions réelles du conteneur (tenant compte du scale actuel)
+      // Dimensions réelles du conteneur (avec scale)
       const containerRect = container.getBoundingClientRect();
       const containerWidth = containerRect.width;
       const containerHeight = containerRect.height;
       
-      // Limites basées sur la zone content+padding (sans marges)
-      const minLeft = marginLeft;
-      const minTop = marginTop;
-      const maxLeft = sectionMvmt.offsetWidth + marginLeft - containerWidth;
-      const maxTop = sectionMvmt.offsetHeight + marginTop - containerHeight;
+      // Dimensions de base (sans scale)
+      const baseWidth = container.offsetWidth;
+      const baseHeight = container.offsetHeight;
+      
+      // Le débordement du scale de chaque côté
+      const overflowX = (containerWidth - baseWidth) / 2;
+      const overflowY = (containerHeight - baseHeight) / 2;
+      
+      // Les limites doivent compenser ce débordement
+      const minLeft = overflowX;
+      const minTop = overflowY;
+      const maxLeft = sectionMvmt.clientWidth - baseWidth - overflowX;
+      const maxTop = sectionMvmt.clientHeight - baseHeight - overflowY;
       
       newLeft = Math.max(minLeft, Math.min(maxLeft, newLeft));
       newTop = Math.max(minTop, Math.min(maxTop, newTop));
@@ -1367,7 +1371,7 @@ function mouseMove(e) {
     container.style.left = newLeft + 'px';
     container.style.top = newTop + 'px';
   }
-  
+
   function mouseUp(e) {
     if (!isDragging) return;
     
@@ -1522,20 +1526,18 @@ function setupGlobalDragCleanup() {
 }
 
         // Vérification des limites avec rebond
-const movementBounds = getMovementBounds(state.projectElement);
-if (movementBounds) {
-  const sectionMvmt = state.projectElement.querySelector('.section-mvmt');
-  const mvmtStyles = window.getComputedStyle(sectionMvmt);
-  const marginLeft = parseFloat(mvmtStyles.marginLeft) || 0;
-  const marginTop = parseFloat(mvmtStyles.marginTop) || 0;
+const sectionMvmt = state.projectElement.querySelector('.section-mvmt');
+if (sectionMvmt) {
+  // Utiliser getBoundingClientRect pour obtenir les dimensions réelles avec scale
+  const containerRect = container.getBoundingClientRect();
+  const containerWidth = containerRect.width;
+  const containerHeight = containerRect.height;
   
-  const containerWidth = container.offsetWidth || 150;
-  const containerHeight = container.offsetHeight || 150;
-  
-  const minX = marginLeft;
-  const minY = marginTop;
-  const maxX = sectionMvmt.offsetWidth + marginLeft - containerWidth;
-  const maxY = sectionMvmt.offsetHeight + marginTop - containerHeight;
+  // EXACTEMENT les mêmes limites que le drag
+  const minX = 0;
+  const minY = 0;
+  const maxX = sectionMvmt.clientWidth - containerWidth;
+  const maxY = sectionMvmt.clientHeight - containerHeight;
   
   if (x <= minX || x >= maxX) {
     d.angle = 180 - d.angle;
