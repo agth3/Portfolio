@@ -402,6 +402,7 @@
       isMobile = newIsMobile;
       isMobilePortrait = newIsMobilePortrait;
       updateButtons(); 
+      invalidateMovementBoundsCache();
     }
   });
 
@@ -625,7 +626,9 @@
     
 
 // Détection du mode d'interaction
-  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || 
+                 (navigator.maxTouchPoints > 0 && window.innerWidth <= 1024);
+
   const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   const isDevToolsMobile = window.innerWidth <= 768 && !isMobile;
   const shouldUseTouchMode = isMobile || hasTouch || isDevToolsMobile;
@@ -936,9 +939,12 @@ if (sectionMvmt) {
         break;
         
       case 'video':
-  mediaElement = document.createElement('video');
+          mediaElement = document.createElement('video');
   mediaElement.src = mediaConfig.src;
   mediaElement.controls = true;
+  mediaElement.playsInline = true; // CRITIQUE pour iOS
+  mediaElement.preload = 'none'; // Économiser la bande passante
+  mediaElement.muted = true;
   mediaElement.style.maxWidth = '100%';
   mediaElement.style.maxHeight = '100%';
   mediaElement.style.width = 'auto';
@@ -1261,19 +1267,21 @@ function setupMediaDragAndDrop(container, projectElement) {
   let touchEndHandler = null;
 
   dragHandle.addEventListener('mousedown', mouseDown);
-
-  if (shouldUseTouchMode) {
-    dragHandle.addEventListener('touchstart', e => {
-      e.preventDefault();
-      const t = e.touches[0];
-      mouseDown({ 
-        clientX: t.clientX, 
-        clientY: t.clientY,
-        preventDefault: () => {},
-        type: 'touch'
-      });
-    }, { passive: false });
+if (shouldUseTouchMode) {
+  // Fonction dédiée pour les événements tactiles
+  function handleTouchStart(e) {
+    // Ne pas utiliser preventDefault pour permettre le scroll
+    const t = e.touches[0];
+    mouseDown({ 
+      clientX: t.clientX, 
+      clientY: t.clientY,
+      preventDefault: () => {},
+      type: 'touch'
+    });
   }
+  
+  dragHandle.addEventListener('touchstart', handleTouchStart, { passive: true });
+}
 
   function mouseDown(e) {
     if (container.mediaData.mediaType === 'iframe') {
@@ -1471,12 +1479,16 @@ function setupGlobalDragCleanup() {
 }
 
   // Fonction de mise à jour des positions (animation)
-  function updatePositions(timestamp) {
-    if (timestamp - lastTimestamp < 33) { // ~30fps
-      animationFrameId = requestAnimationFrame(updatePositions);
-      return;
-    }
-    lastTimestamp = timestamp;
+  // Réduire la fréquence d'animation sur mobile
+function updatePositions(timestamp) {
+  const targetFPS = isMobile ? 20 : 30; // 20fps sur mobile au lieu de 30
+  const frameDelay = 1000 / targetFPS;
+  
+  if (timestamp - lastTimestamp < frameDelay) {
+    animationFrameId = requestAnimationFrame(updatePositions);
+    return;
+  }
+  lastTimestamp = timestamp;
 
     // Traiter chaque projet
     projectStates.forEach(state => {
@@ -1526,9 +1538,13 @@ function setupGlobalDragCleanup() {
   });
 }
 
+// Réduire le nombre max de médias sur mobile
+this.maxMedias = isMobile ? 2 : 4; // 2 au lieu de 4
+
         // Vérification des limites avec rebond
-const sectionMvmt = state.projectElement.querySelector('.section-mvmt');
-if (sectionMvmt) {
+const cachedBounds = cacheMovementBounds(state.projectElement);
+if (cachedBounds) {
+  const sectionMvmt = cachedBounds.element;
   // Utiliser getBoundingClientRect pour obtenir les dimensions réelles avec scale
   const containerRect = container.getBoundingClientRect();
   const containerWidth = containerRect.width;
@@ -1600,6 +1616,35 @@ if (sectionMvmt) {
       cleanupImageCache();
     }
   }
+
+  // Cache pour stocker les limites de mouvement par projet
+const movementBoundsCache = new Map();
+
+function cacheMovementBounds(projectElement) {
+  const projectId = projectElement.id;
+  
+  // Retourner le cache s'il existe
+  if (movementBoundsCache.has(projectId)) {
+    return movementBoundsCache.get(projectId);
+  }
+  
+  const sectionMvmt = projectElement.querySelector('.section-mvmt');
+  if (!sectionMvmt) return null;
+  
+  const bounds = {
+    width: sectionMvmt.clientWidth,
+    height: sectionMvmt.clientHeight,
+    element: sectionMvmt
+  };
+  
+  movementBoundsCache.set(projectId, bounds);
+  return bounds;
+}
+
+// Fonction pour invalider le cache lors du resize
+function invalidateMovementBoundsCache() {
+  movementBoundsCache.clear();
+}
 
   // Classe pour gérer l'état d'un projet avec médias
   class ProjectState {

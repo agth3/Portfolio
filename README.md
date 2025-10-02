@@ -8,6 +8,8 @@ _page de projets bis :
      * régler taille settings media player sur mobile bcp trop grands
      créer mes propres players settings psk là c'est cata
 
+    sur mobile les images n'apparaissent pas bien
+
 
 _adapter à tous navigateurs (controles natifs safari/mozilla)
     - controles audio à pimper pour safari
