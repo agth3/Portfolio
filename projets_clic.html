@@ -453,8 +453,9 @@
   sections.forEach(section => observer.observe(section));
 
 
-    document.addEventListener("DOMContentLoaded", () => {
-    // Configuration des images par projet
+document.addEventListener("DOMContentLoaded", () => {
+  console.log('🟢 DOMContentLoaded fired');
+  console.log('Projects to initialize:', Object.keys(projectImages));    // Configuration des images par projet
     const projectImages = {
     'projet-Stone-of-Amasha': [
       { type: 'image', lowRes: 'asset/img/low-line/amasha_1.png', highRes: 'asset/img/high/amasha_1.jpg' },
@@ -787,35 +788,71 @@ function calculateElementDimensions(container, mediaType = 'image', mediaConfig 
 }
 
      // Fonction pour ajuster les dimensions du conteneur après chargement du média
+// REMPLACER TOUTE LA FONCTION
 function adjustContainerSize(container) {
   const mediaElement = container.mediaData.mediaElement;
   if (!mediaElement) return;
   
-  // Attendre que l'élément soit chargé
   const adjustSize = () => {
-    // Utiliser les dimensions calculées de l'élément média, pas du conteneur
-    const rect = mediaElement.getBoundingClientRect();
-    container.style.width = rect.width + 'px';
-    container.style.height = rect.height + 'px';
+    // Pour les images, utiliser naturalWidth/naturalHeight si disponibles
+    if (mediaElement.tagName === 'IMG' && mediaElement.naturalWidth > 0) {
+      const { maxWidth, maxHeight } = calculateElementDimensions(
+        container.closest('.section-clic'), 
+        container.mediaData.mediaType
+      );
+      
+      const ratio = mediaElement.naturalWidth / mediaElement.naturalHeight;
+      let width = mediaElement.naturalWidth;
+      let height = mediaElement.naturalHeight;
+      
+      if (width > maxWidth) {
+        width = maxWidth;
+        height = width / ratio;
+      }
+      if (height > maxHeight) {
+        height = maxHeight;
+        width = height * ratio;
+      }
+      
+      container.style.width = width + 'px';
+      container.style.height = height + 'px';
+    } else {
+      // Fallback pour autres types
+      const rect = mediaElement.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        container.style.width = rect.width + 'px';
+        container.style.height = rect.height + 'px';
+      }
+    }
+    
+    console.log('Container sized:', container.style.width, container.style.height);
   };
   
   if (mediaElement.tagName === 'IMG') {
-    if (mediaElement.complete) {
-      setTimeout(adjustSize, 10);
+    if (mediaElement.complete && mediaElement.naturalWidth > 0) {
+      adjustSize();
     } else {
       mediaElement.onload = adjustSize;
+      // Timeout de secours si l'image ne charge jamais
+      setTimeout(adjustSize, 1000);
     }
   } else if (mediaElement.tagName === 'VIDEO') {
     mediaElement.addEventListener('loadedmetadata', adjustSize);
+    setTimeout(adjustSize, 1000);
   } else {
-    setTimeout(adjustSize, 10);
+    adjustSize();
   }
 }
 
   // Fonction pour créer un conteneur de média
   function createMediaContainer(projectId, mediaConfig, mediaIndex, sectionClic) {
-    const state = projectStates.get(projectId);
-    if (!state) return null;
+  console.log('🔵 createMediaContainer called:', { projectId, mediaType: mediaConfig.type, mediaIndex });
+  
+  const state = projectStates.get(projectId);
+  if (!state) {
+    console.error('❌ No state found for project:', projectId);
+    return null;
+  }
 
     // Conteneur principal pour le média
     const container = document.createElement('div');
@@ -1848,13 +1885,25 @@ function hideHint(hint) {
 
     // Afficher le premier média (immobile jusqu'au premier clic)
     const firstMediaContainer = createMediaContainer(projectId, medias[0], 0, sectionClic);
-    
-    if (firstMediaContainer) {
-      // Premier média = actif automatiquement et immobile
-      setTimeout(() => {
-        activateMedia(firstMediaContainer);
-      }, 100);
+
+if (firstMediaContainer) {
+  // S'assurer que le conteneur est bien ajouté au DOM
+  if (!firstMediaContainer.parentNode) {
+    const sectionMvmt = projectElement.querySelector('.section-mvmt');
+    if (sectionMvmt) {
+      sectionMvmt.appendChild(firstMediaContainer);
     }
+  }
+  
+  // Forcer le reflow pour s'assurer que le DOM est à jour
+  firstMediaContainer.offsetHeight;
+  
+  // Activer immédiatement sans timeout
+  firstMediaContainer.style.opacity = '1';
+  activateMedia(firstMediaContainer);
+  
+  console.log('First media created and activated for', projectId);
+}
 
     // Gérer les clics sur la section (mais pas sur les médias)
 projectElement.addEventListener('click', (e) => {
