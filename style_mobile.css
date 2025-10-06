@@ -492,6 +492,7 @@
 }
 
 .section-mvmt{
+  /* background-color: aquamarine; */
   grid-column: 1/7;
   grid-row: 2/9;
   width: calc(100% - 4.63dvh);

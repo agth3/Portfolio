@@ -453,9 +453,8 @@
   sections.forEach(section => observer.observe(section));
 
 
-document.addEventListener("DOMContentLoaded", () => {
-  console.log('🟢 DOMContentLoaded fired');
-  console.log('Projects to initialize:', Object.keys(projectImages));    // Configuration des images par projet
+    document.addEventListener("DOMContentLoaded", () => {
+    // Configuration des images par projet
     const projectImages = {
     'projet-Stone-of-Amasha': [
       { type: 'image', lowRes: 'asset/img/low-line/amasha_1.png', highRes: 'asset/img/high/amasha_1.jpg' },
@@ -626,9 +625,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     
 
-// Détection du mode d'interaction
+// Détection du mode d'interaction - version améliorée pour iOS
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || 
-                 (navigator.maxTouchPoints > 0 && window.innerWidth <= 1024);
+                 (navigator.maxTouchPoints > 0 && window.innerWidth <= 1024) ||
+                 ('ontouchstart' in window && window.innerWidth <= 1024);
+
+// Configuration adaptative selon le device
+const CONFIG = {
+  targetFPS: isMobile ? 20 : 30,
+  maxMedias: isMobile ? 3 : 4,
+  baseSpeed: isMobile ? 0.3 : 0.6,
+  fixedSpeeds: isMobile ? [0.8, 1.2, 1.6] : [1.2, 1.8, 2.4, 3.0],
+  imageQuality: isMobile ? 'low' : 'high'
+};
 
   const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   const isDevToolsMobile = window.innerWidth <= 768 && !isMobile;
@@ -672,10 +681,10 @@ const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ||
   let animationFrameId = null;
   let lastTimestamp = 0;
 
-  // Paramètres de mouvement
-  const baseSpeed = isMobile ? 0.4 : 0.6;
-  const fixedSpeeds = isMobile ? [1.0, 1.5, 2.0, 2.5] : [1.2, 1.8, 2.4, 3.0];
-  const driftIntensity = 1.5;
+  // PAR :
+const baseSpeed = CONFIG.baseSpeed;
+const fixedSpeeds = CONFIG.fixedSpeeds;
+const driftIntensity = 1.5;
 
   // Fonction de préchargement optimisé
   function preloadHighResImage(src) {
@@ -788,71 +797,35 @@ function calculateElementDimensions(container, mediaType = 'image', mediaConfig 
 }
 
      // Fonction pour ajuster les dimensions du conteneur après chargement du média
-// REMPLACER TOUTE LA FONCTION
 function adjustContainerSize(container) {
   const mediaElement = container.mediaData.mediaElement;
   if (!mediaElement) return;
   
+  // Attendre que l'élément soit chargé
   const adjustSize = () => {
-    // Pour les images, utiliser naturalWidth/naturalHeight si disponibles
-    if (mediaElement.tagName === 'IMG' && mediaElement.naturalWidth > 0) {
-      const { maxWidth, maxHeight } = calculateElementDimensions(
-        container.closest('.section-clic'), 
-        container.mediaData.mediaType
-      );
-      
-      const ratio = mediaElement.naturalWidth / mediaElement.naturalHeight;
-      let width = mediaElement.naturalWidth;
-      let height = mediaElement.naturalHeight;
-      
-      if (width > maxWidth) {
-        width = maxWidth;
-        height = width / ratio;
-      }
-      if (height > maxHeight) {
-        height = maxHeight;
-        width = height * ratio;
-      }
-      
-      container.style.width = width + 'px';
-      container.style.height = height + 'px';
-    } else {
-      // Fallback pour autres types
-      const rect = mediaElement.getBoundingClientRect();
-      if (rect.width > 0 && rect.height > 0) {
-        container.style.width = rect.width + 'px';
-        container.style.height = rect.height + 'px';
-      }
-    }
-    
-    console.log('Container sized:', container.style.width, container.style.height);
+    // Utiliser les dimensions calculées de l'élément média, pas du conteneur
+    const rect = mediaElement.getBoundingClientRect();
+    container.style.width = rect.width + 'px';
+    container.style.height = rect.height + 'px';
   };
   
   if (mediaElement.tagName === 'IMG') {
-    if (mediaElement.complete && mediaElement.naturalWidth > 0) {
-      adjustSize();
+    if (mediaElement.complete) {
+      setTimeout(adjustSize, 10);
     } else {
       mediaElement.onload = adjustSize;
-      // Timeout de secours si l'image ne charge jamais
-      setTimeout(adjustSize, 1000);
     }
   } else if (mediaElement.tagName === 'VIDEO') {
     mediaElement.addEventListener('loadedmetadata', adjustSize);
-    setTimeout(adjustSize, 1000);
   } else {
-    adjustSize();
+    setTimeout(adjustSize, 10);
   }
 }
 
   // Fonction pour créer un conteneur de média
   function createMediaContainer(projectId, mediaConfig, mediaIndex, sectionClic) {
-  console.log('🔵 createMediaContainer called:', { projectId, mediaType: mediaConfig.type, mediaIndex });
-  
-  const state = projectStates.get(projectId);
-  if (!state) {
-    console.error('❌ No state found for project:', projectId);
-    return null;
-  }
+    const state = projectStates.get(projectId);
+    if (!state) return null;
 
     // Conteneur principal pour le média
     const container = document.createElement('div');
@@ -881,6 +854,10 @@ function adjustContainerSize(container) {
       wasDragged: false,
       creationTime: Date.now(),
       activationTime: null,
+      // MOBILE : initialisation explicite
+  tapCount: 0,
+  lastTapTime: 0,
+  touchStartTime: 0,
       tapCount: shouldUseTouchMode ? 0 : undefined,
       mediaElement: null, // Référence vers l'élément média actuel
       // Propriétés de mouvement
@@ -936,7 +913,19 @@ if (sectionMvmt) {
     container.style.opacity = '1';
     state.addMedia(container);
     
-    return container;
+    // Forcer un reflow avant de rendre visible (important sur iOS)
+if (isMobile) {
+  container.offsetHeight; // Force reflow
+  requestAnimationFrame(() => {
+    container.style.opacity = '1';
+  });
+} else {
+  container.style.opacity = '1';
+}
+
+state.addMedia(container);
+
+return container;
   }
 
   // Fonction pour créer le contenu thumbnail
@@ -1228,63 +1217,99 @@ function getEffectiveDragHandle(container) {
 }
 
   // Configuration des interactions pour les médias
-  function setupMediaInteractions(container) {
-    if (shouldUseTouchMode) {
-      // Mode tactile : système de double tap
-      container.addEventListener('touchstart', e => {
-        if (container.mediaData.isDragging) return;
-        container.mediaData.touchStartTime = Date.now();
-      });
-      
-      container.addEventListener('touchend', e => {
-        if (container.mediaData.isDragging || container.mediaData.wasDragged) return;
-        e.preventDefault();
-        
-        const touchDuration = Date.now() - (container.mediaData.touchStartTime || 0);
-        if (touchDuration < 300) { // Tap rapide
-          handleMediaTouchInteraction(container);
-        }
-      });
-      
-      // Support dev tools mobile
-      if (isDevToolsMobile) {
-        container.addEventListener('click', e => {
-          if (!container.mediaData.isDragging && !container.mediaData.wasDragged) {
-            e.stopPropagation();
-            handleMediaTouchInteraction(container);
-          }
-        });
-      }
-    } else {
-      // Mode desktop : hover + click
-      container.addEventListener('mouseenter', () => {
-        if (!container.mediaData.isDragging) {
-          activateMedia(container);
-        }
-      });
-
-      container.addEventListener('click', e => {
-        if (!container.mediaData.isDragging && !container.mediaData.wasDragged) {
-          e.stopPropagation();
-          activateMedia(container);
-        }
-      });
-    }
-  }
-
-  // Gestion des interactions tactiles pour médias
-  function handleMediaTouchInteraction(container) {
-    const d = container.mediaData;
+  // Configuration des interactions pour les médias
+function setupMediaInteractions(container) {
+  if (shouldUseTouchMode) {
+    let touchStartTime = 0;
+    let touchMoved = false;
     
-    if (d.isActive && d.tapCount === 1) {
-      // Deuxième tap sur média actif : ne rien faire
-      d.tapCount = 0;
-    } else {
-      // Premier tap : activer
-      d.tapCount = 1;
-      activateMedia(container);
-    }
+    container.addEventListener('touchstart', e => {
+  // Si on commence un drag, ne pas traiter comme un tap potentiel
+  if (e.target.closest('.iframe-drag-bar') || container.mediaData.mediaType !== 'iframe') {
+    container.mediaData._possibleDrag = true;
   }
+  
+  touchStartTime = Date.now();
+  touchMoved = false;
+}, { passive: true });
+    
+    container.addEventListener('touchmove', e => {
+      touchMoved = true;
+    }, { passive: true });
+    
+    container.addEventListener('touchend', e => {
+  // Reset le flag de drag potentiel
+  const wasPossibleDrag = container.mediaData._possibleDrag;
+  container.mediaData._possibleDrag = false;
+  
+  // Si c'était un drag ou mouvement, ignorer
+  if (touchMoved || container.mediaData.isDragging || container.mediaData.wasDragged) {
+    return;
+  }
+  
+  const touchDuration = Date.now() - touchStartTime;
+  
+  // Tap rapide ET pas un début de drag
+  if (touchDuration < 300 && !wasPossibleDrag) {
+    e.preventDefault();
+    e.stopPropagation();
+    handleMediaTouchInteraction(container);
+  }
+}, { passive: false });
+    
+  } else {
+    // Mode desktop inchangé
+    container.addEventListener('mouseenter', () => {
+      if (!container.mediaData.isDragging) {
+        activateMedia(container);
+      }
+    });
+
+    container.addEventListener('click', e => {
+      if (!container.mediaData.isDragging && !container.mediaData.wasDragged) {
+        e.stopPropagation();
+        activateMedia(container);
+      }
+    });
+  }
+}
+  // Gestion des interactions tactiles pour médias
+  // Gestion des interactions tactiles pour médias
+function handleMediaTouchInteraction(container) {
+  const d = container.mediaData;
+  const now = Date.now();
+  
+  // Système de double-tap réinitialisé
+  if (!d.lastTapTime) {
+    d.lastTapTime = 0;
+    d.tapCount = 0;
+  }
+  
+  const timeSinceLastTap = now - d.lastTapTime;
+  
+  // Reset si trop de temps écoulé (> 500ms)
+  if (timeSinceLastTap > 500) {
+    d.tapCount = 0;
+  }
+  
+  d.tapCount++;
+  d.lastTapTime = now;
+  
+  console.log(`Tap #${d.tapCount} on media ${d.mediaIndex}, isActive: ${d.isActive}`);
+  
+  // Premier tap : toujours activer
+  if (d.tapCount === 1) {
+    activateMedia(container);
+  }
+  // Deuxième tap dans les 500ms : désactiver
+  else if (d.tapCount === 2) {
+    deactivateMedia(container);
+    // Reset après désactivation
+    setTimeout(() => {
+      d.tapCount = 0;
+    }, 100);
+  }
+}
 
   // Configuration du drag & drop pour médias
 function setupMediaDragAndDrop(container, projectElement) {
@@ -1305,19 +1330,23 @@ function setupMediaDragAndDrop(container, projectElement) {
 
   dragHandle.addEventListener('mousedown', mouseDown);
 if (shouldUseTouchMode) {
-  // Fonction dédiée pour les événements tactiles
   function handleTouchStart(e) {
-    // Ne pas utiliser preventDefault pour permettre le scroll
+    // CRITIQUE : Ne pas empêcher la propagation, juste enregistrer
     const t = e.touches[0];
+    
+    // Empêcher le scroll uniquement sur la zone de drag
+    e.preventDefault();
+    
     mouseDown({ 
       clientX: t.clientX, 
       clientY: t.clientY,
       preventDefault: () => {},
+      stopPropagation: () => e.stopPropagation(),
       type: 'touch'
     });
   }
   
-  dragHandle.addEventListener('touchstart', handleTouchStart, { passive: true });
+  dragHandle.addEventListener('touchstart', handleTouchStart, { passive: false });
 }
 
   function mouseDown(e) {
@@ -1419,20 +1448,26 @@ function mouseMove(e) {
   }
 
   function mouseUp(e) {
-    if (!isDragging) return;
-    
-    const dragDuration = Date.now() - dragStartTime;
-    const d = container.mediaData;
-    
-    const wasDragOperation = dragDuration > 150;
-    
-    isDragging = false;
-    d.isDragging = false;
-    d.wasDragged = wasDragOperation;
-
+  if (!isDragging) return;
+  
+  const dragDuration = Date.now() - dragStartTime;
+  const d = container.mediaData;
+  
+  const wasDragOperation = dragDuration > 150;
+  
+  isDragging = false;
+  d.isDragging = false;
+  
+  // CRITIQUE : Ne marquer wasDragged que si vraiment dragué
+  if (wasDragOperation) {
+    d.wasDragged = true;
     setTimeout(() => {
       d.wasDragged = false;
     }, 50);
+  } else {
+    // Pas de drag = reset immédiat
+    d.wasDragged = false;
+  }
     
     dragHandle.style.cursor = 'grab';
     
@@ -1518,8 +1553,7 @@ function setupGlobalDragCleanup() {
   // Fonction de mise à jour des positions (animation)
   // Réduire la fréquence d'animation sur mobile
 function updatePositions(timestamp) {
-  const targetFPS = isMobile ? 20 : 30; // 20fps sur mobile au lieu de 30
-  const frameDelay = 1000 / targetFPS;
+  const frameDelay = 1000 / CONFIG.targetFPS;
   
   if (timestamp - lastTimestamp < frameDelay) {
     animationFrameId = requestAnimationFrame(updatePositions);
@@ -1554,7 +1588,7 @@ function updatePositions(timestamp) {
         }
         
         // Drift aléatoire
-        if (d.angleChangeTimer % 3 === 0) {
+        if (d.angleChangeTimer % (isMobile ? 5 : 3) === 0) {
           d.angle += (Math.random() - 0.5) * (driftIntensity * 0.7);
         }
 
@@ -1567,16 +1601,13 @@ function updatePositions(timestamp) {
         y += dy;
 
         if (Math.random() < 0.01) { // Log 1% du temps pour ne pas surcharger
-  console.log('🟢 AUTO-MOVE - Position:', {
-    x,
-    y,
-    containerOffsetWidth: container.offsetWidth,
-    containerOffsetHeight: container.offsetHeight
-  });
+  // console.log('🟢 AUTO-MOVE - Position:', {
+  //   x,
+  //   y,
+  //   containerOffsetWidth: container.offsetWidth,
+  //   containerOffsetHeight: container.offsetHeight
+  // });
 }
-
-// Réduire le nombre max de médias sur mobile
-this.maxMedias = isMobile ? 2 : 4; // 2 au lieu de 4
 
         // Vérification des limites avec rebond
 const cachedBounds = cacheMovementBounds(state.projectElement);
@@ -1692,7 +1723,8 @@ function invalidateMovementBoundsCache() {
       this.medias = medias;
       this.currentIndex = 0;
       this.mediaList = [];
-      this.maxMedias = 4;
+      this.maxMedias = CONFIG.maxMedias;
+       console.log(`Project ${projectId} initialized with maxMedias: ${this.maxMedias}`);
       this.baseZIndex = 50;
 
       this.hintElement = null;
@@ -1884,34 +1916,79 @@ function hideHint(hint) {
     }
 
     // Afficher le premier média (immobile jusqu'au premier clic)
-    const firstMediaContainer = createMediaContainer(projectId, medias[0], 0, sectionClic);
+const firstMediaContainer = createMediaContainer(projectId, medias[0], 0, sectionClic);
 
 if (firstMediaContainer) {
-  // S'assurer que le conteneur est bien ajouté au DOM
-  if (!firstMediaContainer.parentNode) {
-    const sectionMvmt = projectElement.querySelector('.section-mvmt');
-    if (sectionMvmt) {
-      sectionMvmt.appendChild(firstMediaContainer);
-    }
+  // IMPORTANT : Ne PAS utiliser setTimeout sur mobile
+  // Activer immédiatement mais après que le conteneur soit dans le DOM
+  firstMediaContainer.style.opacity = '1'; // Rendre visible immédiatement
+  
+  // Forcer l'activation synchrone
+  firstMediaContainer.mediaData.isActive = true;
+  firstMediaContainer.mediaData.activationTime = Date.now();
+  firstMediaContainer.mediaData.isMoving = false;
+  firstMediaContainer.style.transform = 'scale(1.25)';
+  firstMediaContainer.style.zIndex = state.getTopZIndex();
+  
+  // Créer le contenu actif immédiatement
+  createActiveContent(firstMediaContainer, medias[0]);
+
+  // Variables pour distinguer tap/drag/scroll
+let sectionTouchStartX = 0;
+let sectionTouchStartY = 0;
+let sectionTouchStartTime = 0;
+
+// Enregistrer le point de départ (pour tous les devices)
+projectElement.addEventListener('touchstart', (e) => {
+  // Ne pas enregistrer si on touche un média
+  if (e.target.closest('.project-media')) {
+    return;
   }
   
-  // Forcer le reflow pour s'assurer que le DOM est à jour
-  firstMediaContainer.offsetHeight;
-  
-  // Activer immédiatement sans timeout
-  firstMediaContainer.style.opacity = '1';
-  activateMedia(firstMediaContainer);
-  
-  console.log('First media created and activated for', projectId);
-}
+  const touch = e.touches[0];
+  sectionTouchStartX = touch.clientX;
+  sectionTouchStartY = touch.clientY;
+  sectionTouchStartTime = Date.now();
+}, { passive: true });
 
-    // Gérer les clics sur la section (mais pas sur les médias)
+// Gérer les interactions sur la section (fond)
+projectElement.addEventListener('touchend', (e) => {
+  // Si on relâche sur un média, ne rien faire
+  if (e.target.closest('.project-media')) {
+    return;
+  }
+  
+  const touch = e.changedTouches[0];
+  const touchDuration = Date.now() - sectionTouchStartTime;
+  
+  // Calculer le déplacement
+  const deltaX = Math.abs(touch.clientX - sectionTouchStartX);
+  const deltaY = Math.abs(touch.clientY - sectionTouchStartY);
+  const totalMovement = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+  
+  // C'est un TAP si : court (< 300ms) ET peu de mouvement (< 15px)
+  const isTap = touchDuration < 300 && totalMovement < 15;
+  
+  if (isTap) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const state = projectStates.get(projectId);
+    if (state && state.hintElement) {
+      state.markInteraction();
+    }
+    
+    showNextMedia(projectId);
+  }
+  // Sinon c'était un scroll ou un drag, on ignore
+}, { passive: false });
+
+// Support click pour desktop/dev tools
 projectElement.addEventListener('click', (e) => {
   if (e.target.closest('.project-media')) {
     return;
   }
 
-  // Dans le click listener :
   const state = projectStates.get(projectId);
   if (state && state.hintElement) {
     state.markInteraction();
@@ -1919,23 +1996,6 @@ projectElement.addEventListener('click', (e) => {
 
   showNextMedia(projectId);
 });
-
-// Support tactile pour la section
-if (shouldUseTouchMode) {
-  projectElement.addEventListener('touchend', (e) => {
-    if (!e.target.closest('.project-media')) {
-      e.preventDefault();
-
-      // Dans le touch listener :
-      const state = projectStates.get(projectId);
-      if (state && state.hintElement) {
-        state.markInteraction();
-      }
-
-      showNextMedia(projectId);
-    }
-  });
-}
 
     console.log(`Project ${projectId} initialized with media system - ${medias.length} medias`);
   }
@@ -1973,6 +2033,33 @@ if (shouldUseTouchMode) {
       }
     });
   }
+
+  // Observer pour forcer l'affichage du premier média des sections visibles
+const initialLoadObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const projectId = entry.target.id;
+      const state = projectStates.get(projectId);
+      
+      if (state && state.mediaList.length > 0) {
+        const firstMedia = state.mediaList[0];
+        // Si le premier média n'est pas déjà actif, l'activer
+        if (firstMedia && !firstMedia.mediaData.isActive) {
+          console.log(`Force-activating first media for ${projectId}`);
+          requestAnimationFrame(() => {
+            activateMedia(firstMedia);
+          });
+        }
+      }
+      
+      // Arrêter d'observer après la première activation
+      initialLoadObserver.unobserve(entry.target);
+    }
+  });
+}, {
+  root: document.querySelector('#container-projets'),
+  threshold: 0.5
+});
 
   // Observer pour détecter le changement de section visible
   const sectionObserver = new IntersectionObserver((entries) => {
@@ -2035,6 +2122,7 @@ if (shouldUseTouchMode) {
       initializeProject(projectElement);
       // Observer les changements de visibilité de chaque section
       sectionObserver.observe(projectElement);
+      initialLoadObserver.observe(projectElement);
     }
   });
 
