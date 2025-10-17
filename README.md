@@ -8,7 +8,8 @@ _page de projets bis :
      * régler taille settings media player sur mobile bcp trop grands
      créer mes propres players settings psk là c'est cata
 
-    sur mobile les images n'apparaissent pas bien
+    - scale up des images en portrait correcte qu'après avoir fait apparaître toute la liste une 1ere fois
+    - bien différencier sur mobile le drag d'éléments et le scroll de page
 
 
 _adapter à tous navigateurs (controles natifs safari/mozilla)
