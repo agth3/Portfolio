@@ -757,8 +757,8 @@ function calculateElementDimensions(container, mediaType = 'image', mediaConfig 
   const rect = sectionClic.getBoundingClientRect();
   
   // ✅ Les dimensions finales après scale(1.25) ne doivent pas dépasser ces limites
-  const MAX_WIDTH_ACTIVE = rect.width * (isMobile ? 0.65 : 0.40); //% max de la largeur après scale
-  const MAX_HEIGHT_ACTIVE = rect.height * (isMobile ? 0.70 : 0.65); //% max de la hauteur après scale
+  const MAX_WIDTH_ACTIVE = rect.width * (isMobile ? 0.50 : 0.40); //% max de la largeur après scale
+  const MAX_HEIGHT_ACTIVE = rect.height * (isMobile ? 0.55 : 0.50); //% max de la hauteur après scale
   
   let ratio = mediaConfig?._detectedRatio;
   
@@ -824,12 +824,15 @@ function calculateElementDimensions(container, mediaType = 'image', mediaConfig 
 
      // Fonction pour ajuster les dimensions du conteneur après chargement du média
 function adjustContainerSize(container) {
+  // ✅ Ne rien faire pour audio
+  if (container.mediaData.mediaType === 'audio') {
+    return;
+  }
+  
   const mediaElement = container.mediaData.mediaElement;
   if (!mediaElement) return;
   
-  // Attendre que l'élément soit chargé
   const adjustSize = () => {
-    // Utiliser les dimensions calculées de l'élément média, pas du conteneur
     const rect = mediaElement.getBoundingClientRect();
     container.style.width = rect.width + 'px';
     container.style.height = rect.height + 'px';
@@ -900,19 +903,25 @@ function adjustContainerSize(container) {
     // Calculer les dimensions maximales
 const { maxWidth, maxHeight } = calculateElementDimensions(sectionClic, mediaConfig.type, mediaConfig);
 
-// Appliquer SANS forcer width/height (laisser l'image définir ses dimensions)
+// Pour audio, forcer le conteneur carré
 if (mediaConfig.type === 'audio') {
   const size = Math.min(maxWidth, maxHeight);
   container.style.width = size + 'px';
   container.style.height = size + 'px';
+  container.style.maxWidth = size + 'px';
+  container.style.maxHeight = size + 'px';
+  // ✅ RETIRER width et height auto qui causent le conflit
 } else {
-  // Pour images : maxWidth/maxHeight suffisent, pas de width/height fixes
   container.style.maxWidth = maxWidth + 'px';
   container.style.maxHeight = maxHeight + 'px';
+  container.style.width = 'auto';
+  container.style.height = 'auto';
 }
 
-// Pour getRandomPosition, utiliser les dimensions max
-const { x, y } = getRandomPosition(sectionClic, maxWidth, maxHeight);
+// Pour getRandomPosition, utiliser les dimensions calculées
+const posWidth = mediaConfig.type === 'audio' ? Math.min(maxWidth, maxHeight) : maxWidth;
+const posHeight = mediaConfig.type === 'audio' ? Math.min(maxWidth, maxHeight) : maxHeight;
+const { x, y } = getRandomPosition(sectionClic, posWidth, posHeight);
 container.style.left = x + 'px';
 container.style.top = y + 'px';
 
@@ -996,18 +1005,19 @@ thumbnail.onload = () => {
   }
 };
 
-
-  thumbnail.style.maxWidth = '100%';
-  thumbnail.style.maxHeight = '100%';
-  thumbnail.style.width = 'auto';
-  thumbnail.style.height = 'auto';
-  thumbnail.style.objectFit = 'contain';
+// ✅ Style unifié : audio utilise cover, autres utilisent contain
+  thumbnail.style.width = '100%';
+  thumbnail.style.height = '100%';
+  thumbnail.style.objectFit = mediaConfig.type === 'audio' ? 'cover' : 'contain';
   thumbnail.style.display = 'block';
   
   container.appendChild(thumbnail);
   container.mediaData.mediaElement = thumbnail;
   
-  adjustContainerSize(container);
+  // ✅ NE PAS appeler adjustContainerSize pour audio
+  if (mediaConfig.type !== 'audio') {
+    adjustContainerSize(container);
+  }
 }
 
   // Fonction pour créer le contenu actif
@@ -1054,10 +1064,12 @@ thumbnail.onload = () => {
     setTimeout(() => mediaElement.load(), 0);
   }
 
-// ✅ NOUVEAU : Détecter le ratio de la vidéo
+// ✅ Détecter le ratio de la vidéo ET recalculer les dimensions
   mediaElement.addEventListener('loadedmetadata', () => {
-    if (!mediaConfig._detectedRatio && mediaElement.videoWidth && mediaElement.videoHeight) {
+    if (mediaElement.videoWidth && mediaElement.videoHeight) {
       const ratio = mediaElement.videoWidth / mediaElement.videoHeight;
+      
+      // ✅ TOUJOURS recalculer même si ratio déjà détecté (pour vidéos)
       mediaConfig._detectedRatio = ratio;
       
       console.log(`🎬 Detected video ratio: ${ratio.toFixed(2)} (${mediaElement.videoWidth}x${mediaElement.videoHeight})`);
@@ -1075,6 +1087,18 @@ thumbnail.onload = () => {
       
       // Forcer le recalcul
       container.offsetHeight;
+      
+      // ✅ Réappliquer le scale si actif
+      if (container.mediaData.isActive) {
+        container.style.transform = 'scale(1)';
+        container.offsetHeight;
+        
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            container.style.transform = 'scale(1.25)';
+          });
+        });
+      }
       
       // Vérifier les limites de position
       const currentLeft = parseFloat(container.style.left) || 0;
@@ -1117,12 +1141,13 @@ thumbnail.onload = () => {
   break;
         
     case 'audio':
+  // ✅ Le conteneur principal a DÉJÀ les bonnes dimensions, ne pas les recalculer
+  
   // Conteneur carré avec background
   const audioContainer = document.createElement('div');
   audioContainer.style.cssText = `
     width: 100%;
     height: 100%;
-    aspect-ratio: 1/1;
     position: relative;
     border-radius: 4px;
     overflow: hidden;
@@ -1140,7 +1165,7 @@ thumbnail.onload = () => {
     audioContainer.style.backgroundImage = `url(${backgroundImage})`;
   }
   
-  // Audio player centré (sans titre)
+  // Audio player centré
   mediaElement = document.createElement('audio');
   mediaElement.src = mediaConfig.src;
   mediaElement.controls = true;
@@ -1167,6 +1192,8 @@ thumbnail.onload = () => {
   // Assemblage
   audioContainer.appendChild(mediaElement);
   container.appendChild(audioContainer);
+  
+  // ✅ NE PAS modifier les dimensions du container ici
   break;
 
     case 'iframe':
@@ -1747,8 +1774,51 @@ if (cachedBounds) {
     animationFrameId = requestAnimationFrame(updatePositions);
   }
 
+// Fonction pour pré-charger et détecter le ratio AVANT création
+function ensureRatioDetected(mediaConfig) {
+  return new Promise((resolve) => {
+    if (mediaConfig._detectedRatio) {
+      resolve();
+      return;
+    }
+    
+    if (mediaConfig.type === 'audio') {
+      mediaConfig._detectedRatio = 1;
+      resolve();
+      return;
+    }
+    
+    if (mediaConfig.type === 'video') {
+      mediaConfig._detectedRatio = 16/9;
+      resolve();
+      return;
+    }
+    
+    if (mediaConfig.type === 'iframe') {
+      mediaConfig._detectedRatio = 16/9;
+      resolve();
+      return;
+    }
+    
+    const img = new Image();
+    img.onload = () => {
+      const ratio = img.naturalWidth / img.naturalHeight;
+      mediaConfig._detectedRatio = ratio;
+      console.log(`📐 PRE-detected ratio for ${mediaConfig.lowRes}: ${ratio.toFixed(2)}`);
+      resolve();
+    };
+    img.onerror = () => {
+      console.warn('Failed to pre-detect, using default');
+      mediaConfig._detectedRatio = 4/3;
+      resolve();
+    };
+    
+    img.src = mediaConfig.thumbnail || mediaConfig.lowRes;
+  });
+}
+
   // Fonction pour afficher le média suivant
-  function showNextMedia(projectId) {
+  async function showNextMedia(projectId) {
   const medias = projectImages[projectId];
   const state = projectStates.get(projectId);
   if (!medias || !state) {
@@ -1756,35 +1826,38 @@ if (cachedBounds) {
     return;
   }
 
-  console.log(`📸 showNextMedia - Before: ${state.mediaList.length} media, maxMedias: ${state.maxMedias}`);
+  console.log(`🔸 showNextMedia - Before: ${state.mediaList.length} media, maxMedias: ${state.maxMedias}`);
   
   // Désactiver tous les médias existants
   state.deactivateAllMedia();
     
-    // Calculer le prochain index
-    state.currentIndex = (state.currentIndex + 1) % medias.length;
-    const nextMediaConfig = medias[state.currentIndex];
-    
-    // Créer et afficher le nouveau média
-    const newMediaContainer = createMediaContainer(
-      projectId, 
-      nextMediaConfig, 
-      state.currentIndex, 
-      state.sectionClic
-    );
+  // Calculer le prochain index
+  state.currentIndex = (state.currentIndex + 1) % medias.length;
+  const nextMediaConfig = medias[state.currentIndex];
+  
+  // ✅ ATTENDRE que le ratio soit détecté
+  await ensureRatioDetected(nextMediaConfig);
+  
+  // Créer et afficher le nouveau média
+  const newMediaContainer = createMediaContainer(
+    projectId, 
+    nextMediaConfig, 
+    state.currentIndex, 
+    state.sectionClic
+  );
 
-    if (newMediaContainer) {
-      // Nouveau média = actif automatiquement
-      setTimeout(() => {
-        activateMedia(newMediaContainer);
-      }, 100);
-    }
-
-    // Nettoyage périodique du cache
-    if (Math.random() < 0.1) {
-      cleanupImageCache();
-    }
+  if (newMediaContainer) {
+    // Nouveau média = actif automatiquement
+    setTimeout(() => {
+      activateMedia(newMediaContainer);
+    }, 100);
   }
+
+  // Nettoyage périodique du cache
+  if (Math.random() < 0.1) {
+    cleanupImageCache();
+  }
+}
 
   // Cache pour stocker les limites de mouvement par projet
 const movementBoundsCache = new Map();
@@ -2011,15 +2084,15 @@ function hideHint(hint) {
 
   // Initialisation des projets
   function initializeProject(projectElement) {
-    const projectId = projectElement.id;
-      console.log(`⚙️ initializeProject called for: ${projectId}`);
+  const projectId = projectElement.id;
+  console.log(`⚙️ initializeProject called for: ${projectId}`);
 
-    const medias = projectImages[projectId];
-    if (!medias || medias.length === 0) return;
+  const medias = projectImages[projectId];
+  if (!medias || medias.length === 0) return;
 
-    const sectionClic = projectElement.querySelector('.section-clic');
-    const sectionMvmt = projectElement.querySelector('.section-mvmt');
-    if (!sectionClic || !sectionMvmt) return;
+  const sectionClic = projectElement.querySelector('.section-clic');
+  const sectionMvmt = projectElement.querySelector('.section-mvmt');
+  if (!sectionClic || !sectionMvmt) return;
 
     // Nettoyer le contenu existant
     sectionMvmt.innerHTML = '';
@@ -2038,25 +2111,24 @@ function hideHint(hint) {
       showHint(state.hintElement);
     }
 
-// Afficher le premier média (immobile jusqu'au premier clic)
-const firstMediaContainer = createMediaContainer(projectId, medias[0], 0, sectionClic);
+// ✅ Pré-détecter et créer de manière asynchrone mais non-bloquante
+ensureRatioDetected(medias[0]).then(() => {
+  const firstMediaContainer = createMediaContainer(projectId, medias[0], 0, sectionClic);
 
-if (firstMediaContainer) {
-  // Fonction d'activation à déclencher après init complète
-  const doActivation = () => {
-    console.log(`⏰ Activation triggered for ${projectId}`);
-    activateMedia(firstMediaContainer);
+  if (firstMediaContainer) {
+    const doActivation = () => {
+      console.log(`⏰ Activation triggered for ${projectId}`);
+      activateMedia(firstMediaContainer);
+      
+      setTimeout(() => {
+        state.isInitializing = false;
+        console.log(`✅ ${projectId} initialization complete`);
+      }, 100);
+    };
     
-    // Marquer l'init comme terminée APRÈS l'activation
-    setTimeout(() => {
-      state.isInitializing = false;
-      console.log(`✅ ${projectId} initialization complete`);
-    }, 100);
-  };
-  
-  // Déclencher après que TOUT le reste soit exécuté
-  setTimeout(doActivation, isMobile ? 400 : 150);
-}
+    setTimeout(doActivation, isMobile ? 400 : 150);
+  }
+});
 
     // Gérer les clics sur la section (mais pas sur les médias)
 projectElement.addEventListener('click', (e) => {
