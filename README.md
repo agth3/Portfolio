@@ -10,6 +10,8 @@ _page de projets bis :
 
     - bien différencier sur mobile le drag d'éléments et le scroll de page
     - apparition des images encore foireuse sur mobile
+    - centrer bouton play media audio sur mobile
+    - format et aspect iframe (ne peut pas déplacer ?)
 
 _adapter à tous navigateurs (controles natifs safari/mozilla)
     - controles audio à pimper pour safari

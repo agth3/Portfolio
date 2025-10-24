@@ -20,10 +20,24 @@ async function loadLang(lang) {
       }
     });
 
+updateCursorText(dict);
+    
     localStorage.setItem("lang", lang);
   } catch (error) {
     console.error("Erreur lors du chargement de la langue :", error.message);
   }
+}
+
+// ✅ AJOUTER CETTE FONCTION ICI
+function updateCursorText(dict) {
+  const cursorText = dict.cursorText || "voir plus";
+  
+  const cursorSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="24" viewBox="0 0 64 24"><text x="0" y="18" font-family="sans-serif" font-size="15" fill="black">${cursorText}</text></svg>`;
+  const encodedSVG = encodeURIComponent(cursorSVG).replace(/'/g, '%27');
+  
+  document.querySelectorAll('.section-clic').forEach(element => {
+    element.style.cursor = `url('data:image/svg+xml;utf8,${encodedSVG}') 8 18, auto`;
+  });
 }
 
   document.addEventListener("DOMContentLoaded", function () {

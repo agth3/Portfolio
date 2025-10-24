@@ -767,7 +767,18 @@ function calculateElementDimensions(container, mediaType = 'image', mediaConfig 
     return { maxWidth: audioSize, maxHeight: audioSize };
   }
   
-  if (mediaType === 'video' || mediaType === 'iframe') {
+  // ✅ Pour iframe : ratio écran selon device
+  if (mediaType === 'iframe') {
+    if (isMobile) {
+      // Format téléphone portrait (9:16 inversé = 0.5625)
+      // ratio = 9 / 16;
+      ratio = 3 / 4;
+    } else {
+      // Format écran desktop (16:9 = 1.78)
+      // ratio = 16 / 9;
+      ratio = 4 / 3;
+    }
+  } else if (mediaType === 'video') {
     ratio = ratio || (16 / 9);
   }
   
@@ -824,8 +835,9 @@ function calculateElementDimensions(container, mediaType = 'image', mediaConfig 
 
      // Fonction pour ajuster les dimensions du conteneur après chargement du média
 function adjustContainerSize(container) {
-  // ✅ Ne rien faire pour audio
-  if (container.mediaData.mediaType === 'audio') {
+  // ✅ Ne rien faire pour audio et iframe
+  if (container.mediaData.mediaType === 'audio' || container.mediaData.mediaType === 'iframe') {
+    console.log(`⛔ adjustContainerSize skipped for ${container.mediaData.mediaType}`);
     return;
   }
   
@@ -903,14 +915,24 @@ function adjustContainerSize(container) {
     // Calculer les dimensions maximales
 const { maxWidth, maxHeight } = calculateElementDimensions(sectionClic, mediaConfig.type, mediaConfig);
 
-// Pour audio, forcer le conteneur carré
+if (mediaConfig.type === 'iframe') {
+  console.log(`🖼️ IFRAME dimensions calculated: ${maxWidth.toFixed(0)}x${maxHeight.toFixed(0)}, ratio: ${(maxWidth/maxHeight).toFixed(2)}`);
+}
+
+// ✅ Pour audio ET iframe, forcer les dimensions fixes
 if (mediaConfig.type === 'audio') {
   const size = Math.min(maxWidth, maxHeight);
   container.style.width = size + 'px';
   container.style.height = size + 'px';
   container.style.maxWidth = size + 'px';
   container.style.maxHeight = size + 'px';
-  // ✅ RETIRER width et height auto qui causent le conflit
+} else if (mediaConfig.type === 'iframe') {
+  // ✅ NOUVEAU : Forcer les dimensions pour iframe
+  container.style.width = maxWidth + 'px';
+  container.style.height = maxHeight + 'px';
+  container.style.maxWidth = maxWidth + 'px';
+  container.style.maxHeight = maxHeight + 'px';
+  console.log(`🖼️ IFRAME container dimensions SET to: ${maxWidth}x${maxHeight}`);
 } else {
   container.style.maxWidth = maxWidth + 'px';
   container.style.maxHeight = maxHeight + 'px';
@@ -919,8 +941,10 @@ if (mediaConfig.type === 'audio') {
 }
 
 // Pour getRandomPosition, utiliser les dimensions calculées
-const posWidth = mediaConfig.type === 'audio' ? Math.min(maxWidth, maxHeight) : maxWidth;
-const posHeight = mediaConfig.type === 'audio' ? Math.min(maxWidth, maxHeight) : maxHeight;
+const posWidth = mediaConfig.type === 'audio' ? Math.min(maxWidth, maxHeight) : 
+                 mediaConfig.type === 'iframe' ? maxWidth : maxWidth;
+const posHeight = mediaConfig.type === 'audio' ? Math.min(maxWidth, maxHeight) : 
+                  mediaConfig.type === 'iframe' ? maxHeight : maxHeight;
 const { x, y } = getRandomPosition(sectionClic, posWidth, posHeight);
 container.style.left = x + 'px';
 container.style.top = y + 'px';
@@ -969,7 +993,8 @@ return container;
   
  // ✅ CORRECTION dans createThumbnailContent
 thumbnail.onload = () => {
-  if (!mediaConfig._detectedRatio) {
+  // ✅ Ne pas détecter le ratio pour iframe et audio
+  if (!mediaConfig._detectedRatio && mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
     const ratio = thumbnail.naturalWidth / thumbnail.naturalHeight;
     mediaConfig._detectedRatio = ratio;
     
@@ -1014,10 +1039,10 @@ thumbnail.onload = () => {
   container.appendChild(thumbnail);
   container.mediaData.mediaElement = thumbnail;
   
-  // ✅ NE PAS appeler adjustContainerSize pour audio
-  if (mediaConfig.type !== 'audio') {
-    adjustContainerSize(container);
-  }
+  // ✅ NE PAS appeler adjustContainerSize pour audio ET iframe
+if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
+  adjustContainerSize(container);
+}
 }
 
   // Fonction pour créer le contenu actif
@@ -1140,9 +1165,7 @@ thumbnail.onload = () => {
   });
   break;
         
-    case 'audio':
-  // ✅ Le conteneur principal a DÉJÀ les bonnes dimensions, ne pas les recalculer
-  
+  case 'audio':
   // Conteneur carré avec background
   const audioContainer = document.createElement('div');
   audioContainer.style.cssText = `
@@ -1170,10 +1193,8 @@ thumbnail.onload = () => {
   mediaElement.src = mediaConfig.src;
   mediaElement.controls = true;
   mediaElement.style.cssText = `
-    position: relative;
-    z-index: 2;
     width: 80%;
-    max-width: 200px;
+    max-width: ${isMobile ? '180px' : '200px'};
     pointer-events: auto;
   `;
   mediaElement.preload = 'metadata';
@@ -1192,11 +1213,12 @@ thumbnail.onload = () => {
   // Assemblage
   audioContainer.appendChild(mediaElement);
   container.appendChild(audioContainer);
-  
-  // ✅ NE PAS modifier les dimensions du container ici
   break;
 
     case 'iframe':
+  console.log(`🖼️ Creating IFRAME with container dimensions: ${container.style.maxWidth} x ${container.style.maxHeight}`);
+
+
   // Créer un conteneur avec barre de titre draggable
   const iframeContainer = document.createElement('div');
   iframeContainer.style.cssText = `
@@ -1280,6 +1302,11 @@ thumbnail.onload = () => {
     container.mediaData.mediaElement = mediaElement;
 
     adjustContainerSize(container);
+
+    // ✅ NE PAS appeler adjustContainerSize pour audio ET iframe
+if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
+  adjustContainerSize(container);
+}
     
     // Précharger l'image HD si c'est une image
     if (mediaConfig.type === 'image' && mediaConfig.highRes) {
@@ -1456,36 +1483,48 @@ function setupMediaDragAndDrop(container, projectElement) {
   let isDragging = false;
   let dragStartTime = 0;
 
-  // Variables pour stocker les handlers (permettre cleanup)
   let mouseMoveHandler = null;
   let mouseUpHandler = null;
   let touchMoveHandler = null;
   let touchEndHandler = null;
 
   dragHandle.addEventListener('mousedown', mouseDown);
-if (shouldUseTouchMode) {
-  // Fonction dédiée pour les événements tactiles
-  function handleTouchStart(e) {
-  const t = e.touches[0];
-  mouseDown({ 
-    clientX: t.clientX, 
-    clientY: t.clientY,
-    preventDefault: () => {},
-    type: 'touch'
-  });
-}
-
-dragHandle.addEventListener('touchstart', handleTouchStart, { passive: true });
-}
+  
+  // ✅ Pour iframe, supporter aussi le tactile sur la barre de drag
+  if (container.mediaData.mediaType === 'iframe' && shouldUseTouchMode) {
+    function handleTouchStart(e) {
+      const t = e.touches[0];
+      mouseDown({ 
+        clientX: t.clientX, 
+        clientY: t.clientY,
+        preventDefault: () => e.preventDefault(),
+        stopPropagation: () => e.stopPropagation(),
+        type: 'touch'
+      });
+    }
+    
+    dragHandle.addEventListener('touchstart', handleTouchStart, { passive: false });
+  } else if (shouldUseTouchMode && container.mediaData.mediaType !== 'iframe') {
+    // Pour les autres types (audio, video, image)
+    function handleTouchStart(e) {
+      const t = e.touches[0];
+      mouseDown({ 
+        clientX: t.clientX, 
+        clientY: t.clientY,
+        preventDefault: () => {},
+        type: 'touch'
+      });
+    }
+    
+    dragHandle.addEventListener('touchstart', handleTouchStart, { passive: true });
+  }
 
   function mouseDown(e) {
     if (container.mediaData.mediaType === 'iframe') {
       e.stopPropagation();
+      if (e.preventDefault) e.preventDefault();
     }
     
-    if (e.preventDefault) e.preventDefault();
-    
-    // Empêcher les doubles déclenchements
     if (isDragging) return;
     
     isDragging = true;
@@ -1503,11 +1542,9 @@ dragHandle.addEventListener('touchstart', handleTouchStart, { passive: true });
     
     dragHandle.style.cursor = 'grabbing';
     
-    // Créer les handlers avec références pour cleanup
     mouseMoveHandler = (moveEvent) => mouseMove(moveEvent);
     mouseUpHandler = (upEvent) => mouseUp(upEvent);
     
-    // Attacher les listeners globalement
     document.addEventListener('mousemove', mouseMoveHandler, { passive: false });
     document.addEventListener('mouseup', mouseUpHandler, { passive: false });
     
@@ -1788,18 +1825,22 @@ function ensureRatioDetected(mediaConfig) {
       return;
     }
     
+    // ✅ Pour iframe : forcer le ratio selon device, NE PAS détecter depuis thumbnail
+    if (mediaConfig.type === 'iframe') {
+      // mediaConfig._detectedRatio = isMobile ? (9 / 16) : (16 / 9);
+            mediaConfig._detectedRatio = isMobile ? (3 / 4) : (4 / 3);
+console.log(`🖼️ IFRAME ratio set in ensureRatioDetected: ${mediaConfig._detectedRatio.toFixed(2)}`);
+  resolve();
+  return;
+    }
+    
     if (mediaConfig.type === 'video') {
       mediaConfig._detectedRatio = 16/9;
       resolve();
       return;
     }
     
-    if (mediaConfig.type === 'iframe') {
-      mediaConfig._detectedRatio = 16/9;
-      resolve();
-      return;
-    }
-    
+    // Pour les images : charger et détecter
     const img = new Image();
     img.onload = () => {
       const ratio = img.naturalWidth / img.naturalHeight;
