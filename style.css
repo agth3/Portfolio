@@ -1316,6 +1316,13 @@ video:focus, audio:focus {
   overflow: hidden;
 }
 
+.iframe-drag-bar{
+  background-color: #0f0c0c;
+    color: #f1f2f1;
+    font-size: 0.85rem;
+    font-family: 'Switzer-Regular', 'Helvetica Neue', Arial, sans-serif;
+}
+
 
 
 /*--------- PAGE BIO ---------*/

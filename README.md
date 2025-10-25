@@ -8,10 +8,8 @@ _page de projets bis :
      * régler taille settings media player sur mobile bcp trop grands
      créer mes propres players settings psk là c'est cata
 
-    - bien différencier sur mobile le drag d'éléments et le scroll de page
-    - apparition des images encore foireuse sur mobile
+    - apparition des images encore foireuse sur mobile ( plus trop ?)
     - centrer bouton play media audio sur mobile
-    - format et aspect iframe (ne peut pas déplacer ?)
 
 _adapter à tous navigateurs (controles natifs safari/mozilla)
     - controles audio à pimper pour safari
