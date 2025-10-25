@@ -1323,46 +1323,35 @@ if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
 
   if (container.mediaData.isActive) return;
 
-  console.log(`🎬 activateMedia called for ${projectId}`, {
-    opacity: container.style.opacity,
-    display: window.getComputedStyle(container).display,
-    visibility: window.getComputedStyle(container).visibility,
-    inDOM: document.body.contains(container)
-  });
+  console.log(`🎬 activateMedia called for ${projectId}`);
 
-  // Désactiver tous les autres médias du projet
   state.deactivateAllMedia();
   
-  // NE stopper les autres médias QUE si ce projet n'est pas en cours d'init
   if (!state.isInitializing) {
     mediaManager.stopAllMedia();
-  } else {
-    console.log(`⏭️ Skipping stopAllMedia for ${projectId} (initializing)`);
   }
 
-  // Activer ce média
- container.mediaData.isActive = true;
+  container.mediaData.isActive = true;
   container.mediaData.activationTime = Date.now();
   container.mediaData.isMoving = false;
 
-  // NE PAS appliquer le scale tout de suite
   container.style.opacity = '1';
 
   const topZIndex = state.getTopZIndex();
   container.style.zIndex = topZIndex;
 
-  // Créer le contenu actif
   createActiveContent(container, container.mediaData.config);
 
-  // Appliquer le scale APRÈS un court délai
-requestAnimationFrame(() => {
   requestAnimationFrame(() => {
-    container.style.transform = 'scale(1.25)';
+    requestAnimationFrame(() => {
+      container.style.transform = 'scale(1.25)';
+    });
   });
-});
 
-//Toujours démarrer le mouvement, même avec seulement 2 médias
-state.startMovementForInactiveMedia();
+  // ✅ SEUL appel - démarre le mouvement des autres médias
+  state.startMovementForInactiveMedia();
+
+  console.log(`Media ${container.mediaData.mediaIndex} (${container.mediaData.mediaType}) activated`);
 }
 
   // Fonction pour désactiver un média
@@ -1938,17 +1927,13 @@ console.log(`🖼️ IFRAME ratio set in ensureRatioDetected: ${mediaConfig._det
 
   console.log(`🔸 showNextMedia - Before: ${state.mediaList.length} media, maxMedias: ${state.maxMedias}`);
   
-  // Désactiver tous les médias existants
   state.deactivateAllMedia();
     
-  // Calculer le prochain index
   state.currentIndex = (state.currentIndex + 1) % medias.length;
   const nextMediaConfig = medias[state.currentIndex];
   
-  // ✅ ATTENDRE que le ratio soit détecté
   await ensureRatioDetected(nextMediaConfig);
   
-  // Créer et afficher le nouveau média
   const newMediaContainer = createMediaContainer(
     projectId, 
     nextMediaConfig, 
@@ -1957,18 +1942,12 @@ console.log(`🖼️ IFRAME ratio set in ensureRatioDetected: ${mediaConfig._det
   );
 
   if (newMediaContainer) {
-  // Nouveau média = actif automatiquement
-  setTimeout(() => {
-    activateMedia(newMediaContainer);
-    
-    // Forcer le démarrage du mouvement après un court délai
     setTimeout(() => {
-      state.startMovementForInactiveMedia();
-    }, 200);
-  }, 100);
-}
+      activateMedia(newMediaContainer);
+      // ❌ SUPPRIMÉ : appel redondant à startMovementForInactiveMedia
+    }, 100);
+  }
 
-  // Nettoyage périodique du cache
   if (Math.random() < 0.1) {
     cleanupImageCache();
   }
@@ -2005,129 +1984,71 @@ function invalidateMovementBoundsCache() {
 
   // Classe pour gérer l'état d'un projet avec médias
   class ProjectState {
-    constructor(projectId, projectElement, medias) {
-      this.projectId = projectId;
-      this.projectElement = projectElement;
-      this.sectionClic = projectElement.querySelector('.section-clic');
-      this.medias = medias;
-      this.currentIndex = 0;
-      this.mediaList = [];
-      this.maxMedias = CONFIG.maxMedias;
-      this.baseZIndex = 50;
-      this.isInitializing = true;
+  constructor(projectId, projectElement, medias) {
+    this.projectId = projectId;
+    this.projectElement = projectElement;
+    this.sectionClic = projectElement.querySelector('.section-clic');
+    this.medias = medias;
+    this.currentIndex = 0;
+    this.mediaList = [];
+    this.maxMedias = CONFIG.maxMedias;
+    this.baseZIndex = 50;
+    this.isInitializing = true;
+    
+    this.hintElement = null;
+    this.inactivityTimer = null;
+    // ❌ SUPPRIMÉ : mediaCheckTimer, isVisible
+  }
 
-      this.hintElement = null;
-this.inactivityTimer = null;
-
-//Timer de vérification
-    this.mediaCheckTimer = null;
-    this.isVisible = false;
+  markInteraction() {
+    hideHint(this.hintElement);
+    
+    if (this.inactivityTimer) {
+      clearTimeout(this.inactivityTimer);
     }
-
-    markInteraction() {
-  hideHint(this.hintElement);
-  
-  if (this.inactivityTimer) {
-    clearTimeout(this.inactivityTimer);
+    
+    this.inactivityTimer = setTimeout(() => {
+      showHint(this.hintElement);
+    }, 8000);
   }
-  
-  this.inactivityTimer = setTimeout(() => {
-    showHint(this.hintElement);
-  }, 8000);
-}
 
-startMediaCheck() {
-  // Nettoyer l'ancien timer s'il existe
-  if (this.mediaCheckTimer) {
-    clearInterval(this.mediaCheckTimer);
-  }
-  
-  this.isVisible = true;
+  // ❌ SUPPRIMÉ : startMediaCheck(), stopMediaCheck(), forceMovementCheck()
 
-  //Forcer immédiatement une vérification
-  this.forceMovementCheck();
-  
-  // Vérifier toutes les 2 secondes
-  this.mediaCheckTimer = setInterval(() => {
-    // Ne rien faire si pas visible ou en cours d'init
-    if (!this.isVisible || this.isInitializing) {
+  // ✅ GARDER : recreateFirstMedia simplifié
+  recreateFirstMedia() {
+    if (this.mediaList.length > 0 || this.isInitializing) {
       return;
     }
     
-    // Vérifier s'il y a au moins un média
-    if (this.mediaList.length === 0) {
-      console.log(`⚠️ No media found in ${this.projectId}, recreating first media`);
-      this.recreateFirstMedia();
-    }
-  }, 2000); // Vérification toutes les 2 secondes
-}
-
-// Recréer le premier média
-recreateFirstMedia() {
-  if (this.mediaList.length > 0 || this.isInitializing) {
-    return;
-  }
-  
-  console.log(`🔄 Recreating first media for ${this.projectId}`);
-  
-  ensureRatioDetected(this.medias[0]).then(() => {
-    if (this.mediaList.length === 0) {
-      const firstMediaContainer = createMediaContainer(
-        this.projectId, 
-        this.medias[0], 
-        0, 
-        this.sectionClic
-      );
-      
-      if (firstMediaContainer) {
-        setTimeout(() => {
-          activateMedia(firstMediaContainer);
-          // ✅ AJOUTER : Forcer le mouvement après activation
+    console.log(`🔄 Recreating first media for ${this.projectId}`);
+    
+    ensureRatioDetected(this.medias[0]).then(() => {
+      if (this.mediaList.length === 0) {
+        const firstMediaContainer = createMediaContainer(
+          this.projectId, 
+          this.medias[0], 
+          0, 
+          this.sectionClic
+        );
+        
+        if (firstMediaContainer) {
           setTimeout(() => {
-            this.startMovementForInactiveMedia();
-          }, 150);
-        }, 100);
+            activateMedia(firstMediaContainer);
+          }, 100);
+        }
       }
-    }
-  });
-}
-
-// ✅ AJOUTER cette méthode pour arrêter la vérification
-stopMediaCheck() {
-  this.isVisible = false;
-  
-  if (this.mediaCheckTimer) {
-    clearInterval(this.mediaCheckTimer);
-    this.mediaCheckTimer = null;
+    });
   }
-}
 
-    addMedia(container) {
-  this.mediaList.push(container);
-  console.log(`➕ Added media to ${this.projectId}, total: ${this.mediaList.length}/${this.maxMedias}`);
-  
-  if (this.mediaList.length > this.maxMedias) {
-    const oldestMedia = this.mediaList.shift(); // ← Retire déjà de la liste
-    console.log(`♻️ Auto-removing oldest, remaining: ${this.mediaList.length}`);
+  addMedia(container) {
+    this.mediaList.push(container);
+    console.log(`➕ Added media to ${this.projectId}, total: ${this.mediaList.length}/${this.maxMedias}`);
     
-    // Juste nettoyer le DOM et arrêter le média, PAS removeMedia qui re-splice
-    const mediaElement = oldestMedia.mediaData.mediaElement;
-    if (mediaElement && (mediaElement.tagName === 'AUDIO' || mediaElement.tagName === 'VIDEO')) {
-      mediaElement.pause();
-      if (mediaManager.activeMedia === mediaElement) {
-        mediaManager.activeMedia = null;
-      }
-    }
-    
-    if (oldestMedia.parentNode) {
-      oldestMedia.parentNode.removeChild(oldestMedia);
-    }
-  }
-}
-
-    removeMedia(container) {
-      // Arrêter le média s'il est en cours
-      const mediaElement = container.mediaData.mediaElement;
+    if (this.mediaList.length > this.maxMedias) {
+      const oldestMedia = this.mediaList.shift();
+      console.log(`♻️ Auto-removing oldest, remaining: ${this.mediaList.length}`);
+      
+      const mediaElement = oldestMedia.mediaData.mediaElement;
       if (mediaElement && (mediaElement.tagName === 'AUDIO' || mediaElement.tagName === 'VIDEO')) {
         mediaElement.pause();
         if (mediaManager.activeMedia === mediaElement) {
@@ -2135,108 +2056,98 @@ stopMediaCheck() {
         }
       }
       
-      const index = this.mediaList.indexOf(container);
-      if (index > -1) {
-        this.mediaList.splice(index, 1);
+      if (oldestMedia.parentNode) {
+        oldestMedia.parentNode.removeChild(oldestMedia);
       }
-      
-      if (container.parentNode) {
-        container.parentNode.removeChild(container);
-      }
-      
-      console.log(`Removed oldest media from project ${this.projectId}`);
     }
+  }
 
-    // NOUVELLE MÉTHODE : Purger tous les médias sauf le dernier pour libérer de la perf
+  removeMedia(container) {
+    const mediaElement = container.mediaData.mediaElement;
+    if (mediaElement && (mediaElement.tagName === 'AUDIO' || mediaElement.tagName === 'VIDEO')) {
+      mediaElement.pause();
+      if (mediaManager.activeMedia === mediaElement) {
+        mediaManager.activeMedia = null;
+      }
+    }
+    
+    const index = this.mediaList.indexOf(container);
+    if (index > -1) {
+      this.mediaList.splice(index, 1);
+    }
+    
+    if (container.parentNode) {
+      container.parentNode.removeChild(container);
+    }
+    
+    console.log(`Removed media from project ${this.projectId}`);
+  }
+
   purgeAllExceptLast() {
-  // ✅ AJOUTER : Ne pas purger si en cours d'initialisation
-  if (this.isInitializing) {
-    console.log(`⏸️ Skipping purge for ${this.projectId} (still initializing)`);
-    return;
-  }
-  
-  if (this.mediaList.length <= 1) {
-    // Rien à purger si 0 ou 1 média
-    return;
-  }
-  
-  console.log(`Purging ${this.mediaList.length - 1} media from project ${this.projectId}`);
-  
-  // Garder le dernier média (le plus récent)
-  const lastMedia = this.mediaList[this.mediaList.length - 1];
-  
-  // Supprimer tous les autres
-  const mediaToRemove = this.mediaList.slice(0, -1);
-  
-  mediaToRemove.forEach(container => {
-    this.removeMedia(container);
-  });
-  
-  // Mettre à jour la liste (ne garder que le dernier)
-  this.mediaList = [lastMedia];
-  
-  console.log(`Project ${this.projectId} now has ${this.mediaList.length} media(s)`);
-}
-
-    deactivateAllMedia() {
-      this.mediaList.forEach(container => {
-        if (container.mediaData.isActive) {
-          deactivateMedia(container);
-        }
-      });
+    if (this.isInitializing) {
+      console.log(`⏸️ Skipping purge for ${this.projectId} (still initializing)`);
+      return;
     }
+    
+    if (this.mediaList.length <= 1) {
+      return;
+    }
+    
+    console.log(`Purging ${this.mediaList.length - 1} media from project ${this.projectId}`);
+    
+    const lastMedia = this.mediaList[this.mediaList.length - 1];
+    const mediaToRemove = this.mediaList.slice(0, -1);
+    
+    mediaToRemove.forEach(container => {
+      this.removeMedia(container);
+    });
+    
+    this.mediaList = [lastMedia];
+    
+    console.log(`Project ${this.projectId} now has ${this.mediaList.length} media(s)`);
+  }
 
-    startMovementForInactiveMedia() {
-      //Démarrer même s'il n'y a qu'un seul autre média
-  // (donc 2 médias au total : 1 actif + 1 inactif)
-  if (this.mediaList.length >= 2) {
+  deactivateAllMedia() {
     this.mediaList.forEach(container => {
-      if (!container.mediaData.isActive && !container.mediaData.isDragging) {
-        container.mediaData.isMoving = true;
-        
-        // ✅ AJOUTER : S'assurer que les propriétés de mouvement sont bien initialisées
-        if (container.mediaData.angle === undefined) {
-          container.mediaData.angle = Math.random() * 360;
-        }
-        if (container.mediaData.targetAngle === undefined) {
-          container.mediaData.targetAngle = Math.random() * 360;
-        }
-        
-        console.log(`🏃 Started movement for media ${container.mediaData.mediaIndex} in ${this.projectId}`);
+      if (container.mediaData.isActive) {
+        deactivateMedia(container);
       }
     });
   }
-}
 
-forceMovementCheck() {
-  console.log(`🔍 Force checking movement for ${this.projectId}`);
-  
-  this.mediaList.forEach(container => {
-    if (!container.mediaData.isActive && !container.mediaData.isDragging) {
-      // Si un média inactif n'est pas en mouvement, le forcer
-      if (!container.mediaData.isMoving) {
-        console.log(`⚠️ Found stuck media ${container.mediaData.mediaIndex}, forcing movement`);
-        container.mediaData.isMoving = true;
-        container.mediaData.targetAngle = Math.random() * 360;
-        container.mediaData.transitionProgress = 0;
-      }
-    }
-  });
-}
-
-    getNextZIndex() {
-      return this.baseZIndex + this.mediaList.length;
-    }
-
-    getTopZIndex() {
-      return this.baseZIndex + this.maxMedias + 10;
-    }
-
-    getChronologicalZIndex(container) {
-      const index = this.mediaList.indexOf(container);
-      return this.baseZIndex + index;
+  // ✅ SEUL endroit qui démarre le mouvement
+  startMovementForInactiveMedia() {
+    if (this.mediaList.length >= 2) {
+      this.mediaList.forEach(container => {
+        if (!container.mediaData.isActive && !container.mediaData.isDragging) {
+          container.mediaData.isMoving = true;
+          
+          if (container.mediaData.angle === undefined) {
+            container.mediaData.angle = Math.random() * 360;
+          }
+          if (container.mediaData.targetAngle === undefined) {
+            container.mediaData.targetAngle = Math.random() * 360;
+          }
+          
+          console.log(`🏃 Started movement for media ${container.mediaData.mediaIndex} in ${this.projectId}`);
+        }
+      });
     }
   }
+
+  getNextZIndex() {
+    return this.baseZIndex + this.mediaList.length;
+  }
+
+  getTopZIndex() {
+    return this.baseZIndex + this.maxMedias + 10;
+  }
+
+  getChronologicalZIndex(container) {
+    const index = this.mediaList.indexOf(container);
+    return this.baseZIndex + index;
+  }
+}
 
   // Fonction pour arrêter tous les médias lors du changement de section
   function handleSectionChange() {
@@ -2419,7 +2330,6 @@ if (shouldUseTouchMode) {
   }
 
   // Observer pour détecter le changement de section visible
-// Observer pour détecter le changement de section visible
 const sectionObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     const projectId = entry.target.id;
@@ -2428,8 +2338,7 @@ const sectionObserver = new IntersectionObserver((entries) => {
     if (!state) return;
     
     if (!entry.isIntersecting) {
-      // ✅ AJOUTER : Arrêter la vérification
-      state.stopMediaCheck();
+      // ❌ SUPPRIMÉ : stopMediaCheck()
       
       if (state.isInitializing) {
         console.log(`⏸️ Skipping cleanup for ${projectId} (still initializing)`);
@@ -2458,33 +2367,23 @@ const sectionObserver = new IntersectionObserver((entries) => {
       }, 500);
       
     } else {
-  // Section devient visible
-  console.log(`👀 ${projectId} is now visible`);
-  
-  // Démarrer la vérification périodique
-  state.startMediaCheck();
-  
-  // ✅ MODIFIER : Réactiver ET redémarrer le mouvement
-  if (state.mediaList.length > 0) {
-    const hasActiveMedia = state.mediaList.some(m => m.mediaData.isActive);
-    if (!hasActiveMedia) {
-      console.log(`🔄 Reactivating first media for ${projectId}`);
-      activateMedia(state.mediaList[0]);
+      // Section devient visible
+      console.log(`👀 ${projectId} is now visible`);
       
-      // ✅ AJOUTER : Forcer le mouvement après un court délai
-      setTimeout(() => {
-        state.startMovementForInactiveMedia();
-      }, 200);
-    } else {
-      // ✅ AJOUTER : Même s'il y a un média actif, forcer le mouvement des autres
-      setTimeout(() => {
-        state.startMovementForInactiveMedia();
-      }, 100);
+      // ❌ SUPPRIMÉ : startMediaCheck()
+      
+      // ✅ Actions immédiates uniquement
+      if (state.mediaList.length > 0) {
+        const hasActiveMedia = state.mediaList.some(m => m.mediaData.isActive);
+        if (!hasActiveMedia) {
+          console.log(`🔄 Reactivating first media for ${projectId}`);
+          activateMedia(state.mediaList[0]);
+          // ❌ SUPPRIMÉ : appels redondants à startMovement
+        }
+      } else if (!state.isInitializing) {
+        state.recreateFirstMedia();
+      }
     }
-  } else if (!state.isInitializing) {
-    state.recreateFirstMedia();
-  }
-}
   });
 }, {
   root: document.querySelector('#container-projets'),
@@ -2514,8 +2413,8 @@ const sectionObserver = new IntersectionObserver((entries) => {
   window.addEventListener('beforeunload', () => {
   mediaManager.stopAllMedia();
   
+  // ❌ SUPPRIMÉ : stopMediaCheck() pour chaque state
   projectStates.forEach(state => {
-    state.stopMediaCheck();
     state.purgeAllExceptLast();
   });
   
