@@ -9,6 +9,7 @@
           <link rel="stylesheet" href="style.css">
           <link rel="stylesheet" href="style_mobile.css">
           <!-- <link rel="preload" href="/fonts/myfont.woff2" as="font" type="font/woff2" crossorigin="anonymous"> -->
+          <script src="config.js"></script>
           <script src="script-general.js"></script>
           <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
       </head>
@@ -458,36 +459,8 @@
 
     document.addEventListener("DOMContentLoaded", () => {
   
-  // Détecter l'environnement et créer le bon chemin de base
-  const isGitHubPages = window.location.hostname.includes('github.io');
-  const pathSegments = window.location.pathname.split('/').filter(Boolean);
-  
-  // Si GitHub Pages et qu'il y a un nom de repo dans l'URL
-  let basePath = '';
-  if (isGitHubPages && pathSegments.length > 0) {
-    basePath = '/' + pathSegments[0] + '/';
-  }
-  
-  console.log('🔍 Environment detection:', {
-    hostname: window.location.hostname,
-    pathname: window.location.pathname,
-    isGitHubPages,
-    basePath,
-    fullURL: window.location.href
-  });
-
-  // Fonction helper pour corriger les chemins
-  function fixPath(path) {
-    // Si le chemin commence par '/', on ajoute le basePath
-    if (path.startsWith('/')) {
-      return basePath + path.substring(1);
-    }
-    // Si le chemin est relatif, on ajoute le basePath
-    if (!path.startsWith('http') && !path.startsWith(basePath)) {
-      return basePath + path;
-    }
-    return path;
-  }
+  // Utiliser la configuration globale
+const fixPath = APP_CONFIG.fixPath.bind(APP_CONFIG);
 
   // Configuration des images par projet - AVEC CORRECTION DES CHEMINS
   const projectImages = {
