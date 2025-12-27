@@ -134,6 +134,9 @@
                       <h2 class="titre-projets" id="titre-Memoire">Conversations souterraines&nbsp;: communication entre&nbsp;vivants humains et&nbsp;non-humains</h2>
                       <span class="date-projets">2025</span>
                       <span class="description-projets" data-i18n="memoire-1">Mémoire de DNSEP interrogeant l’émergence d’un rapport sensible de l’homme à l’arbre à travers une représentation multidimensionnelle et dynamique des réseaux racinaires, révélant l'arbre comme une entité intelligente et communicante.<br>Exploration de la page web comme support d’édition, mettant en pratique la question des réseaux.</span>
+                  <p class="p-projets">
+                        <a class="liens-externes" href="https://arcweave.com/app/project/nwEp2mP04a/play" data-i18n="memoire-2" target="_blank">Ouvrir le mémoire dans une autre page</a>
+                  </p>
                   </div>
                   <div class="section-mvmt"></div>
                   <div class="section-clic"></div>
@@ -1360,14 +1363,14 @@ if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
   
   container.mediaData.isActive = false;
   container.mediaData.activationTime = null;
-  container.mediaData.isMoving = true; // ✅ Déjà présent
+  container.mediaData.isMoving = true;
   
-  // ✅ AJOUTER : Réinitialiser les angles pour éviter les médias "coincés"
+  container.mediaData.angle = Math.random() * 360;
   container.mediaData.targetAngle = Math.random() * 360;
   container.mediaData.transitionProgress = 0;
   container.mediaData.angleChangeTimer = 0;
+  container.mediaData.hasChangedDirection = false;
   
-  // Arrêter le média s'il est en cours de lecture
   const mediaElement = container.mediaData.mediaElement;
   if (mediaElement && (mediaElement.tagName === 'AUDIO' || mediaElement.tagName === 'VIDEO')) {
     mediaElement.pause();
@@ -1376,20 +1379,15 @@ if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
     }
   }
   
-  // Effet visuel
   container.style.transform = 'scale(1)';
   
-  // Retour au z-index basé sur la chronologie
   const state = projectStates.get(container.mediaData.projectId);
   if (state) {
     const chronologicalZIndex = state.getChronologicalZIndex(container);
     container.style.zIndex = chronologicalZIndex;
   }
 
-  // Retour au thumbnail
   createThumbnailContent(container, container.mediaData.config);
-
-  console.log(`Media ${container.mediaData.mediaIndex} (${container.mediaData.mediaType}) deactivated`);
 }
 
 function getEffectiveDragHandle(container) {
@@ -1778,8 +1776,9 @@ function updatePositions(timestamp) {
   }
   lastTimestamp = timestamp;
 
-    // Traiter chaque projet
-    projectStates.forEach(state => {
+// Traiter chaque projet
+projectStates.forEach(state => {
+
       const movingMedia = state.mediaList.filter(container => 
         container.mediaData.isMoving && !container.mediaData.isDragging && container.parentNode
       );
@@ -2117,23 +2116,21 @@ function invalidateMovementBoundsCache() {
 
   // ✅ SEUL endroit qui démarre le mouvement
   startMovementForInactiveMedia() {
-    if (this.mediaList.length >= 2) {
-      this.mediaList.forEach(container => {
-        if (!container.mediaData.isActive && !container.mediaData.isDragging) {
-          container.mediaData.isMoving = true;
-          
-          if (container.mediaData.angle === undefined) {
-            container.mediaData.angle = Math.random() * 360;
-          }
-          if (container.mediaData.targetAngle === undefined) {
-            container.mediaData.targetAngle = Math.random() * 360;
-          }
-          
-          console.log(`🏃 Started movement for media ${container.mediaData.mediaIndex} in ${this.projectId}`);
+  if (this.mediaList.length >= 2) {
+    this.mediaList.forEach(container => {
+      if (!container.mediaData.isActive && !container.mediaData.isDragging) {
+        container.mediaData.isMoving = true;
+        
+        if (container.mediaData.angle === undefined) {
+          container.mediaData.angle = Math.random() * 360;
         }
-      });
-    }
+        if (container.mediaData.targetAngle === undefined) {
+          container.mediaData.targetAngle = Math.random() * 360;
+        }
+      }
+    });
   }
+}
 
   getNextZIndex() {
     return this.baseZIndex + this.mediaList.length;
@@ -2247,12 +2244,10 @@ ensureRatioDetected(medias[0]).then(() => {
 
   if (firstMediaContainer) {
     const doActivation = () => {
-      console.log(`⏰ Activation triggered for ${projectId}`);
       activateMedia(firstMediaContainer);
       
       setTimeout(() => {
         state.isInitializing = false;
-        console.log(`✅ ${projectId} initialization complete`);
       }, 100);
     };
     
@@ -2367,24 +2362,25 @@ const sectionObserver = new IntersectionObserver((entries) => {
       }, 500);
       
     } else {
-      // Section devient visible
-      console.log(`👀 ${projectId} is now visible`);
-      
-      // ❌ SUPPRIMÉ : startMediaCheck()
-      
-      // ✅ Actions immédiates uniquement
-      if (state.mediaList.length > 0) {
-        const hasActiveMedia = state.mediaList.some(m => m.mediaData.isActive);
-        if (!hasActiveMedia) {
-          console.log(`🔄 Reactivating first media for ${projectId}`);
-          activateMedia(state.mediaList[0]);
-          // ❌ SUPPRIMÉ : appels redondants à startMovement
-        }
-      } else if (!state.isInitializing) {
-        state.recreateFirstMedia();
-      }
+  // Section devient visible
+  console.log(`👀 ${projectId} is now visible`);
+  
+  if (state.mediaList.length > 0) {
+    const hasActiveMedia = state.mediaList.some(m => m.mediaData.isActive);
+    
+    if (!hasActiveMedia) {
+      console.log(`🔄 Reactivating first media for ${projectId}`);
+      activateMedia(state.mediaList[0]);
+    } else {
+      // ✅ Forcer le mouvement si médias inactifs existent
+      state.startMovementForInactiveMedia();
     }
-  });
+  } else if (!state.isInitializing) {
+    console.log(`📭 No media, recreating`);
+    state.recreateFirstMedia();
+  }
+}
+});
 }, {
   root: document.querySelector('#container-projets'),
   threshold: 0.1
