@@ -733,10 +733,16 @@ const driftIntensity = 1.5;
   const offsetX = clicRect.left - mvmtRect.left - marginLeft;
   const offsetY = clicRect.top - mvmtRect.top - marginTop;
   
-  // ⭐ AJOUT : Padding pour éviter le crop avec scale-up
+  // ⭐ PADDING ADAPTATIF selon device
+  const isMobileDevice = window.innerWidth <= 1024;
   const scaleUp = 1.05;
-  const paddingX = (elementWidth * (scaleUp - 1)) / 2 + 150; // +150px de padding de sécurité
-  const paddingY = (elementHeight * (scaleUp - 1)) / 2 + 150;
+  
+  // Padding différent pour mobile et desktop
+  const basePaddingX = isMobileDevice ? 50 : 150; // Mobile: 50px, Desktop: 150px
+  const basePaddingY = isMobileDevice ? 50 : 150; // Mobile: 50px, Desktop: 150px
+  
+  const paddingX = (elementWidth * (scaleUp - 1)) / 2 + basePaddingX;
+  const paddingY = (elementHeight * (scaleUp - 1)) / 2 + basePaddingY;
   
   // Zone de spawn limitée à section-clic avec padding
   const spawnWidth = Math.max(0, clicRect.width - elementWidth - (paddingX * 2));

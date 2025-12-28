@@ -7,6 +7,8 @@ _page de projets bis :$4
     - low res : soit line blanc sur fond transparent (low-line-transp) plus élégant moins visible
                 soit line noir sur fond blanc (low-line) plus simple plus voyant
 
+    - crop des images en bordure de la zone d'apparition (section-clic) : réglée dans getRandomPosition avec un padding à la zone différenciée entre mobile et desktop
+
     - adapter au smartphone :
      * régler taille settings media player sur mobile bcp trop grands
      créer mes propres players settings psk là c'est cata
@@ -26,6 +28,6 @@ sur mobile, les éléments inactifs sont en mouvement pendant quelques apparitio
 sur desktop, les éléments inactifs sont bien toujours en mouvement, par contre l'apparition automatique du premier élément peut ne pas suivre si on se promène trop vite entre les sections (ou que l'on fait des allers-retours)
 
 _adapter à tous navigateurs (controles natifs safari/mozilla)
-    - controles audio à pimper pour safari
+    - controles audio à pimper pour safari (et centrer bouton play audio)
 
 _optimiser tout pour eco de ressources (voir doc .txt)
