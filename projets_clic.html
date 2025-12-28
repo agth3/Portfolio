@@ -538,10 +538,10 @@ const fixPath = APP_CONFIG.fixPath.bind(APP_CONFIG);
       { type: 'image', lowRes: fixPath('asset/img/low-line-transp/HAL9000-screen_3.png'), highRes: fixPath('asset/img/high/HAL9000-screen_3.jpg') },
       { type: 'image', lowRes: fixPath('asset/img/low-line-transp/HAL9000-screen_4.png'), highRes: fixPath('asset/img/high/HAL9000-screen_4.jpg') },
       { type: 'image', lowRes: fixPath('asset/img/low-line-transp/HAL9000-screen_5.png'), highRes: fixPath('asset/img/high/HAL9000-screen_5.jpg') },
-      { type: 'audio', thumbnail: fixPath('asset/img/low-line-transp/HAL9000-thumbnail_1.png'), src: fixPath('asset/media/audio-1_pride.mp3'), title: 'audio pride' },
-      { type: 'audio', thumbnail: fixPath('asset/img/low-line-transp/HAL9000-thumbnail_2.png'), src: fixPath('asset/media/audio-2_doubt.mp3'), title: 'audio doubt' },
-      { type: 'audio', thumbnail: fixPath('asset/img/low-line-transp/HAL9000-thumbnail_3.png'), src: fixPath('asset/media/audio-3_disdain.mp3'), title: 'audio disdain' },
-      { type: 'audio', thumbnail: fixPath('asset/img/low-line-transp/HAL9000-thumbnail_4.png'), src: fixPath('asset/media/audio-4_fear.mp3'), title: 'audio fear' },
+      { type: 'audio', thumbnail: fixPath('asset/img/low-line-transp/HAL9000-thumbnail_1.png'), highResThumbnail: fixPath('asset/img/high/HAL9000-thumbnail_1.jpg'), src: fixPath('asset/media/audio-1_pride.mp3'), title: 'audio pride' },
+      { type: 'audio', thumbnail: fixPath('asset/img/low-line-transp/HAL9000-thumbnail_2.png'), highResThumbnail: fixPath('asset/img/high/HAL9000-thumbnail_2.jpg'), src: fixPath('asset/media/audio-2_doubt.mp3'), title: 'audio doubt' },
+      { type: 'audio', thumbnail: fixPath('asset/img/low-line-transp/HAL9000-thumbnail_3.png'), highResThumbnail: fixPath('asset/img/high/HAL9000-thumbnail_3.jpg'), src: fixPath('asset/media/audio-3_disdain.mp3'), title: 'audio disdain' },
+      { type: 'audio', thumbnail: fixPath('asset/img/low-line-transp/HAL9000-thumbnail_4.png'), highResThumbnail: fixPath('asset/img/high/HAL9000-thumbnail_4.jpg'), src: fixPath('asset/media/audio-4_fear.mp3'), title: 'audio fear' },
       { type: 'image', lowRes: fixPath('asset/img/low-line-transp/HAL9000_1.png'), highRes: fixPath('asset/img/high/HAL9000_1.jpg') },
       { type: 'image', lowRes: fixPath('asset/img/low-line-transp/HAL9000_2.png'), highRes: fixPath('asset/img/high/HAL9000_2.jpg') },
       { type: 'image', lowRes: fixPath('asset/img/low-line-transp/HAL9000_3.png'), highRes: fixPath('asset/img/high/HAL9000_3.jpg') },
@@ -721,16 +721,6 @@ const driftIntensity = 1.5;
   const projectElement = sectionClic.closest('.grid-projets');
   const sectionMvmt = projectElement.querySelector('.section-mvmt');
   
-  if (!sectionMvmt) {
-    const rect = sectionClic.getBoundingClientRect();
-    const maxX = Math.max(0, rect.width - elementWidth);
-    const maxY = Math.max(0, rect.height - elementHeight);
-    return {
-      x: Math.random() * maxX,
-      y: Math.random() * maxY
-    };
-  }
-  
   // Obtenir les dimensions content (sans marges)
   const mvmtStyles = window.getComputedStyle(sectionMvmt);
   const marginLeft = parseFloat(mvmtStyles.marginLeft) || 0;
@@ -743,15 +733,18 @@ const driftIntensity = 1.5;
   const offsetX = clicRect.left - mvmtRect.left - marginLeft;
   const offsetY = clicRect.top - mvmtRect.top - marginTop;
   
-  // Zone de spawn limitée à section-clic, mais compenser pour le scale-up potentiel
-  const scaledWidth = elementWidth * 1.25;
-  const scaledHeight = elementHeight * 1.25;
-  const spawnWidth = Math.max(0, clicRect.width - scaledWidth);
-  const spawnHeight = Math.max(0, clicRect.height - scaledHeight);
+  // ⭐ AJOUT : Padding pour éviter le crop avec scale-up
+  const scaleUp = 1.05;
+  const paddingX = (elementWidth * (scaleUp - 1)) / 2 + 150; // +150px de padding de sécurité
+  const paddingY = (elementHeight * (scaleUp - 1)) / 2 + 150;
+  
+  // Zone de spawn limitée à section-clic avec padding
+  const spawnWidth = Math.max(0, clicRect.width - elementWidth - (paddingX * 2));
+  const spawnHeight = Math.max(0, clicRect.height - elementHeight - (paddingY * 2));
   
   return {
-    x: offsetX + (Math.random() * spawnWidth) + (scaledWidth - elementWidth) / 2,
-    y: offsetY + (Math.random() * spawnHeight) + (scaledHeight - elementHeight) / 2
+    x: offsetX + paddingX + (Math.random() * spawnWidth),
+    y: offsetY + paddingY + (Math.random() * spawnHeight)
   };
 }
 
@@ -1174,40 +1167,46 @@ if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
   break;
         
   case 'audio':
-  // Conteneur carré avec background
-  const audioContainer = document.createElement('div');
-  audioContainer.style.cssText = `
+  const audioWrapper = document.createElement('div');
+  audioWrapper.style.cssText = `
     width: 100%;
     height: 100%;
-    position: relative;
-    border-radius: 4px;
-    overflow: hidden;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 10px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
   `;
   
-  // Background avec highRes si disponible, sinon lowRes
-  const backgroundImage = mediaConfig.highRes || mediaConfig.thumbnail || mediaConfig.lowRes;
-  if (backgroundImage) {
-    audioContainer.style.backgroundImage = `url(${backgroundImage})`;
+  // ⭐ Background image HD
+  if (mediaConfig.highResThumbnail) {
+    const bgImage = document.createElement('img');
+    bgImage.src = mediaConfig.highResThumbnail;
+    bgImage.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    `;
+    audioWrapper.appendChild(bgImage);
   }
   
-  // Audio player centré
+  // Contrôles audio par-dessus l'image
   mediaElement = document.createElement('audio');
   mediaElement.src = mediaConfig.src;
   mediaElement.controls = true;
   mediaElement.style.cssText = `
-    width: 80%;
-    max-width: ${isMobile ? '180px' : '200px'};
-    pointer-events: auto;
+    width: 90%;
+    position: relative;
+    z-index: 1;
   `;
   mediaElement.preload = 'metadata';
   
-  // Event listeners
   mediaElement.addEventListener('play', () => {
     mediaManager.setActiveMedia(mediaElement);
   });
@@ -1218,9 +1217,8 @@ if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
     }
   });
   
-  // Assemblage
-  audioContainer.appendChild(mediaElement);
-  container.appendChild(audioContainer);
+  audioWrapper.appendChild(mediaElement);
+  container.appendChild(audioWrapper);
   break;
 
     case 'iframe':

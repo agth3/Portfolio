@@ -4,6 +4,9 @@ TO DO :
 
 _page de projets bis :$4
 
+    - low res : soit line blanc sur fond transparent (low-line-transp) plus élégant moins visible
+                soit line noir sur fond blanc (low-line) plus simple plus voyant
+
     - adapter au smartphone :
      * régler taille settings media player sur mobile bcp trop grands
      créer mes propres players settings psk là c'est cata
