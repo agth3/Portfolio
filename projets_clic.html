@@ -589,8 +589,7 @@ const fixPath = APP_CONFIG.fixPath.bind(APP_CONFIG);
       { type: 'image', lowRes: fixPath('asset/img/low-line-transp/offkey_5.png'), highRes: fixPath('asset/img/high/offkey_5.jpg') },
       { type: 'image', lowRes: fixPath('asset/img/low-line-transp/offkey_6.png'), highRes: fixPath('asset/img/high/offkey_6.jpg') },
       { type: 'image', lowRes: fixPath('asset/img/low-line-transp/offkey_7.png'), highRes: fixPath('asset/img/high/offkey_7.jpg') },
-      { type: 'image', lowRes: fixPath('asset/img/low-line-transp/offkey_8.png'), highRes: fixPath('asset/img/low-line-transp/offkey_8.png'), highRes: fixPath('asset/img/high/offkey_8.jpg') },
-      { type: 'image', lowRes: fixPath('asset/img/low-line-transp/offkey_9.png'), highRes: fixPath('asset/img/high/offkey_9.jpg') }
+      { type: 'image', lowRes: fixPath('asset/img/low-line-transp/offkey_8.png'), highRes: fixPath('asset/img/high/offkey_8.jpg') },
     ],
 
     'projet-Oursins': [
@@ -842,8 +841,10 @@ function calculateElementDimensions(container, mediaType = 'image', mediaConfig 
 
      // Fonction pour ajuster les dimensions du conteneur après chargement du média
 function adjustContainerSize(container) {
-  // ✅ Ne rien faire pour audio et iframe
-  if (container.mediaData.mediaType === 'audio' || container.mediaData.mediaType === 'iframe') {
+   // ✅ Ne rien faire pour audio, iframe ET video
+  if (container.mediaData.mediaType === 'audio' || 
+      container.mediaData.mediaType === 'iframe' || 
+      container.mediaData.mediaType === 'video') {
     console.log(`⛔ adjustContainerSize skipped for ${container.mediaData.mediaType}`);
     return;
   }
@@ -1052,6 +1053,175 @@ if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
 }
 }
 
+
+// Fonction unifiée pour créer les contrôles audio/vidéo
+function createMediaControls(mediaElement) {
+  const controls = document.createElement('div');
+  controls.className = 'custom-media-controls';
+  controls.style.cssText = `
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: rgb(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    box-sizing: border-box;
+    width: 100%;
+  `;
+  
+  // Bouton play/pause
+  const playBtn = document.createElement('button');
+  playBtn.innerHTML = '▶';
+  playBtn.style.cssText = `
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `;
+
+  // Barre de progression
+  const progressContainer = document.createElement('div');
+  progressContainer.style.cssText = `
+    flex: 1;
+    min-width: 0;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    cursor: pointer;
+    position: relative;
+  `;
+  
+  const progressBar = document.createElement('div');
+  progressBar.style.cssText = `
+    height: 100%;
+    background: white;
+    border-radius: 3px;
+    width: 0%;
+    transition: width 0.1s linear;
+  `;
+  
+  const progressHandle = document.createElement('div');
+  progressHandle.style.cssText = `
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    background: white;
+    border-radius: 50%;
+    left: 0%;
+    cursor: grab;
+  `;
+  
+  progressContainer.appendChild(progressBar);
+  progressContainer.appendChild(progressHandle);
+  controls.appendChild(playBtn);
+  controls.appendChild(progressContainer);
+  
+  // Logique des événements
+  setupMediaControlEvents(mediaElement, playBtn, progressContainer, progressBar, progressHandle);
+  
+  return controls;
+}
+// Gestion des événements pour les contrôles personnalisés
+function setupMediaControlEvents(mediaElement, playBtn, progressContainer, progressBar, progressHandle) {
+  let isDragging = false;
+  
+  // Play/Pause
+  playBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (mediaElement.paused) {
+      mediaElement.play();
+      playBtn.innerHTML = '⏸';
+      mediaManager.setActiveMedia(mediaElement);
+    } else {
+      mediaElement.pause();
+      playBtn.innerHTML = '▶';
+    }
+  });
+  
+  // Mise à jour de la barre de progression
+  mediaElement.addEventListener('timeupdate', () => {
+    if (!isDragging && mediaElement.duration) {
+      const percent = (mediaElement.currentTime / mediaElement.duration) * 100;
+      progressBar.style.width = percent + '%';
+      progressHandle.style.left = percent + '%';
+    }
+  });
+  
+  // Réinitialiser le bouton à la fin
+  mediaElement.addEventListener('ended', () => {
+    playBtn.innerHTML = '▶';
+  });
+  
+  // Fonction pour calculer la position
+  function updateProgress(e) {
+    const rect = progressContainer.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const x = clientX - rect.left;
+    const percent = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    
+    progressBar.style.width = percent + '%';
+    progressHandle.style.left = percent + '%';
+    
+    if (mediaElement.duration) {
+      mediaElement.currentTime = (percent / 100) * mediaElement.duration;
+    }
+  }
+  
+  // Click sur la barre
+  progressContainer.addEventListener('click', (e) => {
+    e.stopPropagation();
+    updateProgress(e);
+  });
+  
+  // Drag sur la poignée
+  function startDrag(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    isDragging = true;
+    progressHandle.style.cursor = 'grabbing';
+    updateProgress(e);
+  }
+  
+  function drag(e) {
+    if (isDragging) {
+      e.preventDefault();
+      updateProgress(e);
+    }
+  }
+  
+  function stopDrag() {
+    isDragging = false;
+    progressHandle.style.cursor = 'grab';
+  }
+  
+  // Événements souris
+  progressHandle.addEventListener('mousedown', startDrag);
+  document.addEventListener('mousemove', drag);
+  document.addEventListener('mouseup', stopDrag);
+  
+  // Événements tactiles
+  progressHandle.addEventListener('touchstart', startDrag, { passive: false });
+  document.addEventListener('touchmove', drag, { passive: false });
+  document.addEventListener('touchend', stopDrag);
+  
+  // Empêcher le drag du média parent quand on interagit avec les contrôles
+  [playBtn, progressContainer].forEach(element => {
+    element.addEventListener('mousedown', (e) => e.stopPropagation());
+    element.addEventListener('touchstart', (e) => e.stopPropagation());
+  });
+}
+
   // Fonction pour créer le contenu actif
   function createActiveContent(container, mediaConfig) {
     container.innerHTML = '';
@@ -1075,33 +1245,41 @@ if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
   break;
         
    case 'video':
+  // Container pour vidéo + contrôles personnalisés
+  const videoWrapper = document.createElement('div');
+  videoWrapper.style.cssText = `
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  `;
+  
+  // Élément vidéo SANS controls natifs
   mediaElement = document.createElement('video');
   mediaElement.src = mediaConfig.src;
-  mediaElement.controls = true;
   mediaElement.playsInline = true;
   mediaElement.muted = true;
-  
-  // Sur mobile : charger immédiatement les métadonnées
-  // Sur desktop : aussi metadata (pas none) pour avoir les dimensions
   mediaElement.preload = 'metadata';
   
-  mediaElement.style.maxWidth = '100%';
-  mediaElement.style.maxHeight = '100%';
-  mediaElement.style.width = 'auto';
-  mediaElement.style.height = 'auto';
-  mediaElement.style.objectFit = 'contain';
+  // Styles pour que la vidéo prenne l'espace disponible
+  mediaElement.style.cssText = `
+    flex: 1;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  `;
   
   // iOS nécessite un appel explicite à load()
   if (isMobile) {
     setTimeout(() => mediaElement.load(), 0);
   }
 
-// ✅ Détecter le ratio de la vidéo ET recalculer les dimensions
+  // ✅ Détecter le ratio de la vidéo ET recalculer les dimensions
   mediaElement.addEventListener('loadedmetadata', () => {
     if (mediaElement.videoWidth && mediaElement.videoHeight) {
       const ratio = mediaElement.videoWidth / mediaElement.videoHeight;
-      
-      // ✅ TOUJOURS recalculer même si ratio déjà détecté (pour vidéos)
       mediaConfig._detectedRatio = ratio;
       
       console.log(`🎬 Detected video ratio: ${ratio.toFixed(2)} (${mediaElement.videoWidth}x${mediaElement.videoHeight})`);
@@ -1116,8 +1294,6 @@ if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
       // Appliquer les nouvelles dimensions
       container.style.maxWidth = maxWidth + 'px';
       container.style.maxHeight = maxHeight + 'px';
-      
-      // Forcer le recalcul
       container.offsetHeight;
       
       // ✅ Réappliquer le scale si actif
@@ -1148,7 +1324,7 @@ if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
     }
   });
 
-  // Gestionnaire d'événements pour le video
+  // Gestionnaire d'événements pour la vidéo
   mediaElement.addEventListener('play', () => {
     mediaManager.setActiveMedia(mediaElement);
   });
@@ -1158,35 +1334,34 @@ if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
       mediaManager.activeMedia = null;
     }
   });
+  
+  // Créer les contrôles personnalisés
+  const videoControls = createMediaControls(mediaElement);
+  
+  // ✅ AJOUTER CETTE LIGNE pour empêcher l'écrasement des styles
+videoControls.style.flexShrink = '0';
+
+  // Assembler le tout
+  videoWrapper.appendChild(mediaElement);
+  videoWrapper.appendChild(videoControls);
+  container.appendChild(videoWrapper);  // ✅ AJOUTER LE WRAPPER AU CONTAINER
+  
   break;
 
-  // Gestionnaire d'événements pour le video
-  mediaElement.addEventListener('play', () => {
-    mediaManager.setActiveMedia(mediaElement);
-  });
-  
-  mediaElement.addEventListener('pause', () => {
-    if (mediaManager.activeMedia === mediaElement) {
-      mediaManager.activeMedia = null;
-    }
-  });
-  break;
-        
   case 'audio':
   const audioWrapper = document.createElement('div');
   audioWrapper.style.cssText = `
     width: 100%;
     height: 100%;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 10px;
-    box-sizing: border-box;
     position: relative;
     overflow: hidden;
   `;
   
-  // ⭐ Background image HD
+  // Background image HD
   if (mediaConfig.highResThumbnail) {
     const bgImage = document.createElement('img');
     bgImage.src = mediaConfig.highResThumbnail;
@@ -1202,29 +1377,23 @@ if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
     audioWrapper.appendChild(bgImage);
   }
   
-  // Contrôles audio par-dessus l'image
+  // Élément audio (caché)
   mediaElement = document.createElement('audio');
   mediaElement.src = mediaConfig.src;
-  mediaElement.controls = true;
-  mediaElement.style.cssText = `
-    width: 90%;
-    position: relative;
-    z-index: 1;
-  `;
   mediaElement.preload = 'metadata';
+  mediaElement.style.display = 'none';
   
-  mediaElement.addEventListener('play', () => {
-    mediaManager.setActiveMedia(mediaElement);
-  });
-  
-  mediaElement.addEventListener('pause', () => {
-    if (mediaManager.activeMedia === mediaElement) {
-      mediaManager.activeMedia = null;
-    }
-  });
+  // Contrôles personnalisés par-dessus
+  const audioControls = createMediaControls(mediaElement);
+  // ✅ N'ÉCRASER QUE les propriétés nécessaires, pas tout le cssText
+  audioControls.style.position = 'relative';
+  audioControls.style.zIndex = '1';
+  audioControls.style.width = '90%';
   
   audioWrapper.appendChild(mediaElement);
+  audioWrapper.appendChild(audioControls);
   container.appendChild(audioWrapper);
+  
   break;
 
     case 'iframe':
@@ -1307,16 +1476,18 @@ if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
   break;
 }
     
-    if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
-      container.appendChild(mediaElement);
-    }
-    
-    container.mediaData.mediaElement = mediaElement;
+    // Ajouter au container selon le type
+if (mediaConfig.type === 'video' || mediaConfig.type === 'audio') {
+  // Déjà ajouté dans le case (wrapper contient tout)
+} else if (mediaConfig.type !== 'iframe') {
+  // Pour images et autres
+  container.appendChild(mediaElement);
+}
 
-    adjustContainerSize(container);
+container.mediaData.mediaElement = mediaElement;
 
-    // ✅ NE PAS appeler adjustContainerSize pour audio ET iframe
-if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe') {
+// ✅ NE PAS appeler adjustContainerSize pour audio, iframe ET video
+if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe' && mediaConfig.type !== 'video') {
   adjustContainerSize(container);
 }
     

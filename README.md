@@ -15,8 +15,9 @@ _page de projets bis :$4
 
     - apparition des images encore foireuse sur mobile
          sur desktop, l'affichage automatique des premières images peut ne pas toujours apparaitre, sur mobile aussi mais uniquement si on s'est promené rapidement dans les sections, sinon sur mobile le mouvement des elements inactifs n'est pas toujuors fonctionnel
+         sur desktop, si on interagis avec les éléments d'une section, les deux prochains sections visitées n'auront pas d'image affichées automatiquement, si on n'intéragis pas avec ces deux sections, la troisième aura une image
 
-    - centrer bouton play media audio sur mobile
+    - player media audio et video combinés et simplifiés (play btn et progress bar) : ok pour audio mais blocage pour vidéo (styles personnalisés écrasés)
 
     - dernière modif : 
     test console incompris "Uncaught ReferenceError: projectStates is not defined
