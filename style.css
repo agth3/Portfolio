@@ -1268,10 +1268,18 @@ video:focus, audio:focus {
   display: block;
   width: 0;
   height: 0;
-  border-left: 0.75rem solid white;    /* ~12px */
-  border-top: 0.45rem solid transparent;    /* ~7px */
-  border-bottom: 0.45rem solid transparent; /* ~7px */
+  border-left: 1.25dvh solid white;    /* ~1.25dvh*/
+  border-top: 0.8dvh solid transparent;    /* ~1dvh */
+  border-bottom: 0.8dvh solid transparent; /* ~1dvh*/
   margin-left: 0.2rem; /* ~3px - centrer visuellement */
+}
+
+@media screen and (orientation: portrait) and (max-width: 1024px) {
+  .media-play-btn[data-playing="false"] .play-icon::before {
+    border-left: 1.5dvh solid white;    /* ~1.25dvh*/
+  border-top: 1dvh solid transparent;    /* ~1dvh */
+  border-bottom: 1dvh solid transparent; /* ~1dvh*/
+  }
 }
 
 /* Icône Pause (deux barres) */
@@ -1286,7 +1294,7 @@ video:focus, audio:focus {
 .media-play-btn[data-playing="true"] .play-icon::after {
   content: '';
   display: block;
-  width: 0.2rem;   /* ~3px */
+  width: 0.2rem;   /* ~3px */ 
   height: 0.9rem;  /* ~14px */
   background: white;
   border-radius: 0.06rem; /* ~1px */

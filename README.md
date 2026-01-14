@@ -17,7 +17,9 @@ _page de projets bis :$4
          sur desktop, l'affichage automatique des premières images peut ne pas toujours apparaitre, sur mobile aussi mais uniquement si on s'est promené rapidement dans les sections, sinon sur mobile le mouvement des elements inactifs n'est pas toujuors fonctionnel
          sur desktop, si on interagis avec les éléments d'une section, les deux prochains sections visitées n'auront pas d'image affichées automatiquement, si on n'intéragis pas avec ces deux sections, la troisième aura une image
 
-    - player media audio et video combinés et simplifiés (play btn et progress bar) : pour vidéo, thumbnail n'apparaissent pas (derrière le fond noir ?) -> faire apparaitre les controles au survol seulement
+    - player media audio et video combinés et simplifiés (play btn et progress bar) : pour vidéo, thumbnail n'apparaissent pas (derrière le fond noir ?)
+
+    -sur mobile : changer le layout des textes dans la grid des sections, ils peuvent descendre sur toute la grid si besoin puisque les éléments passent par dessus
 
     - dernière modif : 
     test console incompris "Uncaught ReferenceError: projectStates is not defined
