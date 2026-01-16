@@ -291,9 +291,10 @@
 
   .zone-texte-projets{
     grid-column: 1/7; /*ou 1/7 avec margin sur cotés*/
-    grid-row: 2/5;
+    grid-row: 2/9; /*anciennement 2/5 pour layout avec carrousel fixe*/
     width: 100%;
-    padding: 2dvh 12vw ;
+    padding: 4dvh 12vw ;
+    justify-content: start;
   }
 
   .description-projets{
@@ -351,6 +352,10 @@
 
   #titre-Memoire{
     font-size:1.75rem;
+  }
+
+  #lien-memoire{
+    display: none;
   }
 
   /*--------- SECTION SLIDES IMG --------*/

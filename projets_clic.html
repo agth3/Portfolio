@@ -135,8 +135,8 @@
                       <h2 class="titre-projets" id="titre-Memoire">Conversations souterraines&nbsp;: communication entre&nbsp;vivants humains et&nbsp;non-humains</h2>
                       <span class="date-projets">2025</span>
                       <span class="description-projets" data-i18n="memoire-1">Mémoire de DNSEP interrogeant l’émergence d’un rapport sensible de l’homme à l’arbre à travers une représentation multidimensionnelle et dynamique des réseaux racinaires, révélant l'arbre comme une entité intelligente et communicante.<br>Exploration de la page web comme support d’édition, mettant en pratique la question des réseaux.</span>
-                  <p class="p-projets">
-                        <a class="liens-externes" href="https://arcweave.com/app/project/nwEp2mP04a/play" data-i18n="memoire-2" target="_blank">Ouvrir le mémoire dans une autre page</a>
+                  <p class="p-projets" id="lien-memoire">
+                        <a class="liens-externes" href="https://agth3.github.io/Memoire/" data-i18n="memoire-2" target="_blank">Ouvrir le mémoire dans une autre page</a>
                   </p>
                   </div>
                   <div class="section-mvmt"></div>
@@ -524,9 +524,9 @@ const fixPath = APP_CONFIG.fixPath.bind(APP_CONFIG);
     ],
 
     'projet-Affiches-Animees': [
-      { type: 'video', thumbnail: fixPath('asset/img/low-line/hack-thumbnail_1.png'), src: fixPath('asset/media/hack-vid_1.mp4') },
-      { type: 'video', thumbnail: fixPath('asset/img/low-line/hack-thumbnail_2.png'), src: fixPath('asset/media/hack-vid_2.mp4') },
-      { type: 'video', thumbnail: fixPath('asset/img/low-line/hack-thumbnail_3.png'), src: fixPath('asset/media/hack-vid_3.mp4') },
+      { type: 'video', thumbnail: fixPath('asset/img/low-line/hack-thumbnail_1.png'), highResThumbnail: fixPath('asset/img/high/hack-thumbnail_1.jpg'), src: fixPath('asset/media/hack-vid_1.mp4') },
+      { type: 'video', thumbnail: fixPath('asset/img/low-line/hack-thumbnail_2.png'), highResThumbnail: fixPath('asset/img/high/hack-thumbnail_2.jpg'), src: fixPath('asset/media/hack-vid_2.mp4') },
+      { type: 'video', thumbnail: fixPath('asset/img/low-line/hack-thumbnail_3.png'), highResThumbnail: fixPath('asset/img/high/hack-thumbnail_3.jpg'), src: fixPath('asset/media/hack-vid_3.mp4') },
       { type: 'image', lowRes: fixPath('asset/img/low-line/hack_1.png'), highRes: fixPath('asset/img/high/hack_1.jpg') },
       { type: 'image', lowRes: fixPath('asset/img/low-line/hack_2.png'), highRes: fixPath('asset/img/high/hack_2.jpg') },
       { type: 'image', lowRes: fixPath('asset/img/low-line/hack_3.png'), highRes: fixPath('asset/img/high/hack_3.jpg') }
@@ -581,7 +581,7 @@ const fixPath = APP_CONFIG.fixPath.bind(APP_CONFIG);
     ],
 
     'projet-OffKey': [
-      { type: 'video', thumbnail: fixPath('asset/img/low-line/offkey_1-thumbnail.png'), src: fixPath('asset/media/offkey-vid_1.mp4') },
+      { type: 'video', thumbnail: fixPath('asset/img/low-line/offkey_1-thumbnail.png'), highResThumbnail: fixPath('asset/img/high/offkey_1-thumbnail.jpg'), src: fixPath('asset/media/offkey-vid_1.mp4') },
       { type: 'image', lowRes: fixPath('asset/img/low-line/offkey_1.png'), highRes: fixPath('asset/img/high/offkey_1.jpg') },
       { type: 'image', lowRes: fixPath('asset/img/low-line/offkey_2.png'), highRes: fixPath('asset/img/high/offkey_2.jpg') },
       { type: 'image', lowRes: fixPath('asset/img/low-line/offkey_3.png'), highRes: fixPath('asset/img/high/offkey_3.jpg') },
@@ -1310,7 +1310,7 @@ function setupMediaControlEvents(mediaElement, playBtn, progressContainer, progr
         
   case 'video':
   const videoWrapper = document.createElement('div');
-  videoWrapper.className = 'video-wrapper'; // ✅ AJOUTER classe
+  videoWrapper.className = 'video-wrapper';
   videoWrapper.style.cssText = `
     width: 100%;
     height: 100%;
@@ -1342,6 +1342,35 @@ function setupMediaControlEvents(mediaElement, playBtn, progressContainer, progr
     pointer-events: none;
   `;
   
+// ✅ NOUVEAU : Overlay thumbnail par-dessus la vidéo
+  const thumbnailOverlay = document.createElement('img');
+  if (mediaConfig.highResThumbnail) {
+    thumbnailOverlay.src = mediaConfig.highResThumbnail;
+  }
+  thumbnailOverlay.className = 'video-thumbnail-overlay';
+  thumbnailOverlay.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 5;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    opacity: 1;
+  `;
+  
+  // ✅ Fonction pour afficher le thumbnail
+  function showThumbnail() {
+    thumbnailOverlay.style.opacity = '1';
+  }
+  
+  // ✅ Fonction pour masquer le thumbnail
+  function hideThumbnail() {
+    thumbnailOverlay.style.opacity = '0';
+  }
+
   // iOS nécessite un appel explicite à load()
   if (isMobile) {
     setTimeout(() => {
@@ -1394,26 +1423,35 @@ function setupMediaControlEvents(mediaElement, playBtn, progressContainer, progr
     }
   });
 
-  // Gestionnaire d'événements pour la vidéo
+  
+  // ✅ Event listeners pour gérer le thumbnail
   mediaElement.addEventListener('play', () => {
     console.log('▶️ Video playing');
+    hideThumbnail(); // Masquer le thumbnail pendant la lecture
     mediaManager.setActiveMedia(mediaElement);
+    showControls();
   });
   
   mediaElement.addEventListener('pause', () => {
     console.log('⏸️ Video paused');
+    showThumbnail(); // Afficher immédiatement le thumbnail en pause
+    forceShowControls();
     if (mediaManager.activeMedia === mediaElement) {
       mediaManager.activeMedia = null;
     }
   });
   
-  // ✅ AJOUTER gestion d'erreur
-  mediaElement.addEventListener('error', (e) => {
-    console.error('❌ Video error:', e, mediaElement.error);
+  mediaElement.addEventListener('ended', () => {
+    console.log('🏁 Video ended');
+    showThumbnail(); // Afficher immédiatement le thumbnail à la fin
+    forceShowControls();
   });
   
-  mediaElement.addEventListener('canplay', () => {
-    console.log('✅ Video can play');
+  mediaElement.addEventListener('seeking', () => {
+    // Pendant le seek, masquer temporairement le thumbnail
+    if (!mediaElement.paused) {
+      hideThumbnail();
+    }
   });
   
   // Créer les contrôles personnalisés
@@ -1513,6 +1551,7 @@ function setupMediaControlEvents(mediaElement, playBtn, progressContainer, progr
   
   // Assembler le tout
   videoWrapper.appendChild(mediaElement);
+  videoWrapper.appendChild(thumbnailOverlay);
   videoWrapper.appendChild(videoControls);
   container.appendChild(videoWrapper);
   
