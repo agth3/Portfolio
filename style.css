@@ -541,6 +541,9 @@ html {
  .case14{ grid-column: 4/5; grid-row: 3/4; /* background-color: #cd6321; */}
  .case15{ grid-column: 5/6; grid-row: 3/4; /* background-color: #e62813; */}
 
+ .case1:hover {
+  cursor:default;
+ }
 
 
 
@@ -731,6 +734,8 @@ html {
   /* padding-right: calc(25% + 4.63vh); */
   /* color: #0f0c0c; */
   text-align: left;
+    z-index:48; /*calé entre le conteneur des images et les images*/
+
 }
 
 .titre-projets{
@@ -794,7 +799,7 @@ html {
 }
 
 .liens-externes:hover{
-  color: #f1f2f1;
+  color: white;
 }
 
 .italique{
@@ -1374,6 +1379,7 @@ video:focus, audio:focus {
   grid-row: 1/6;
   position: relative;
   overflow: hidden;
+  /*z-index: 45; au dessus de tout sauf des liens et de ses éléments enfants*/
 }
 
 .iframe-drag-bar{
@@ -1398,8 +1404,8 @@ video:focus, audio:focus {
 }
 
 .presentation-bio{
-  font-size:1.35rem;
-  font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
+  font-size:1.25rem;
+  font-family: 'Switzer-Light', 'Helvetica Neue', Arial, sans-serif;
   color: #0f0c0c;
   margin: 0;
 }

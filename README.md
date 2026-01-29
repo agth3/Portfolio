@@ -16,7 +16,9 @@ _page de projets bis :$4
     - player media audio et video combinés et simplifiés (play btn et progress bar) : pour vidéo, thumbnail supplémentaire (thumbnail high-res)
     -> "je ne veux pas que le thumbnail apparaissent lorsque la vidéo est en pause ! Seulement avant et après la lecture complète"
 
-    -sur mobile : changer le layout des textes dans la grid des sections, ils peuvent descendre sur toute la grid si besoin puisque les éléments passent par dessus
+    -ordi : aggrandir images (toutes mais surtout paysage)
+    -sur mobile : - aggrandir un peu les images, et accélérer un peu leur vitesse de déplacement
+    -global : changer titre "démo iframe just click"
 
     - dernière modif : 
     test console incompris "Uncaught ReferenceError: projectStates is not defined
