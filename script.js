@@ -8,8 +8,8 @@ const imageConfig = [
     lowRes: APP_CONFIG.img('asset/img/low-line/hack_1.png'),
     highRes: APP_CONFIG.img('asset/img/high/hack_1.jpg'),
     link: 'projets_clic.html#projet-Affiches-Animees',
-    titleMobile:'Affiches Animées',
-    titleDesktop:'Affiches Animées'
+    titleMobile:'Affiches piratées',
+    titleDesktop:'Affiches piratées'
   },
   {
     lowRes: APP_CONFIG.img('asset/img/low-line/amasha_6.png'),
@@ -93,7 +93,7 @@ const imageConfig = [
     highRes: APP_CONFIG.img('asset/img/high/tissage_1.jpg'),
     link: 'projets_clic.html#projet-Entre-et-tenir-pt1',
     titleMobile:'Entre et tenir',
-    titleDesktop:'Entre et tenir Pt.1'
+    titleDesktop:'Entre et tenir'
   },
   {
     lowRes: APP_CONFIG.img('asset/img/low-line/vitrine_7.png'),
@@ -130,8 +130,9 @@ const imageConfig = [
         : item.titleDesktop || 'Double-Cliquer'; //cliquer pour Message fallback
     });
 
+  //IMAGES SPEED
   const minImages = isMobile ? 3 : 4;
-  const baseSpeed = isMobile ? 0.5 : 0.7; // Plus lent sur mobile
+  const baseSpeed = isMobile ? 0.45 : 0.65; // Plus lent sur mobile
   const fixedSpeeds = isMobile ? 
   [1.25, 2, 2.75, 2.75,] :      // Vitesses mobile (que trois vitesse en réalité car trois images max)
   [1.5, 2.25, 3, 3.75];       // Vitesses desktop  [2.25, 2.75, 3.25, 3.75]
@@ -311,37 +312,42 @@ function cleanupImageCache() {
   }
 
       function showImageTitle(img, title) {
-      let titleEl = img.titleElement;
-      if (!titleEl) {
-        titleEl = document.createElement('div');
-        titleEl.classList.add('floating-image-title');
-        // titleEl.style.cssText = `
-        //   position: absolute;
-        //   background: rgba(0,0,0,0.85);
-        //   color: white;
-        //   padding: 6px 10px;
-        //   border-radius: 4px;
-        //   font-size: 13px;
-        //   font-weight: 500;
-        //   pointer-events: none;
-        //   z-index: 1001;
-        //   white-space: nowrap;
-        //   transform: translate(-50%, -50%);
-        //   transition: opacity 0.15s ease-out;
-        //   opacity: 0;
-        // `;
-        container.appendChild(titleEl);
-        img.titleElement = titleEl;
-        const zImage = img.floatingData?.zImage || parseInt(img.style.zIndex) || 10;
-        titleEl.style.zIndex = zImage + 1;
-      }
-      
-      titleEl.textContent = title;
+  let titleEl = img.titleElement;
+  if (!titleEl) {
+    titleEl = document.createElement('div');
+    titleEl.classList.add('floating-image-title');
+    titleEl.style.pointerEvents = 'auto'; //force le titre à capter les clics
+    titleEl.style.cursor = 'pointer';
 
-      // CORRECTION : affichage immédiat, calcul de position en parallèle
-      titleEl.style.opacity = '1';
-      updateTitlePosition(img, titleEl);
-    }
+    // Hover sur le titre : maintenir l'état actif de l'image
+    titleEl.addEventListener('mouseenter', () => {
+      img.dataset.paused = 'true';
+      img.style.zIndex = 100;
+      img.floatingData.zImage = 100;
+    });
+
+    // Quitter le titre sans repasser sur l'image : fermer l'état hover
+    titleEl.addEventListener('mouseleave', (e) => {
+      if (e.relatedTarget !== img) {
+        img.dispatchEvent(new MouseEvent('mouseleave', { bubbles: false, relatedTarget: e.relatedTarget }));
+      }
+    });
+
+    // Clic sur le titre = navigation directe
+    titleEl.addEventListener('click', () => {
+      window.location.href = imageConfig[img.floatingData.index].link;
+    });
+
+    container.appendChild(titleEl);
+    img.titleElement = titleEl;
+    const zImage = img.floatingData?.zImage || parseInt(img.style.zIndex) || 10;
+    titleEl.style.zIndex = zImage + 1;
+  }
+
+  titleEl.textContent = title;
+  titleEl.style.opacity = '1';
+  updateTitlePosition(img, titleEl);
+}
 
       function hideImageTitle(img) {
         if (img.titleElement) {
@@ -368,7 +374,7 @@ function cleanupImageCache() {
         titleEl.style.top = (imgTop + imgHeight / 2) + 'px';
       }
 
-      // Fonction pour appliquer l'état focused de manière cohérente
+      // Fonction pour appliquer l'état focused
       function applyFocusedState(img, index) {
         const d = img.floatingData;
         console.log('Applying focused state with synchronized HD + title');
@@ -602,92 +608,64 @@ function cleanupImageCache() {
           // Interactions classiques pour desktop
           console.log('Using DESKTOP MODE for image', index);
 
-          img.addEventListener('mouseenter', () => {
-            console.log('Desktop mouseenter triggered'); // Debug
-            img.dataset.paused = 'true';
-            img.style.zIndex = 100;
-            img.floatingData.zImage = 100;
+          // APRÈS
+img.addEventListener('mouseenter', () => {
+  console.log('Desktop mouseenter triggered');
+  img.dataset.paused = 'true';
+  img.style.zIndex = 100;
+  img.floatingData.zImage = 100;
 
-            // Nettoyer les timers existants
-            if (img.floatingData.lowResTimer) {
-              clearTimeout(img.floatingData.lowResTimer);
-              img.floatingData.lowResTimer = null;
-            }
+  if (img.floatingData.lowResTimer) {
+    clearTimeout(img.floatingData.lowResTimer);
+    img.floatingData.lowResTimer = null;
+  }
 
-            // CORRECTION : Titre immédiat sans condition
-            // const title = imageConfig[index].title || `Image ${index + 1}`;
-            const title = shouldUseTouchMode
-              ? imageConfig[index].titleMobile || imageConfig[index].title || `Image ${index + 1}`
-              : imageConfig[index].titleDesktop || imageConfig[index].title || `Image ${index + 1}`;
+  const title = imageConfig[index].titleDesktop || imageConfig[index].title || `Image ${index + 1}`;
+  showImageTitle(img, title); // Le titre apparaît au hover image
 
-            showImageTitle(img, title);
+  if (!img.floatingData.isHighRes) {
+    if (preloadedImages.has(index)) {
+      img.src = preloadedImages.get(index);
+      img.floatingData.isHighRes = true;
+    } else {
+      preloadHighResImage(index).then(highResSrc => {
+        img.src = highResSrc;
+        img.floatingData.isHighRes = true;
+      }).catch(console.error);
+    }
+  }
+});
 
-            // Switch HD immédiat
-            if (!img.floatingData.isHighRes) {
-              if (preloadedImages.has(index)) {
-                img.src = preloadedImages.get(index);
-                img.floatingData.isHighRes = true;
-              } else {
-                preloadHighResImage(index).then(highResSrc => {
-                  img.src = highResSrc;
-                  img.floatingData.isHighRes = true;
-                }).catch(console.error);
-              }
-            }
-          });
+img.addEventListener('mouseleave', (e) => {
+  console.log('Desktop mouseleave triggered');
+  // Ne pas quitter si on entre dans le titre
+  if (e.relatedTarget === img.titleElement) return;
 
-          img.addEventListener('mouseleave', () => {
-            console.log('Desktop mouseleave triggered'); // Debug
-            if (!img.floatingData.isDragging) {
-              img.dataset.paused = 'false';
-              const zDefault = 10 + img.floatingData.index * 2;
-              img.style.zIndex = zDefault;
-              img.floatingData.zImage = zDefault;
-              hideImageTitle(img);
-              
-              if (img.floatingData.isHighRes) {
-                img.floatingData.lowResTimer = setTimeout(() => {
-                  // CORRECTION : Garder seulement cette condition
-                  if (!img.matches(':hover')) {
-                    img.src = img.floatingData.originalSrc;
-                    img.floatingData.isHighRes = false;
-                  }
-                  img.floatingData.lowResTimer = null;
-                }, 100);
-              }
-            }
-          });
+  if (!img.floatingData.isDragging) {
+    img.dataset.paused = 'false';
+    const zDefault = 10 + img.floatingData.index * 2;
+    img.style.zIndex = zDefault;
+    img.floatingData.zImage = zDefault;
+    hideImageTitle(img);
 
-        // Gestion du clic simple pour desktop (arrêt) et double-clic (navigation)
-         img.addEventListener('click', (e) => {
-          console.log('=== DESKTOP CLICK HANDLER CALLED ===');
-          console.log('DESKTOP CLICK detected - isDragging:', img.floatingData.isDragging, 'wasDragged:', img.floatingData.wasDragged);
-          // alert('DESKTOP click handler triggered - Mode should be: ' + (shouldUseTouchMode ? 'TOUCH' : 'DESKTOP'));
+    if (img.floatingData.isHighRes) {
+      img.floatingData.lowResTimer = setTimeout(() => {
+        if (!img.matches(':hover')) {
+          img.src = img.floatingData.originalSrc;
+          img.floatingData.isHighRes = false;
+        }
+        img.floatingData.lowResTimer = null;
+      }, 100);
+    }
+  }
+});
 
-          if (img.floatingData.isDragging || img.floatingData.wasDragged) return;
-          
-          img.floatingData.clickCount++;
-          
-          if (img.floatingData.clickCount === 1) {
-            // Premier clic : arrêter l'image si elle bouge
-            if (img.dataset.paused === 'false') {
-              img.dataset.paused = 'true';
-            }
-            
-            img.floatingData.clickTimer = setTimeout(() => {
-              img.floatingData.clickCount = 0;
-              // Reprendre le mouvement après timeout si pas de second clic
-              if (img.dataset.paused === 'true') {
-                img.dataset.paused = 'false';
-              }
-            }, 400);
-          } else if (img.floatingData.clickCount === 2) {
-            clearTimeout(img.floatingData.clickTimer);
-            img.floatingData.clickCount = 0;
-            // alert('DESKTOP: Should navigate to ' + imageConfig[index].link);
-            window.location.href = imageConfig[index].link; // Désactivé pour debug
-          }
-        });
+        // Gestion du clic simple pour navigation vers la page
+        img.addEventListener('click', (e) => {
+  if (img.floatingData.isDragging || img.floatingData.wasDragged) return;
+  // Le clic image ne navigue plus, la navigation est déléguée au titre
+  // Optionnel : on peut laisser vide, ou gérer pause/reprise si souhaité
+});
       }
 
       

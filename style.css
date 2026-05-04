@@ -509,9 +509,10 @@ html {
 .case-mosaique{
  width: 100%;
   height: 100%;
-  display: block;
+  display: flex;
   position: relative;
   overflow: hidden;
+  align-content: center;
 }
 
 /* .case-mosaique:hover .img-mosaique {
@@ -523,6 +524,7 @@ html {
   height: 100%;
   object-fit: cover;
   display: block;
+  /* z-index:9; */
 }
 
   .case1{ grid-column: 1/2; grid-row: 1/2; /* background-color: #faadde; */}
@@ -544,6 +546,29 @@ html {
  .case1:hover {
   cursor:default;
  }
+
+ .titre-proj-mosaique {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgb(15, 12, 12, 50%);
+    color: #f1f2f1;
+    padding: 1vh 1.5vh;
+    font-family: 'Switzer-Medium', 'Helvetica Neue', Arial, sans-serif;
+    /* text-align: center; */
+    font-size:1.25rem;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  pointer-events: none; /* évite d'interférer avec le hover de la case */
+  text-align: center;
+}
+
+.case-mosaique:hover .titre-proj-mosaique {
+  opacity: 1;
+}
 
 
 
@@ -820,6 +845,21 @@ html {
 #titre-Memoire{
     font-size:1.9rem;
   }
+
+  .big-play-icon {
+  display: block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0.6rem 0 0.6rem 1.1rem;
+  border-color: transparent transparent transparent #f1f2f1;
+  margin-left: 0.2rem; /* compenser l'asymétrie visuelle du triangle */
+}
+
+.video-big-play-btn:hover {
+  background: rgb(15, 12, 12, 50%) !important;
+  transform: translate(-50%, -50%) scale(1.08) !important;
+}
 
 /*--------- SECTION SLIDES IMG --------*/
 

@@ -185,7 +185,7 @@
 
               <section class="grid-projets" id="projet-Affiches-Animees">
                   <div class="zone-texte-projets" id="texte-Affiches-Animees">
-                      <h2 class="titre-projets" id="titre-Affiches-Animees">Affiches animées</h2>
+                      <h2 class="titre-projets" id="titre-Affiches-Animees">Affiches piratées</h2>
                       <span class="date-projets">2023</span>
                       <span class="description-projets" data-i18n="projet-hack-1">Affiches animées sur la thématique du piratage informatique, présentées sur les panneaux publicitaires d’Orléans dans le cadre d’un partenariat avec la ville.</span>
                   </div>
@@ -635,12 +635,13 @@ const fixPath = APP_CONFIG.fixPath.bind(APP_CONFIG);
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || 
                  (navigator.maxTouchPoints > 0 && window.innerWidth <= 1024);
 
-// Configuration adaptative selon le device
+// Configuration adaptative selon le device (vitesse)
+//IMAGES SPEED
 const CONFIG = {
   targetFPS: isMobile ? 20 : 30,
   maxMedias: isMobile ? 3 : 4,
-  baseSpeed: isMobile ? 0.3 : 0.6,
-  fixedSpeeds: isMobile ? [0.8, 1.2, 1.6] : [1.2, 1.8, 2.4, 3.0],
+  baseSpeed: isMobile ? 0.45 : 0.6,
+  fixedSpeeds: isMobile ? [1, 1.4, 1.8] : [1.2, 1.8, 2.4, 3.0],
   imageQuality: isMobile ? 'low' : 'high'
 };
 
@@ -761,9 +762,10 @@ function calculateElementDimensions(container, mediaType = 'image', mediaConfig 
   
   const rect = sectionClic.getBoundingClientRect();
   
-  // ✅ Les dimensions finales après scale(1.25) ne doivent pas dépasser ces limites
-  const MAX_WIDTH_ACTIVE = rect.width * (isMobile ? 0.50 : 0.40); //% max de la largeur après scale
-  const MAX_HEIGHT_ACTIVE = rect.height * (isMobile ? 0.65 : 0.50); //% max de la hauteur après scale
+  // TAILLES IMAGES
+  // Les dimensions finales après scale(1.25) ne doivent pas dépasser ces limites
+  const MAX_WIDTH_ACTIVE = rect.width * (isMobile ? 0.65 : 0.55); //% max de la largeur après scale - 0.50 : 0.40
+  const MAX_HEIGHT_ACTIVE = rect.height * (isMobile ? 0.75 : 0.60); //% max de la hauteur après scale - 0.65 : 0.50
   
   let ratio = mediaConfig?._detectedRatio;
   
@@ -806,7 +808,7 @@ function calculateElementDimensions(container, mediaType = 'image', mediaConfig 
     }
   } else if (ratio <= 1.1) {
     // Carré
-    const size = Math.min(MAX_WIDTH_ACTIVE, MAX_HEIGHT_ACTIVE);
+    const size = Math.min(MAX_WIDTH_ACTIVE, MAX_HEIGHT_ACTIVE)*0.75; //dimensions du format carré scaled down (*0.75)
     maxWidth = size;
     maxHeight = size;
   } else {
@@ -1197,6 +1199,15 @@ function setupMediaControlEvents(mediaElement, playBtn, progressContainer, progr
     }
   }
 };
+
+// Synchronisation depuis sources externes (adapter si lecture depuis le gros bouton play)
+mediaElement.addEventListener('play', () => {
+  playBtn.setAttribute('data-playing', 'true');
+});
+
+mediaElement.addEventListener('pause', () => {
+  playBtn.setAttribute('data-playing', 'false');
+});
   
   playBtn.addEventListener('click', togglePlay);
   playBtn.addEventListener('touchend', (e) => {
@@ -1215,7 +1226,11 @@ function setupMediaControlEvents(mediaElement, playBtn, progressContainer, progr
   
   // Réinitialiser le bouton à la fin
   mediaElement.addEventListener('ended', () => {
-  playBtn.setAttribute('data-playing', 'false'); // ✅ Retour à play
+  showThumbnail();
+  forceShowControls();
+  bigPlayBtn.style.display = 'flex';
+  videoControls.style.opacity = '0';
+  videoControls.style.pointerEvents = 'none';
 });
   
   // Fonction pour calculer la position
@@ -1308,7 +1323,7 @@ function setupMediaControlEvents(mediaElement, playBtn, progressContainer, progr
   mediaElement.style.objectFit = 'contain';
   break;
         
-  case 'video':
+  case 'video': {
   const videoWrapper = document.createElement('div');
   videoWrapper.className = 'video-wrapper';
   videoWrapper.style.cssText = `
@@ -1478,16 +1493,82 @@ function setupMediaControlEvents(mediaElement, playBtn, progressContainer, progr
   
   // ... [tout le code de gestion des contrôles hover/tap reste identique] ...
   
-  // Assembler le tout
-  videoWrapper.appendChild(mediaElement);
-  videoWrapper.appendChild(thumbnailOverlay); // ✅ AJOUTER l'overlay
-  videoWrapper.appendChild(videoControls);
-  container.appendChild(videoWrapper);
+  // Bouton play central (style YouTube)
+const bigPlayBtn = document.createElement('button');
+bigPlayBtn.className = 'video-big-play-btn';
+bigPlayBtn.innerHTML = '<span class="big-play-icon"></span>';
+bigPlayBtn.style.cssText = `
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.65);
+  border: none;
+  border-radius: 50%;
+  width: ${isMobile ? '3.5rem' : '4rem'};
+  height: ${isMobile ? '3.5rem' : '4rem'};
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.15s ease;
+  pointer-events: auto;
+`;
+
+// Masquer les contrôles jusqu'au premier play
+videoControls.style.opacity = '0';
+videoControls.style.pointerEvents = 'none';
+videoControls.style.transition = 'opacity 0.2s ease';
+
+// Clic sur le gros bouton play
+const handleBigPlay = async (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+
+  bigPlayBtn.style.display = 'none';
+  hideThumbnail();
+
+  try {
+    await mediaElement.play();
+    mediaManager.setActiveMedia(mediaElement);
+    videoControls.style.opacity = '1';
+    videoControls.style.pointerEvents = 'auto';
+  } catch (err) {
+    console.error('❌ Big play button error:', err);
+    mediaElement.muted = true;
+    try {
+      await mediaElement.play();
+      mediaManager.setActiveMedia(mediaElement);
+      videoControls.style.opacity = '1';
+      videoControls.style.pointerEvents = 'auto';
+    } catch (e2) {
+      console.error('❌ Still failed:', e2);
+      bigPlayBtn.style.display = 'flex'; // Réafficher si échec
+    }
+  }
+};
+
+bigPlayBtn.addEventListener('click', handleBigPlay);
+bigPlayBtn.addEventListener('touchend', (e) => {
+  e.preventDefault();
+  handleBigPlay(e);
+}, { passive: false });
+
+// Si la vidéo est mise en pause après avoir démarré, ne pas réafficher le gros bouton
+// (les contrôles custom suffisent) — le gros bouton est one-shot
+
+// Assembler le tout
+videoWrapper.appendChild(mediaElement);
+videoWrapper.appendChild(thumbnailOverlay);
+videoWrapper.appendChild(bigPlayBtn);
+videoWrapper.appendChild(videoControls);
+container.appendChild(videoWrapper);
   
   break;
+    }
 
-
-  case 'audio':
+  case 'audio': {
   const audioWrapper = document.createElement('div');
   audioWrapper.style.cssText = `
     width: 100%;
@@ -1528,13 +1609,72 @@ function setupMediaControlEvents(mediaElement, playBtn, progressContainer, progr
   audioControls.style.zIndex = '1';
   // ✅ Pas de redéfinition de width ici - déjà géré dans createMediaControls
   
-  audioWrapper.appendChild(mediaElement);
-  audioWrapper.appendChild(audioControls);
-  container.appendChild(audioWrapper);
+  // Bouton play central
+const bigPlayBtn = document.createElement('button');
+bigPlayBtn.className = 'audio-big-play-btn';
+bigPlayBtn.innerHTML = '<span class="big-play-icon"></span>';
+bigPlayBtn.style.cssText = `
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.65);
+  border: none;
+  border-radius: 50%;
+  width: ${isMobile ? '3.5rem' : '4rem'};
+  height: ${isMobile ? '3.5rem' : '4rem'};
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.15s ease;
+  pointer-events: auto;
+`;
+
+// Masquer les contrôles jusqu'au premier play
+audioControls.style.opacity = '0';
+audioControls.style.pointerEvents = 'none';
+audioControls.style.transition = 'opacity 0.2s ease';
+
+const handleBigPlay = async (e) => {
+  e.stopPropagation();
+  e.preventDefault();
+
+  bigPlayBtn.style.display = 'none';
+
+  try {
+    await mediaElement.play();
+    mediaManager.setActiveMedia(mediaElement);
+    audioControls.style.opacity = '1';
+    audioControls.style.pointerEvents = 'auto';
+  } catch (err) {
+    console.error('❌ Audio big play error:', err);
+    bigPlayBtn.style.display = 'flex';
+  }
+};
+
+bigPlayBtn.addEventListener('click', handleBigPlay);
+bigPlayBtn.addEventListener('touchend', (e) => {
+  e.preventDefault();
+  handleBigPlay(e);
+}, { passive: false });
+
+mediaElement.addEventListener('ended', () => {
+  bigPlayBtn.style.display = 'flex';
+  audioControls.style.opacity = '0';
+  audioControls.style.pointerEvents = 'none';
+});
+
+audioWrapper.appendChild(mediaElement);
+audioWrapper.appendChild(bigPlayBtn);
+audioWrapper.appendChild(audioControls);
+container.appendChild(audioWrapper);
   
   break;
+  }
 
-    case 'iframe':
+    case 'iframe': {
   console.log(`🖼️ Creating IFRAME with container dimensions: ${container.style.maxWidth} x ${container.style.maxHeight}`);
 
 
@@ -1613,6 +1753,7 @@ function setupMediaControlEvents(mediaElement, playBtn, progressContainer, progr
   container.appendChild(iframeContainer);
   break;
 }
+    }
     
     // Ajouter au container selon le type
 // Ajouter au container selon le type
