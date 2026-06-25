@@ -28,7 +28,7 @@
                     <div class="elements-menu-bas hoverable" id="mail-menu">agathe.cotton@gmail.com</div>
                     <div class="elements-menu-bas hoverable" id="insta-menu"><a class="a-menu" href="https://www.instagram.com/happy_factoryy/?hl=fr" target="_blank">@happy_factoryy</a></div>
                 
-            <div class="center-grid"></div>
+            <!-- <div class="center-grid"></div> -->
                 <div class="zone-texte-bio">
                     <p class="presentation-bio" data-i18n="bio-pres">Designer pluridisciplinaire, je développe des projets d'édition transmédia portant un message, une valeur ou une émotion. Pratiquant principalement en graphisme, j'aime concevoir des mises en pages et des visuels sensibles et percutants, et curieuse d'expérimenter, mes productions s'étendent du print au webdesign, de la mise en espace et de la réalité augmentée au jeu vidéo.</p>
                     <h2 id="parcours" data-i18n="bio-parcours">Parcours</h2>
@@ -93,6 +93,7 @@
                         </div>
                     </div>
                 </div>
+                <div class="section-mvmt"></div>
                 <div id="img-bio">
                     <!-- <img src="asset/img/test-couleur.png"> configure dans css -->
                 </div>
@@ -100,5 +101,799 @@
         </div>
 
     </body>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+        
+        // Utiliser la configuration globale (correction des chemins d'asset)
+        const fixPath = APP_CONFIG.fixPath.bind(APP_CONFIG);
+        
+        // ==========================================================
+        // CONFIG DE L'IMAGE UNIQUE
+        // ==========================================================
+        const imageConfig = {
+            lowRes: fixPath('asset/img/low-line/portrait-bio.png'),
+            highRes: fixPath('asset/img/high/portrait-bio.jpg')
+        };
+        
+        // Détection du mode d'interaction
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ||
+                        (navigator.maxTouchPoints > 0 && window.innerWidth <= 1024);
+        
+        const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        const isDevToolsMobile = window.innerWidth <= 768 && !isMobile;
+        const shouldUseTouchMode = isMobile || hasTouch || isDevToolsMobile;
+        const isMobilePortrait = window.innerHeight > window.innerWidth;
+        
+        // Configuration adaptative (vitesse de déplacement)
+        const CONFIG = {
+            targetFPS: isMobile ? 20 : 30,
+            baseSpeed: isMobile ? 0.45 : 0.6,
+            fixedSpeed: isMobile ? 1.5 : 2
+        };
+        const baseSpeed = CONFIG.baseSpeed;
+        const fixedSpeed = CONFIG.fixedSpeed;
+        const driftIntensity = 1.5;
+        
+        // Variables d'animation
+        let animationFrameId = null;
+        let lastTimestamp = 0;
+        
+        // Cache des limites de mouvement
+        let movementBoundsCache = null;
+        function getCachedMovementBounds(sectionMvmt) {
+            if (movementBoundsCache) return movementBoundsCache;
+            if (!sectionMvmt) return null;
+            movementBoundsCache = {
+            width: sectionMvmt.clientWidth,
+            height: sectionMvmt.clientHeight,
+            element: sectionMvmt
+            };
+            return movementBoundsCache;
+        }
+        function invalidateMovementBoundsCache() {
+            movementBoundsCache = null;
+        }
+        window.addEventListener('resize', invalidateMovementBoundsCache);
+        
+        // ==========================================================
+        // ZONES : #img-bio = zone d'apparition / .section-mvmt = zone de mouvement
+        // ==========================================================
+        const sectionClic = document.getElementById('img-bio');
+        if (!sectionClic) {
+            console.error('Zone #img-bio introuvable');
+            return;
+        }
+        const sectionMvmt = sectionClic.closest('.grid-projets')
+            ? sectionClic.closest('.grid-projets').querySelector('.section-mvmt')
+            : document.querySelector('.section-mvmt');
+        
+        if (sectionMvmt) {
+            sectionMvmt.style.position = 'relative';
+            sectionMvmt.style.touchAction = 'pan-x pan-y';
+        }
+        sectionClic.style.position = 'relative';
+        
+        // Etat global de l'image unique
+        const imageState = {
+            container: null,
+            isInitializing: true
+        };
+        
+        // ==========================================================
+        // FONCTIONS DE POSITIONNEMENT / DIMENSIONNEMENT
+        // ==========================================================
+        function getRandomPosition(elementWidth, elementHeight) {
+            if (!sectionMvmt) return { x: 0, y: 0 };
+        
+            const mvmtStyles = window.getComputedStyle(sectionMvmt);
+            const marginLeft = parseFloat(mvmtStyles.marginLeft) || 0;
+            const marginTop = parseFloat(mvmtStyles.marginTop) || 0;
+        
+            const clicRect = sectionClic.getBoundingClientRect();
+            const mvmtRect = sectionMvmt.getBoundingClientRect();
+        
+            const offsetX = clicRect.left - mvmtRect.left - marginLeft;
+            const offsetY = clicRect.top - mvmtRect.top - marginTop;
+        
+            const isMobileDevice = window.innerWidth <= 1024;
+            const scaleUp = 1.05;
+        
+            const basePaddingX = isMobileDevice ? 50 : 150;
+            const basePaddingY = isMobileDevice ? 50 : 150;
+        
+            const paddingX = (elementWidth * (scaleUp - 1)) / 2 + basePaddingX;
+            const paddingY = (elementHeight * (scaleUp - 1)) / 2 + basePaddingY;
+        
+            const spawnWidth = Math.max(0, clicRect.width - elementWidth - (paddingX * 2));
+            const spawnHeight = Math.max(0, clicRect.height - elementHeight - (paddingY * 2));
+        
+            return {
+            x: offsetX + paddingX + (Math.random() * spawnWidth),
+            y: offsetY + paddingY + (Math.random() * spawnHeight)
+            };
+        }
+        
+        function calculateElementDimensions(mediaConfig) {
+            const rect = sectionClic.getBoundingClientRect();
+        
+            const MAX_WIDTH_ACTIVE = rect.width * (isMobile ? 0.65 : 0.55);
+            const MAX_HEIGHT_ACTIVE = rect.height * (isMobile ? 0.75 : 0.45);
+        
+            let ratio = mediaConfig._detectedRatio || (4 / 3);
+        
+            let maxWidth, maxHeight;
+        
+            if (ratio < 0.9) {
+            // Portrait
+            maxHeight = MAX_HEIGHT_ACTIVE;
+            maxWidth = maxHeight * ratio;
+            if (maxWidth > MAX_WIDTH_ACTIVE) {
+                maxWidth = MAX_WIDTH_ACTIVE;
+                maxHeight = maxWidth / ratio;
+            }
+            } else if (ratio <= 1.1) {
+            // Carré
+            const size = Math.min(MAX_WIDTH_ACTIVE, MAX_HEIGHT_ACTIVE) * (isMobile ? 0.55 : 0.8);
+            maxWidth = size;
+            maxHeight = size;
+            } else {
+            // Paysage
+            maxWidth = MAX_WIDTH_ACTIVE;
+            maxHeight = maxWidth / ratio;
+            if (maxHeight > MAX_HEIGHT_ACTIVE) {
+                maxHeight = MAX_HEIGHT_ACTIVE;
+                maxWidth = maxHeight * ratio;
+            }
+            }
+        
+            return { maxWidth, maxHeight };
+        }
+        
+        function adjustContainerSize(container) {
+            const mediaElement = container.mediaData.mediaElement;
+            if (!mediaElement) return;
+        
+            const adjustSize = () => {
+            const rect = mediaElement.getBoundingClientRect();
+            container.style.width = rect.width + 'px';
+            container.style.height = rect.height + 'px';
+            };
+        
+            if (mediaElement.complete) {
+            setTimeout(adjustSize, 10);
+            } else {
+            mediaElement.onload = adjustSize;
+            }
+        }
+        
+        function ensureRatioDetected(mediaConfig) {
+            return new Promise((resolve) => {
+            if (mediaConfig._detectedRatio) {
+                resolve();
+                return;
+            }
+            const img = new Image();
+            img.onload = () => {
+                mediaConfig._detectedRatio = img.naturalWidth / img.naturalHeight;
+                resolve();
+            };
+            img.onerror = () => {
+                mediaConfig._detectedRatio = 4 / 3;
+                resolve();
+            };
+            img.src = mediaConfig.lowRes;
+            });
+        }
+        
+        // ==========================================================
+        // CREATION DU CONTENU (thumbnail / actif)
+        // ==========================================================
+        function createThumbnailContent(container, mediaConfig) {
+            container.innerHTML = '';
+        
+            const thumbnail = document.createElement('img');
+            thumbnail.src = mediaConfig.lowRes;
+            if (!isMobile) thumbnail.loading = 'lazy';
+        
+            thumbnail.onload = () => {
+            if (!mediaConfig._detectedRatio) {
+                mediaConfig._detectedRatio = thumbnail.naturalWidth / thumbnail.naturalHeight;
+        
+                const { maxWidth, maxHeight } = calculateElementDimensions(mediaConfig);
+                container.style.maxWidth = maxWidth + 'px';
+                container.style.maxHeight = maxHeight + 'px';
+                container.offsetHeight; // reflow
+        
+                if (sectionMvmt) {
+                const currentLeft = parseFloat(container.style.left) || 0;
+                const currentTop = parseFloat(container.style.top) || 0;
+                const containerRect = container.getBoundingClientRect();
+                const maxLeft = Math.max(0, sectionMvmt.clientWidth - containerRect.width);
+                const maxTop = Math.max(0, sectionMvmt.clientHeight - containerRect.height);
+                container.style.left = Math.min(currentLeft, maxLeft) + 'px';
+                container.style.top = Math.min(currentTop, maxTop) + 'px';
+                }
+            }
+            };
+        
+            thumbnail.style.width = '100%';
+            thumbnail.style.height = '100%';
+            thumbnail.style.objectFit = 'contain';
+            thumbnail.style.display = 'block';
+        
+            container.appendChild(thumbnail);
+            container.mediaData.mediaElement = thumbnail;
+        
+            adjustContainerSize(container);
+        }
+        
+        function createActiveContent(container, mediaConfig) {
+            container.innerHTML = '';
+        
+            const mediaElement = document.createElement('img');
+            mediaElement.src = mediaConfig.highRes || mediaConfig.lowRes;
+            if (!isMobile) mediaElement.loading = 'lazy';
+        
+            mediaElement.style.maxWidth = '100%';
+            mediaElement.style.maxHeight = '100%';
+            mediaElement.style.width = 'auto';
+            mediaElement.style.height = 'auto';
+            mediaElement.style.objectFit = 'contain';
+        
+            container.appendChild(mediaElement);
+            container.mediaData.mediaElement = mediaElement;
+        
+            adjustContainerSize(container);
+        }
+        
+        function preloadHighResImage(src) {
+            const img = new Image();
+            img.src = src;
+        }
+        
+        // ==========================================================
+        // CREATION DU CONTENEUR DE L'IMAGE
+        // ==========================================================
+        function createMediaContainer(mediaConfig) {
+            const container = document.createElement('div');
+            container.className = 'project-media';
+            container.style.position = 'absolute';
+            container.style.cursor = 'grab';
+            container.style.transition = 'transform 0.2s ease-out, opacity 0.15s ease-out';
+            container.style.transform = 'scale(1)';
+            container.style.opacity = '0';
+            container.style.overflow = 'hidden';
+            container.style.borderRadius = '4px';
+        
+            container.mediaData = {
+            config: mediaConfig,
+            isActive: false,
+            isDragging: false,
+            wasDragged: false,
+            tapCount: shouldUseTouchMode ? 0 : undefined,
+            mediaElement: null,
+            isMoving: false,
+            speed: baseSpeed * fixedSpeed,
+            angle: Math.random() * 360,
+            targetAngle: Math.random() * 360,
+            angleChangeTimer: 0,
+            transitionProgress: 1,
+            hasChangedDirection: false
+            };
+        
+            const { maxWidth, maxHeight } = calculateElementDimensions(mediaConfig);
+            container.style.maxWidth = maxWidth + 'px';
+            container.style.maxHeight = maxHeight + 'px';
+            container.style.width = 'auto';
+            container.style.height = 'auto';
+        
+            const { x, y } = getRandomPosition(maxWidth, maxHeight);
+            container.style.left = x + 'px';
+            container.style.top = y + 'px';
+            container.style.zIndex = 50;
+        
+            createThumbnailContent(container, mediaConfig);
+        
+            setupMediaInteractions(container);
+            setupMediaDragAndDrop(container);
+        
+            if (sectionMvmt) {
+            sectionMvmt.appendChild(container);
+            } else {
+            sectionClic.appendChild(container);
+            }
+        
+            container.offsetHeight; // reflow
+            requestAnimationFrame(() => {
+            container.style.opacity = '1';
+            });
+        
+            imageState.container = container;
+            return container;
+        }
+        
+        // ==========================================================
+        // ACTIVATION / DESACTIVATION
+        // ==========================================================
+        function activateMedia(container) {
+            if (container.mediaData.isActive) return;
+        
+            container.mediaData.isActive = true;
+            container.mediaData.isMoving = false;
+        
+            container.style.opacity = '1';
+            container.style.zIndex = 100;
+        
+            createActiveContent(container, container.mediaData.config);
+        
+            requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                container.style.transform = 'scale(1.25)';
+            });
+            });
+        
+            if (container.mediaData.config.highRes) {
+            preloadHighResImage(container.mediaData.config.highRes);
+            }
+        }
+        
+        function deactivateMedia(container) {
+            if (!container.mediaData.isActive) return;
+        
+            container.mediaData.isActive = false;
+            container.mediaData.isMoving = true;
+        
+            container.mediaData.angle = Math.random() * 360;
+            container.mediaData.targetAngle = Math.random() * 360;
+            container.mediaData.transitionProgress = 0;
+            container.mediaData.angleChangeTimer = 0;
+            container.mediaData.hasChangedDirection = false;
+        
+            container.style.transform = 'scale(1)';
+            container.style.zIndex = 50;
+        
+            createThumbnailContent(container, container.mediaData.config);
+        }
+        
+        // ==========================================================
+        // INTERACTIONS (hover desktop / tap mobile)
+        // ==========================================================
+        function setupMediaInteractions(container) {
+            if (shouldUseTouchMode) {
+            container.addEventListener('touchstart', () => {
+                if (container.mediaData.isDragging) return;
+                container.mediaData.touchStartTime = Date.now();
+            });
+        
+            container.addEventListener('touchend', e => {
+                if (container.mediaData.isDragging || container.mediaData.wasDragged) return;
+                e.preventDefault();
+                e.stopPropagation(); // empêche le click à côté de se déclencher aussi
+        
+                const touchDuration = Date.now() - (container.mediaData.touchStartTime || 0);
+                if (touchDuration < 300) {
+                const d = container.mediaData;
+                if (d.isActive) {
+                    deactivateMedia(container); // 2e tap → inactif
+                } else {
+                    activateMedia(container);   // 1er tap → actif
+                }
+                }
+            });
+        
+            if (isDevToolsMobile) {
+                container.addEventListener('click', e => {
+                if (!container.mediaData.isDragging && !container.mediaData.wasDragged) {
+                    e.stopPropagation();
+                    const d = container.mediaData;
+                    if (d.isActive) {
+                    deactivateMedia(container);
+                    } else {
+                    activateMedia(container);
+                    }
+                }
+                });
+            }
+            }}
+        
+        // ==========================================================
+        // DRAG & DROP (souris + tactile)
+        // ==========================================================
+        function setupMediaDragAndDrop(container) {
+            const dragHandle = container;
+            dragHandle.style.cursor = 'grab';
+        
+            let newX = 0, newY = 0, startX = 0, startY = 0;
+            let isDragging = false;
+            let dragStartTime = 0;
+        
+            let mouseMoveHandler = null;
+            let mouseUpHandler = null;
+            let touchMoveHandler = null;
+            let touchEndHandler = null;
+        
+            let touchStartX = 0, touchStartY = 0;
+            let hasMoved = false;
+            let dragIntentDetected = false;
+            const MOVE_THRESHOLD = 15;
+        
+            dragHandle.addEventListener('mousedown', mouseDown);
+        
+            if (shouldUseTouchMode) {
+            function handleTouchStart(e) {
+                const t = e.touches[0];
+                touchStartX = t.clientX;
+                touchStartY = t.clientY;
+                hasMoved = false;
+                dragIntentDetected = false;
+            }
+        
+            function handleTouchMove(e) {
+                const t = e.touches[0];
+                const deltaX = Math.abs(t.clientX - touchStartX);
+                const deltaY = Math.abs(t.clientY - touchStartY);
+                const totalMove = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+        
+                if (totalMove < MOVE_THRESHOLD) return;
+        
+                if (!hasMoved) {
+                hasMoved = true;
+        
+                const isVerticalScroll = isMobilePortrait && (deltaY > deltaX * 1.5);
+                const isHorizontalScroll = !isMobilePortrait && (deltaX > deltaY * 1.5);
+        
+                if (isVerticalScroll || isHorizontalScroll) {
+                    return; // laisser le scroll naturel
+                }
+        
+                dragIntentDetected = true;
+                e.preventDefault();
+        
+                mouseDown({
+                    clientX: touchStartX,
+                    clientY: touchStartY,
+                    preventDefault: () => e.preventDefault(),
+                    stopPropagation: () => e.stopPropagation(),
+                    type: 'touch',
+                    target: e.target
+                });
+                }
+        
+                if (dragIntentDetected) e.preventDefault();
+            }
+        
+            function handleTouchEnd(e) {
+                if (dragIntentDetected) e.preventDefault();
+                hasMoved = false;
+                dragIntentDetected = false;
+            }
+        
+            dragHandle.addEventListener('touchstart', handleTouchStart, { passive: true, capture: true });
+            dragHandle.addEventListener('touchmove', handleTouchMove, { passive: false, capture: true });
+            dragHandle.addEventListener('touchend', handleTouchEnd, { passive: false, capture: true });
+            }
+        
+            function mouseDown(e) {
+            if (e.preventDefault) e.preventDefault();
+            if (isDragging) return;
+        
+            isDragging = true;
+            dragStartTime = Date.now();
+            const d = container.mediaData;
+            d.isDragging = true;
+            d.isMoving = false;
+        
+            const scrollContainer = document.getElementById('container-projets');
+            if (scrollContainer) {
+                scrollContainer.style.overflow = 'hidden';
+                scrollContainer.style.touchAction = 'none';
+            }
+        
+            if (!d.isActive) {
+                activateMedia(container);
+            }
+        
+            startX = e.clientX;
+            startY = e.clientY;
+        
+            dragHandle.style.cursor = 'grabbing';
+        
+            mouseMoveHandler = (moveEvent) => mouseMove(moveEvent);
+            mouseUpHandler = (upEvent) => mouseUp(upEvent);
+        
+            document.addEventListener('mousemove', mouseMoveHandler, { passive: false });
+            document.addEventListener('mouseup', mouseUpHandler, { passive: false });
+        
+            if (shouldUseTouchMode || e.type === 'touch') {
+                touchMoveHandler = (touchEvent) => {
+                if (touchEvent.touches && touchEvent.touches[0]) {
+                    touchEvent.preventDefault();
+                    mouseMove({
+                    clientX: touchEvent.touches[0].clientX,
+                    clientY: touchEvent.touches[0].clientY,
+                    preventDefault: () => {}
+                    });
+                }
+                };
+        
+                touchEndHandler = (touchEvent) => {
+                touchEvent.preventDefault();
+                mouseUp(touchEvent);
+                };
+        
+                document.addEventListener('touchmove', touchMoveHandler, { passive: false });
+                document.addEventListener('touchend', touchEndHandler, { passive: false });
+                document.addEventListener('touchcancel', touchEndHandler, { passive: false });
+            }
+            }
+        
+            function mouseMove(e) {
+            if (!isDragging) return;
+            if (e.preventDefault) e.preventDefault();
+        
+            newX = startX - e.clientX;
+            newY = startY - e.clientY;
+        
+            startX = e.clientX;
+            startY = e.clientY;
+        
+            let newLeft = container.offsetLeft - newX;
+            let newTop = container.offsetTop - newY;
+        
+            if (sectionMvmt) {
+                const containerRect = container.getBoundingClientRect();
+                const containerWidth = containerRect.width;
+                const containerHeight = containerRect.height;
+        
+                const baseWidth = container.offsetWidth;
+                const baseHeight = container.offsetHeight;
+        
+                const overflowX = (containerWidth - baseWidth) / 2;
+                const overflowY = (containerHeight - baseHeight) / 2;
+        
+                const minLeft = overflowX;
+                const minTop = overflowY;
+                const maxLeft = sectionMvmt.clientWidth - baseWidth - overflowX;
+                const maxTop = sectionMvmt.clientHeight - baseHeight - overflowY;
+        
+                newLeft = Math.max(minLeft, Math.min(maxLeft, newLeft));
+                newTop = Math.max(minTop, Math.min(maxTop, newTop));
+            }
+        
+            container.style.left = newLeft + 'px';
+            container.style.top = newTop + 'px';
+            }
+        
+            function mouseUp(e) {
+            if (!isDragging) return;
+        
+            const dragDuration = Date.now() - dragStartTime;
+            const d = container.mediaData;
+            const wasDragOperation = dragDuration > 150;
+        
+            isDragging = false;
+            d.isDragging = false;
+            d.wasDragged = wasDragOperation;
+        
+            setTimeout(() => { d.wasDragged = false; }, 300);
+        
+            dragHandle.style.cursor = 'grab';
+        
+            const scrollContainer = document.getElementById('container-projets');
+            if (scrollContainer) {
+                scrollContainer.style.overflow = '';
+                scrollContainer.style.touchAction = '';
+            }
+        
+            // Après le drag : désactiver sauf si la souris est encore sur le conteneur
+            if (!shouldUseTouchMode) {
+                const rect = container.getBoundingClientRect();
+                const mouseEvent = e instanceof MouseEvent ? e : null;
+                const isStillHovering = mouseEvent &&
+                mouseEvent.clientX >= rect.left && mouseEvent.clientX <= rect.right &&
+                mouseEvent.clientY >= rect.top && mouseEvent.clientY <= rect.bottom;
+        
+                if (!isStillHovering) {
+                deactivateMedia(container);
+                }
+            } else {
+                // Fin de drag mobile : rester actif (l'image s'arrête, posée là où on la lâche)
+                // L'utilisateur devra tapper à côté ou 2x pour désactiver
+            }
+        
+            if (mouseMoveHandler) { document.removeEventListener('mousemove', mouseMoveHandler); mouseMoveHandler = null; }
+            if (mouseUpHandler) { document.removeEventListener('mouseup', mouseUpHandler); mouseUpHandler = null; }
+            if (touchMoveHandler) { document.removeEventListener('touchmove', touchMoveHandler); touchMoveHandler = null; }
+            if (touchEndHandler) {
+                document.removeEventListener('touchend', touchEndHandler);
+                document.removeEventListener('touchcancel', touchEndHandler);
+                touchEndHandler = null;
+            }
+            }
+        }
+        
+        // Nettoyage de secours en cas de drag "coincé"
+        function setupGlobalDragCleanup() {
+            document.addEventListener('mouseup', () => {
+            const container = imageState.container;
+            if (container && container.mediaData && container.mediaData.isDragging) {
+                container.mediaData.isDragging = false;
+                container.mediaData.wasDragged = true;
+                container.style.cursor = 'grab';
+                // Désactiver après drag coincé (mode desktop)
+                if (!shouldUseTouchMode) {
+                deactivateMedia(container);
+                } else if (!container.mediaData.isActive) {
+                container.mediaData.isMoving = true;
+                }
+            }
+            }, true);
+        
+            if (shouldUseTouchMode) {
+            document.addEventListener('touchend', () => {
+                const container = imageState.container;
+                if (container && container.mediaData && container.mediaData.isDragging) {
+                container.mediaData.isDragging = false;
+                container.mediaData.wasDragged = true;
+                container.style.cursor = 'grab';
+                if (!container.mediaData.isActive) {
+                    container.mediaData.isMoving = true;
+                }
+                }
+            }, true);
+            }
+        }
+        
+        // Désactivation au clic en dehors de l'image (mode tactile)
+        if (shouldUseTouchMode) {
+            document.addEventListener('click', (e) => {
+            const target = e.target;
+            const isMedia = target.closest('.project-media');
+            const isZone = target.closest('#img-bio') || (sectionMvmt && target.closest('.section-mvmt'));
+        
+            if (!isMedia && !isZone) {
+                const container = imageState.container;
+                if (container) deactivateMedia(container);
+            }
+            });
+        }
+        
+        // ==========================================================
+        // ANIMATION DE MOUVEMENT
+        // ==========================================================
+        function updatePositions(timestamp) {
+            const frameDelay = 1000 / CONFIG.targetFPS;
+        
+            if (timestamp - lastTimestamp < frameDelay) {
+            animationFrameId = requestAnimationFrame(updatePositions);
+            return;
+            }
+            lastTimestamp = timestamp;
+        
+            const container = imageState.container;
+            if (container && container.mediaData.isMoving && !container.mediaData.isDragging && container.parentNode) {
+            const d = container.mediaData;
+            let x = parseFloat(container.style.left) || 0;
+            let y = parseFloat(container.style.top) || 0;
+        
+            d.angleChangeTimer++;
+        
+            if (d.transitionProgress < 1) {
+                d.transitionProgress += 0.03;
+                if (d.transitionProgress > 1) d.transitionProgress = 1;
+                d.angle += (d.targetAngle - d.angle) * 0.03;
+            }
+        
+            if (d.angleChangeTimer > 200 + Math.random() * 150) {
+                d.targetAngle = d.angle + (Math.random() - 0.5) * 45;
+                d.transitionProgress = 0;
+                d.angleChangeTimer = 0;
+            }
+        
+            if (d.angleChangeTimer % (isMobile ? 5 : 3) === 0) {
+                d.angle += (Math.random() - 0.5) * (driftIntensity * 0.7);
+            }
+        
+            const radians = d.angle * Math.PI / 180;
+            const dx = Math.cos(radians) * d.speed;
+            const dy = Math.sin(radians) * d.speed;
+        
+            x += dx;
+            y += dy;
+        
+            const cachedBounds = getCachedMovementBounds(sectionMvmt);
+            if (cachedBounds) {
+                const sectionMvmtEl = cachedBounds.element;
+                const containerRect = container.getBoundingClientRect();
+                const containerWidth = containerRect.width;
+                const containerHeight = containerRect.height;
+        
+                const minX = 0;
+                const minY = 0;
+                const maxX = sectionMvmtEl.clientWidth - containerWidth;
+                const maxY = sectionMvmtEl.clientHeight - containerHeight;
+        
+                if (x <= minX || x >= maxX) {
+                d.angle = 180 - d.angle;
+                d.targetAngle = d.angle + (Math.random() - 0.5) * 30;
+                x = Math.max(minX, Math.min(maxX, x));
+                }
+        
+                if (y <= minY || y >= maxY) {
+                d.angle = -d.angle;
+                d.targetAngle = d.angle + (Math.random() - 0.5) * 30;
+                y = Math.max(minY, Math.min(maxY, y));
+                }
+            }
+        
+            const deltaX = Math.abs(dx);
+            const deltaY = Math.abs(dy);
+            if (deltaX > 0.3 || deltaY > 0.3) {
+                container.style.left = `${x}px`;
+                container.style.top = `${y}px`;
+            }
+            }
+        
+            animationFrameId = requestAnimationFrame(updatePositions);
+        }
+        
+        // ==========================================================
+        // GESTION DU CLIC SUR LA ZONE (réactivation si désactivée)
+        // ==========================================================
+        // Réactivation au clic sur la zone uniquement en mode tactile
+        if (shouldUseTouchMode) {
+            sectionClic.addEventListener('click', (e) => {
+            if (e.target.closest('.project-media')) return;
+        
+            const container = imageState.container;
+            if (container && !container.mediaData.isActive) {
+                activateMedia(container);
+            }
+            });
+        
+            sectionClic.addEventListener('touchend', (e) => {
+            if (!e.target.closest('.project-media')) {
+                e.preventDefault();
+                const container = imageState.container;
+                if (container && !container.mediaData.isActive) {
+                activateMedia(container);
+                }
+            }
+            });
+        }
+        
+        // ==========================================================
+        // INITIALISATION
+        // ==========================================================
+        ensureRatioDetected(imageConfig).then(() => {
+            const container = createMediaContainer(imageConfig);
+        
+            if (container) {
+            setTimeout(() => {
+                // Démarrer en mouvement (inactif) — l'actif se déclenche au hover/drag
+                container.mediaData.isMoving = true;
+                container.style.opacity = '1';
+                setTimeout(() => {
+                imageState.isInitializing = false;
+                }, 100);
+            }, isMobile ? 400 : 150);
+            }
+        });
+        
+        // Nettoyage au déchargement de la page
+        window.addEventListener('beforeunload', () => {
+            if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            }
+        });
+        
+        // Démarrage de l'animation et du nettoyage global des drags
+        animationFrameId = requestAnimationFrame(updatePositions);
+        setupGlobalDragCleanup();
+        
+        console.log('Système image unique initialisé (#img-bio)');
+        });
+</script>
 
 </html>

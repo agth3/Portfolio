@@ -1474,16 +1474,11 @@ video:focus, audio:focus {
   height: 100%;
   padding: 4.63vh 4.63vh 4.63vh 8.125vw;
 
-  /* background-image:url("asset/img/low-line/couv-cimes.png");
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain; */
 
-  background-color: var(--highlight-color);/*  #14b8a6couleur appliquée */
-
+  /*background-color: var(--highlight-color);  #14b8a6couleur appliquée */
   /* masque + équivalent object-fit: cover */
-  -webkit-mask: url("asset/img/bio-cimes-transp.png") no-repeat center / contain;
-  mask: url("asset/img/bio-cimes-transp.png") no-repeat center / contain;
+  /* -webkit-mask: url("asset/img/bio-cimes-transp.png") no-repeat center / contain; */
+  /* mask: url("asset/img/bio-cimes-transp.png") no-repeat center / contain; */
 }
 
 /* #img-bio img{
