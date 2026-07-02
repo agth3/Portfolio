@@ -30,3 +30,4 @@ _adapter à tous navigateurs (controles natifs safari/mozilla)
 _optimiser tout pour eco de ressources (voir doc .txt)
 
 _peut être les déplacements des images dans les sections projet c'est trop?? (conserver le changement d'état actif-inactif, la limite de 4 img, le drag&drop, la zone d'apparition différencier de la zone de déplacement, juste enlever le déplacement automatique) permettrait de limiter les bugs et fluidifier
+-> images crées mais n'apparaissent pas

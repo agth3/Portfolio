@@ -254,17 +254,6 @@
   let isMobile = window.innerWidth <= 1024;
   let isMobilePortrait = window.innerWidth <= 1024 && window.innerWidth <= window.innerHeight;
 
-  // FONCTION DE DEBUG - À RETIRER PLUS TARD
-  // function debugScroll() {
-  //   console.log(`Current state:
-  //     isMobile: ${isMobile}
-  //     currentIndex: ${currentIndex}
-  //     container scrollTop: ${container.scrollTop}
-  //     container scrollLeft: ${container.scrollLeft}
-  //     window height: ${window.innerHeight}
-  //     window width: ${window.innerWidth}
-  //     sections length: ${sections.length}`);
-  // }
 
   function updateButtons() {
     if (isMobilePortrait) {
@@ -638,10 +627,7 @@ const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) ||
 // Configuration adaptative selon le device (vitesse)
 //IMAGES SPEED
 const CONFIG = {
-  targetFPS: isMobile ? 20 : 30,
   maxMedias: isMobile ? 3 : 4,
-  baseSpeed: isMobile ? 0.45 : 0.6,
-  fixedSpeeds: isMobile ? [1, 1.4, 1.8] : [1.2, 1.8, 2.4, 3.0],
   imageQuality: isMobile ? 'low' : 'high'
 };
 
@@ -686,11 +672,6 @@ const CONFIG = {
   // Variables pour l'animation globale
   let animationFrameId = null;
   let lastTimestamp = 0;
-
-  // PAR :
-const baseSpeed = CONFIG.baseSpeed;
-const fixedSpeeds = CONFIG.fixedSpeeds;
-const driftIntensity = 1.5;
 
   // Fonction de préchargement optimisé
   function preloadHighResImage(src) {
@@ -843,31 +824,44 @@ function calculateElementDimensions(container, mediaType = 'image', mediaConfig 
 
      // Fonction pour ajuster les dimensions du conteneur après chargement du média
 function adjustContainerSize(container) {
-   // ✅ Ne rien faire pour audio, iframe ET video
   if (container.mediaData.mediaType === 'audio' || 
       container.mediaData.mediaType === 'iframe' || 
-      container.mediaData.mediaType === 'video') {
-    console.log(`⛔ adjustContainerSize skipped for ${container.mediaData.mediaType}`);
-    return;
-  }
+      container.mediaData.mediaType === 'video') return;
   
   const mediaElement = container.mediaData.mediaElement;
   if (!mediaElement) return;
   
   const adjustSize = () => {
-    const rect = mediaElement.getBoundingClientRect();
-    container.style.width = rect.width + 'px';
-    container.style.height = rect.height + 'px';
+    // Utiliser naturalWidth/naturalHeight pour les images (disponible même à opacity:0)
+    if (mediaElement.tagName === 'IMG' && mediaElement.naturalWidth) {
+      const ratio = mediaElement.naturalWidth / mediaElement.naturalHeight;
+      const maxWidth = parseFloat(container.style.maxWidth) || 0;
+      const maxHeight = parseFloat(container.style.maxHeight) || 0;
+      
+      if (!maxWidth || !maxHeight) return;
+      
+      let w, h;
+      if (maxWidth / maxHeight > ratio) {
+        // Limité par la hauteur
+        h = maxHeight;
+        w = h * ratio;
+      } else {
+        // Limité par la largeur
+        w = maxWidth;
+        h = w / ratio;
+      }
+      
+      container.style.width = w + 'px';
+      container.style.height = h + 'px';
+    }
   };
   
   if (mediaElement.tagName === 'IMG') {
-    if (mediaElement.complete) {
-      setTimeout(adjustSize, 10);
+    if (mediaElement.complete && mediaElement.naturalWidth) {
+      adjustSize();
     } else {
       mediaElement.onload = adjustSize;
     }
-  } else if (mediaElement.tagName === 'VIDEO') {
-    mediaElement.addEventListener('loadedmetadata', adjustSize);
   } else {
     setTimeout(adjustSize, 10);
   }
@@ -894,10 +888,6 @@ function adjustContainerSize(container) {
     container.style.overflow = 'hidden';
     container.style.borderRadius = '4px';
 
-    // Attribuer une vitesse aléatoire de la pool
-    const availableSpeeds = [...fixedSpeeds];
-    const randomIndex = Math.floor(Math.random() * availableSpeeds.length);
-    const assignedSpeed = availableSpeeds[randomIndex];
 
     // Données attachées au conteneur
     container.mediaData = {
@@ -913,13 +903,7 @@ function adjustContainerSize(container) {
       tapCount: shouldUseTouchMode ? 0 : undefined,
       mediaElement: null, // Référence vers l'élément média actuel
       // Propriétés de mouvement
-      isMoving: false, // ✅ C'est correct - sera activé par startMovementForInactiveMedia
-      speed: baseSpeed * assignedSpeed,
-      angle: Math.random() * 360,
-      targetAngle: Math.random() * 360,
-      angleChangeTimer: 0,
-      transitionProgress: 1,
-      hasChangedDirection: false
+      isMoving: false,
     };
 
     // Calculer les dimensions maximales
@@ -979,10 +963,6 @@ if (sectionMvmt) {
 
 // Forcer un reflow puis rendre visible
 container.offsetHeight; // Force reflow
-requestAnimationFrame(() => {
-  container.style.opacity = '1';
-  console.log(`👁️ Made visible: ${projectId} media ${mediaIndex}`);
-});
 
 state.addMedia(container);
 
@@ -1813,8 +1793,6 @@ if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe' && mediaConfig
     });
   });
 
-  // ✅ SEUL appel - démarre le mouvement des autres médias
-  state.startMovementForInactiveMedia();
 
   console.log(`Media ${container.mediaData.mediaIndex} (${container.mediaData.mediaType}) activated`);
 }
@@ -1825,10 +1803,7 @@ if (mediaConfig.type !== 'audio' && mediaConfig.type !== 'iframe' && mediaConfig
   
   container.mediaData.isActive = false;
   container.mediaData.activationTime = null;
-  container.mediaData.isMoving = true;
   
-  container.mediaData.angle = Math.random() * 360;
-  container.mediaData.targetAngle = Math.random() * 360;
   container.mediaData.transitionProgress = 0;
   container.mediaData.angleChangeTimer = 0;
   container.mediaData.hasChangedDirection = false;
@@ -1879,14 +1854,15 @@ function getEffectiveDragHandle(container) {
       });
       
       container.addEventListener('touchend', e => {
-        if (container.mediaData.isDragging || container.mediaData.wasDragged) return;
-        e.preventDefault();
-        
-        const touchDuration = Date.now() - (container.mediaData.touchStartTime || 0);
-        if (touchDuration < 300) { // Tap rapide
-          handleMediaTouchInteraction(container);
-        }
-      });
+  if (container.mediaData.isDragging || container.mediaData.wasDragged) return;
+  e.preventDefault();
+  e.stopPropagation(); // bloque la remontée vers la section
+  
+  const touchDuration = Date.now() - (container.mediaData.touchStartTime || 0);
+  if (touchDuration < 300) {
+    handleMediaTouchInteraction(container);
+  }
+});
       
       // Support dev tools mobile
       if (isDevToolsMobile) {
@@ -2011,12 +1987,11 @@ if (shouldUseTouchMode) {
   }
 
   function handleTouchEnd(e) {
-    if (dragIntentDetected) {
-      e.preventDefault();
-    }
-    
-    hasMoved = false;
-    dragIntentDetected = false;
+  if (dragIntentDetected) {
+    e.preventDefault();
+  }
+  hasMoved = false;
+  dragIntentDetected = false;
   }
   
   // ✅ MODIFICATION : Attacher avec options pour capturer les events des enfants
@@ -2138,7 +2113,7 @@ if (shouldUseTouchMode) {
 
     setTimeout(() => {
       d.wasDragged = false;
-    }, 50);
+    }, 100);
     
     dragHandle.style.cursor = 'grab';
 
@@ -2148,14 +2123,6 @@ if (shouldUseTouchMode) {
     scrollContainer.style.overflow = ''; // Retour à la valeur CSS par défaut
     scrollContainer.style.touchAction = '';
   }
-    
-    if (!d.isActive) {
-      d.isMoving = true;
-      d.targetAngle = Math.random() * 360;
-      d.transitionProgress = 0;
-      d.angleChangeTimer = 0;
-      d.hasChangedDirection = true;
-    }
     
     if (mouseMoveHandler) {
       document.removeEventListener('mousemove', mouseMoveHandler);
@@ -2193,10 +2160,6 @@ function setupGlobalDragCleanup() {
             dragHandle.style.cursor = 'grab';
           }
           
-          // Reprendre le mouvement si inactif
-          if (!container.mediaData.isActive) {
-            container.mediaData.isMoving = true;
-          }
         }
       });
     });
@@ -2217,117 +2180,12 @@ function setupGlobalDragCleanup() {
               dragHandle.style.cursor = 'grab';
             }
             
-            if (!container.mediaData.isActive) {
-              container.mediaData.isMoving = true;
-            }
           }
         });
       });
     }, true);
   }
 }
-
-  // Fonction de mise à jour des positions (animation)
-  // Réduire la fréquence d'animation sur mobile
-function updatePositions(timestamp) {
-  const frameDelay = 1000 / CONFIG.targetFPS;
-  
-  if (timestamp - lastTimestamp < frameDelay) {
-    animationFrameId = requestAnimationFrame(updatePositions);
-    return;
-  }
-  lastTimestamp = timestamp;
-
-// Traiter chaque projet
-projectStates.forEach(state => {
-
-      const movingMedia = state.mediaList.filter(container => 
-        container.mediaData.isMoving && !container.mediaData.isDragging && container.parentNode
-      );
-
-      movingMedia.forEach(container => {
-        const d = container.mediaData;
-        let x = parseFloat(container.style.left) || 0;
-        let y = parseFloat(container.style.top) || 0;
-
-        // Gestion des changements d'angle
-        d.angleChangeTimer++;
-        
-        if (d.transitionProgress < 1) {
-          d.transitionProgress += 0.03;
-          if (d.transitionProgress > 1) d.transitionProgress = 1;
-          d.angle += (d.targetAngle - d.angle) * 0.03;
-        }
-        
-        if (d.angleChangeTimer > 200 + Math.random() * 150) {
-          d.targetAngle = d.angle + (Math.random() - 0.5) * 45;
-          d.transitionProgress = 0;
-          d.angleChangeTimer = 0;
-        }
-        
-        // Drift aléatoire
-        if (d.angleChangeTimer % (isMobile ? 5 : 3) === 0) {
-          d.angle += (Math.random() - 0.5) * (driftIntensity * 0.7);
-        }
-
-        // Calcul du mouvement
-        const radians = d.angle * Math.PI / 180;
-        const dx = Math.cos(radians) * d.speed;
-        const dy = Math.sin(radians) * d.speed;
-        
-        x += dx;
-        y += dy;
-
-        if (Math.random() < 0.01) { // Log 1% du temps pour ne pas surcharger
-  // console.log('🟢 AUTO-MOVE - Position:', {
-  //   x,
-  //   y,
-  //   containerOffsetWidth: container.offsetWidth,
-  //   containerOffsetHeight: container.offsetHeight
-  // });
-}
-
-        // Vérification des limites avec rebond
-const cachedBounds = cacheMovementBounds(state.projectElement);
-if (cachedBounds) {
-  const sectionMvmt = cachedBounds.element;
-  // Utiliser getBoundingClientRect pour obtenir les dimensions réelles avec scale
-  const containerRect = container.getBoundingClientRect();
-  const containerWidth = containerRect.width;
-  const containerHeight = containerRect.height;
-  
-  // EXACTEMENT les mêmes limites que le drag
-  const minX = 0;
-  const minY = 0;
-  const maxX = sectionMvmt.clientWidth - containerWidth;
-  const maxY = sectionMvmt.clientHeight - containerHeight;
-  
-  if (x <= minX || x >= maxX) {
-    d.angle = 180 - d.angle;
-    d.targetAngle = d.angle + (Math.random() - 0.5) * 30;
-    x = Math.max(minX, Math.min(maxX, x));
-  }
-  
-  if (y <= minY || y >= maxY) {
-    d.angle = -d.angle;
-    d.targetAngle = d.angle + (Math.random() - 0.5) * 30;
-    y = Math.max(minY, Math.min(maxY, y));
-  }
-}
-
-
-        // Mise à jour de la position
-        const deltaX = Math.abs(dx);
-        const deltaY = Math.abs(dy);
-        if (deltaX > 0.3 || deltaY > 0.3) {
-          container.style.left = `${x}px`;
-          container.style.top = `${y}px`;
-        }
-      });
-    });
-
-    animationFrameId = requestAnimationFrame(updatePositions);
-  }
 
 // Fonction pour pré-charger et détecter le ratio AVANT création
 function ensureRatioDetected(mediaConfig) {
@@ -2377,41 +2235,51 @@ console.log(`🖼️ IFRAME ratio set in ensureRatioDetected: ${mediaConfig._det
   });
 }
 
-  // Fonction pour afficher le média suivant
-  async function showNextMedia(projectId) {
+async function createAndActivateMedia(projectId, mediaConfig, mediaIndex, sectionClic) {
+  const state = projectStates.get(projectId);
+  if (!state) return null;
+
+  if (mediaConfig.type === 'image' && mediaConfig.highRes) {
+    await preloadHighResImage(mediaConfig.highRes).catch(() => {});
+  }
+
+  const container = createMediaContainer(projectId, mediaConfig, mediaIndex, sectionClic);
+  if (!container) return null;
+
+  if (!state.isInitializing) {
+    mediaManager.stopAllMedia();
+  }
+  state.deactivateAllMedia();
+
+  container.mediaData.isActive = true;
+  container.mediaData.activationTime = Date.now();
+  container.mediaData.isMoving = false;
+  container.style.zIndex = state.getTopZIndex();
+
+  createActiveContent(container, mediaConfig);
+
+  requestAnimationFrame(() => {
+    container.style.opacity = '1';
+    requestAnimationFrame(() => {
+      container.style.transform = 'scale(1.25)';
+    });
+  });
+
+  return container;
+}
+
+async function showNextMedia(projectId) {
   const medias = projectImages[projectId];
   const state = projectStates.get(projectId);
-  if (!medias || !state) {
-    console.error('showNextMedia failed:', { projectId, hasMedias: !!medias, hasState: !!state });
-    return;
-  }
+  if (!medias || !state) return;
 
-  console.log(`🔸 showNextMedia - Before: ${state.mediaList.length} media, maxMedias: ${state.maxMedias}`);
-  
-  state.deactivateAllMedia();
-    
   state.currentIndex = (state.currentIndex + 1) % medias.length;
   const nextMediaConfig = medias[state.currentIndex];
-  
+
   await ensureRatioDetected(nextMediaConfig);
-  
-  const newMediaContainer = createMediaContainer(
-    projectId, 
-    nextMediaConfig, 
-    state.currentIndex, 
-    state.sectionClic
-  );
+  await createAndActivateMedia(projectId, nextMediaConfig, state.currentIndex, state.sectionClic);
 
-  if (newMediaContainer) {
-    setTimeout(() => {
-      activateMedia(newMediaContainer);
-      // ❌ SUPPRIMÉ : appel redondant à startMovementForInactiveMedia
-    }, 100);
-  }
-
-  if (Math.random() < 0.1) {
-    cleanupImageCache();
-  }
+  if (Math.random() < 0.1) cleanupImageCache();
 }
 
   // Cache pour stocker les limites de mouvement par projet
@@ -2477,29 +2345,14 @@ function invalidateMovementBoundsCache() {
 
   // ✅ GARDER : recreateFirstMedia simplifié
   recreateFirstMedia() {
-    if (this.mediaList.length > 0 || this.isInitializing) {
-      return;
+  if (this.mediaList.length > 0 || this.isInitializing) return;
+  
+  ensureRatioDetected(this.medias[0]).then(() => {
+    if (this.mediaList.length === 0) {
+      createAndActivateMedia(this.projectId, this.medias[0], 0, this.sectionClic);
     }
-    
-    console.log(`🔄 Recreating first media for ${this.projectId}`);
-    
-    ensureRatioDetected(this.medias[0]).then(() => {
-      if (this.mediaList.length === 0) {
-        const firstMediaContainer = createMediaContainer(
-          this.projectId, 
-          this.medias[0], 
-          0, 
-          this.sectionClic
-        );
-        
-        if (firstMediaContainer) {
-          setTimeout(() => {
-            activateMedia(firstMediaContainer);
-          }, 100);
-        }
-      }
-    });
-  }
+  });
+}
 
   addMedia(container) {
     this.mediaList.push(container);
@@ -2575,25 +2428,7 @@ function invalidateMovementBoundsCache() {
       }
     });
   }
-
-  // ✅ SEUL endroit qui démarre le mouvement
-  startMovementForInactiveMedia() {
-  if (this.mediaList.length >= 2) {
-    this.mediaList.forEach(container => {
-      if (!container.mediaData.isActive && !container.mediaData.isDragging) {
-        container.mediaData.isMoving = true;
-        
-        if (container.mediaData.angle === undefined) {
-          container.mediaData.angle = Math.random() * 360;
-        }
-        if (container.mediaData.targetAngle === undefined) {
-          container.mediaData.targetAngle = Math.random() * 360;
-        }
-      }
-    });
-  }
-}
-
+ 
   getNextZIndex() {
     return this.baseZIndex + this.mediaList.length;
   }
@@ -2700,21 +2535,12 @@ function hideHint(hint) {
       showHint(state.hintElement);
     }
 
-// ✅ Pré-détecter et créer de manière asynchrone mais non-bloquante
-ensureRatioDetected(medias[0]).then(() => {
-  const firstMediaContainer = createMediaContainer(projectId, medias[0], 0, sectionClic);
-
-  if (firstMediaContainer) {
-    const doActivation = () => {
-      activateMedia(firstMediaContainer);
-      
-      setTimeout(() => {
-        state.isInitializing = false;
-      }, 100);
-    };
-    
-    setTimeout(doActivation, isMobile ? 400 : 150);
-  }
+    ensureRatioDetected(medias[0]).then(() => {
+  createAndActivateMedia(projectId, medias[0], 0, sectionClic).then(container => {
+    if (container) {
+      setTimeout(() => { state.isInitializing = false; }, 100);
+    }
+  });
 });
 
     // Gérer les clics sur la section (mais pas sur les médias)
@@ -2738,8 +2564,6 @@ if (shouldUseTouchMode) {
     if (!e.target.closest('.project-media')) {
       e.preventDefault();
 
-      // Dans le touch listener :
-      const state = projectStates.get(projectId);
       if (state && state.hintElement) {
         state.markInteraction();
       }
@@ -2762,11 +2586,6 @@ if (shouldUseTouchMode) {
         animationFrameId = null;
       }
     } else if (document.visibilityState === 'visible') {
-      // Reprendre l'animation
-      lastTimestamp = performance.now();
-      if (!animationFrameId) {
-        animationFrameId = requestAnimationFrame(updatePositions);
-      }
     }
   }
 
@@ -2834,8 +2653,6 @@ const sectionObserver = new IntersectionObserver((entries) => {
       console.log(`🔄 Reactivating first media for ${projectId}`);
       activateMedia(state.mediaList[0]);
     } else {
-      // ✅ Forcer le mouvement si médias inactifs existent
-      state.startMovementForInactiveMedia();
     }
   } else if (!state.isInitializing) {
     console.log(`📭 No media, recreating`);
@@ -2920,7 +2737,7 @@ Object.keys(projectImages).forEach(projectId => {
 });
 
 // Démarrer l'animation
-animationFrameId = requestAnimationFrame(updatePositions);
+// animationFrameId = requestAnimationFrame(updatePositions);
 setupGlobalDragCleanup();
 
 console.log('Enhanced project system with multimedia support initialized');
