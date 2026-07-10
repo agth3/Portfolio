@@ -53,36 +53,64 @@
       document.addEventListener("DOMContentLoaded", () => {
   const images = document.querySelectorAll('.img-mosaique');
   const preloadCache = new Map();
-
   let lastTouchedImage = null;
   let touchTimeout = null;
 
+  const clearPending = (img) => {
+    if (img.switchState.revertTimer) {
+      clearTimeout(img.switchState.revertTimer);
+      img.switchState.revertTimer = null;
+    }
+  };
+
   const switchToHighRes = (img) => {
     const highSrc = img.dataset.highres;
-    if (!img.switchState.isHighRes) {
-      if (!preloadCache.has(highSrc)) {
-        const tmp = new Image();
-        tmp.onload = () => {
-          preloadCache.set(highSrc, true);
-          img.src = highSrc;
-          img.switchState.isHighRes = true;
-        };
-        tmp.src = highSrc;
-      } else {
-        img.src = highSrc;
-        img.switchState.isHighRes = true;
-      }
+    const state = img.switchState;
+
+    clearPending(img); // annule un éventuel revert en attente
+    state.wantsHighRes = true;
+    state.token += 1;
+    const myToken = state.token;
+
+    if (state.isHighRes) return; // déjà bon état, rien à faire
+
+    const apply = () => {
+      // on ignore si entretemps une autre requête a pris le dessus
+      // ou si l'utilisateur ne veut plus du high-res
+      if (myToken !== state.token || !state.wantsHighRes) return;
+      img.src = highSrc;
+      state.isHighRes = true;
+    };
+
+    if (preloadCache.has(highSrc)) {
+      apply();
+    } else {
+      const tmp = new Image();
+      tmp.onload = () => {
+        preloadCache.set(highSrc, true);
+        apply();
+      };
+      tmp.src = highSrc;
     }
   };
 
   const revertToLowRes = (img) => {
     const lowSrc = img.dataset.lowres;
-    if (img.switchState.isHighRes) {
-      setTimeout(() => {
-        img.src = lowSrc;
-        img.switchState.isHighRes = false;
-      }, 100);
-    }
+    const state = img.switchState;
+
+    clearPending(img);
+    state.wantsHighRes = false;
+    state.token += 1; // invalide toute requête high-res en cours
+
+    if (!state.isHighRes) return;
+
+    state.revertTimer = setTimeout(() => {
+      // re-vérifie qu'on veut toujours revenir en low-res
+      if (state.wantsHighRes) return;
+      img.src = lowSrc;
+      state.isHighRes = false;
+      state.revertTimer = null;
+    }, 100);
   };
 
   const resetAll = () => {
@@ -97,7 +125,7 @@
   };
 
   images.forEach(img => {
-    img.switchState = { isHighRes: false };
+    img.switchState = { isHighRes: false, wantsHighRes: false, token: 0, revertTimer: null };
 
     // — Desktop —
     img.addEventListener('mouseenter', () => switchToHighRes(img));
@@ -106,30 +134,21 @@
     // — Mobile —
     img.addEventListener('touchstart', (e) => {
       e.stopPropagation();
-
       if (touchTimeout) {
         clearTimeout(touchTimeout);
         touchTimeout = null;
       }
-
       if (lastTouchedImage !== img) {
-        // Premier touch : état hover
-        e.preventDefault(); // bloque la navigation
+        e.preventDefault();
         if (lastTouchedImage) revertToLowRes(lastTouchedImage);
         lastTouchedImage = img;
         switchToHighRes(img);
-
-        // Reset automatique après 3s sans second touch
         touchTimeout = setTimeout(resetAll, 3000);
-
       }
-      // Second touch sur le même élément : laisser le lien fonctionner naturellement
     });
-
     img.addEventListener('contextmenu', (e) => e.preventDefault());
   });
 
-  // Touch en dehors = reset
   document.addEventListener('touchstart', (e) => {
     if (!e.target.closest('.case-mosaique')) {
       resetAll();

@@ -112,8 +112,8 @@
         // CONFIG DE L'IMAGE UNIQUE
         // ==========================================================
         const imageConfig = {
-            lowRes: fixPath('asset/img/low-line/portrait-bio.png'),
-            highRes: fixPath('asset/img/high/portrait-bio.jpg')
+            lowRes: fixPath('asset/img/low-line/portrait-bio-0.png'),
+            highRes: fixPath('asset/img/high/portrait-bio-0.jpg')
         };
         
         // Détection du mode d'interaction
@@ -218,7 +218,7 @@
             const rect = sectionClic.getBoundingClientRect();
         
             const MAX_WIDTH_ACTIVE = rect.width * (isMobile ? 0.65 : 0.55);
-            const MAX_HEIGHT_ACTIVE = rect.height * (isMobile ? 0.75 : 0.45);
+            const MAX_HEIGHT_ACTIVE = rect.height * (isMobile ? 0.15 : 0.25);
         
             let ratio = mediaConfig._detectedRatio || (4 / 3);
         
@@ -469,15 +469,15 @@
             container.addEventListener('touchend', e => {
                 if (container.mediaData.isDragging || container.mediaData.wasDragged) return;
                 e.preventDefault();
-                e.stopPropagation(); // empêche le click à côté de se déclencher aussi
+                e.stopPropagation();
         
                 const touchDuration = Date.now() - (container.mediaData.touchStartTime || 0);
                 if (touchDuration < 300) {
                 const d = container.mediaData;
                 if (d.isActive) {
-                    deactivateMedia(container); // 2e tap → inactif
+                    deactivateMedia(container);
                 } else {
-                    activateMedia(container);   // 1er tap → actif
+                    activateMedia(container);
                 }
                 }
             });
@@ -495,8 +495,22 @@
                 }
                 });
             }
-            }}
+            } else {
+            // Desktop : actif au hover, inactif quand la souris quitte
+            container.addEventListener('mouseenter', () => {
+                if (!container.mediaData.isDragging) {
+                activateMedia(container);
+                }
+            });
         
+            container.addEventListener('mouseleave', () => {
+                if (!container.mediaData.isDragging) {
+                deactivateMedia(container);
+                }
+            });
+            }
+        }
+
         // ==========================================================
         // DRAG & DROP (souris + tactile)
         // ==========================================================
